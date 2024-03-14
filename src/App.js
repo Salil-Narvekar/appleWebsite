@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useReducer, createContext} from 'react'
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from './Components/Login'
+import Dashboard from './Components/Dashboard';
+
+export const LoggedUserDetails = createContext();
 
 function App() {
+
+  // Reducer function for fetching logged-In User details on login
+  const initialUserState = {
+    // userID: '',
+    username: '',
+    password: '',
+  };
+
+  const reducerUser = (state, action) => {
+    switch (action.type) {
+      case 'loggedIn':
+        return {
+          // userID: 'action.value.ID',
+          username: action.value.username,
+          password: action.value.Passwords,
+        }
+      // return console.log("loggedIn", action.value);
+
+      case 'loggedOut':
+        return initialUserState
+      default:
+        return initialUserState
+    }
+  }
+
+  const [loggedUser, dispatchUser] = useReducer(reducerUser, initialUserState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <LoggedUserDetails.Provider value={{ loggedUser: loggedUser, dispatch: dispatchUser }}>
+
+      <div className="text-center h-screen font-sans sm:overflow-hidden bg-sky-100">
+        <HashRouter>
+          <Routes>
+            <Route path='/' element={<Navigate to='/login' />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/dashboard' element={<Dashboard />} />
+          </Routes>
+        </HashRouter>
+      </div>
+
+    </LoggedUserDetails.Provider>
   );
 }
 

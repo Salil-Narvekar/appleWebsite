@@ -1,14 +1,16 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { LoggedUserDetails } from '../App';
+import { FaWpforms } from "react-icons/fa";
+import { FaClipboardList } from "react-icons/fa";
+import { MdDevicesOther } from "react-icons/md";
+import axios from "axios";
+import LoadingPlate from './LoadingPlate';
 import Select from "react-dropdown-select";
 import ListingTitle from './ListingTitle';
 import ButtonMain from './ButtonMain'
 import ListingPlates from './ListingPlates'
 import NavContent from './NavContent';
-import { FaWpforms } from "react-icons/fa";
-import { FaClipboardList } from "react-icons/fa";
-import { MdDevicesOther } from "react-icons/md";
 
 const Dashboard = () => {
 
@@ -17,6 +19,27 @@ const Dashboard = () => {
 
     const [showListing, setShowListing] = useState('submittedForms');
     const [showDevice, setShowDevice] = useState('Mobile');
+
+    const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
+
+    useEffect(() => {
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms')
+            .then(res => {
+
+                if (res.data.data.length > 0) {
+                    console.log("submitted form data found");
+                    const submittedFormData = res.data.data;
+                    setSubmittedFormListArr([submittedFormData]);
+                } else {
+                    console.log("submitted form data empty");
+                    setSubmittedFormListArr([]);
+                }
+
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, [])
 
     const logout = () => {
         console.log('logout')
@@ -91,29 +114,37 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className='row-span-11 grid grid-rows-5 gap-2 h-full overflow-auto'>
-                                    <ListingPlates
-                                        contentLine1A='Device name'
-                                        contentLine1B='Carrier name'
-                                        contentLine1C='Storage'
-                                        contentLine2A='User email'
-                                        contentLine2B='Mobile number'
-                                        contentLine2C='condition name'
-                                        contentLine3A='Quoted Price'
-                                        contentLine3B='device id'
-                                        contentLine3C=''
-                                    />
 
-                                    <ListingPlates
-                                        contentLine1A='Device name'
-                                        contentLine1B='Carrier name'
-                                        contentLine1C='Storage'
-                                        contentLine2A='User email'
-                                        contentLine2B='Mobile number'
-                                        contentLine2C='condition name'
-                                        contentLine3A='Quoted Price'
-                                        contentLine3B='device id'
-                                        contentLine3C=''
-                                    />
+                                    {
+                                        submittedFormListArr.length > 0 ?
+                                            submittedFormListArr.map((formData, index) => (
+
+                                                console.log("formData", formData),
+
+                                                <div key={index}>
+                                                    <ListingPlates
+                                                        contentLine1A={formData[index].device_name}
+                                                        contentLine1B='Carrier name'
+                                                        contentLine1C='Storage'
+                                                        contentLine2A={formData[index].email_id}
+                                                        contentLine2B={formData[index].contact_number}
+                                                        contentLine2C='condition name'
+                                                        contentLine3A={formData[index].quoted_price}
+                                                        contentLine3B={formData[index].device_id}
+                                                        contentLine3C=''
+                                                    />
+                                                </div>
+                                            ))
+
+                                            :
+
+                                            <LoadingPlate />
+
+                                    }
+
+
+
+
                                 </div>
                             </div>
 

@@ -2,12 +2,12 @@ import React from 'react'
 import ButtonMain from './ButtonMain'
 import { useNavigate } from 'react-router-dom'
 
-const ListingPlates = ({ contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine3A, contentLine3B, contentLine3C, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
+const ListingPlates = ({ key, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine3A, contentLine3B, contentLine3C, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
   const navigate = useNavigate();
 
   return (
-    <div className='grid sm:grid-rows-3 rounded-lg bg-slate-200 sm:h-24 transition duration-500 ease-in-out hover:scale-95 shadow-md pl-2 pr-2 pt-2 font-medium'>
+    <div key={key} className='grid sm:grid-rows-3 rounded-lg bg-slate-200 sm:h-24 transition duration-500 ease-in-out hover:scale-95 shadow-md pl-2 pr-2 pt-2 font-medium'>
 
       {/* content line 1 */}
       <div className='sm:grid grid-cols-12 gap-2 text-md'>

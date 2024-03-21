@@ -2,6 +2,7 @@ import React, {useReducer, createContext} from 'react'
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from './Components/Login'
 import Dashboard from './Components/Dashboard';
+import Form from './Components/Form';
 
 export const LoggedUserDetails = createContext();
 
@@ -42,6 +43,7 @@ function App() {
             <Route path='/' element={<Navigate to='/login' />} />
             <Route path='/login' element={<Login />} />
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/deviceForm' element={<Form />} />
           </Routes>
         </HashRouter>
       </div>

@@ -13,7 +13,7 @@ const InputField = ({ labelTop, label, name, id, type, placeholder, min, maxLeng
 
                         <input
                             className="py-1 pl-2 sm:w-64 border border-slate-300 rounded text-black
-                        transition duration-500 ease-in-out hover:scale-95"
+                            transition duration-500 ease-in-out hover:scale-95"
                             name={name}
                             id={id}
                             type={type}
@@ -32,12 +32,12 @@ const InputField = ({ labelTop, label, name, id, type, placeholder, min, maxLeng
                     :
 
 
-                    <div className='grid sm:grid-cols-2 gap-2 font-sans'>
-                        <span className="text-lg sm:text-right"><b>{label}:</b></span>
+                    <div className='font-sans'>
+                        <span className="sm:text-lg text-right mr-2"><b>{label}:</b></span>
 
                         <input
                             className="py-1 pl-2 sm:w-64 border border-slate-300 rounded text-black
-                        transition duration-500 ease-in-out hover:scale-95"
+                            transition duration-500 ease-in-out hover:scale-95"
                             name={name}
                             id={id}
                             type={type}

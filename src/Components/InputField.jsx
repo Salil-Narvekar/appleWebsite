@@ -13,7 +13,7 @@ const InputField = ({ labelTop, label, name, id, type, placeholder, min, maxLeng
 
                         <input
                             className="py-1 pl-2 sm:w-64 border border-slate-300 rounded text-black
-                            transition duration-500 ease-in-out hover:scale-95"
+                            transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold"
                             name={name}
                             id={id}
                             type={type}
@@ -37,7 +37,7 @@ const InputField = ({ labelTop, label, name, id, type, placeholder, min, maxLeng
 
                         <input
                             className="py-1 pl-2 sm:w-52 border border-slate-300 rounded text-black
-                            transition duration-500 ease-in-out hover:scale-95"
+                            transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold"
                             name={name}
                             id={id}
                             type={type}

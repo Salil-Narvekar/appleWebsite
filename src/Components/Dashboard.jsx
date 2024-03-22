@@ -77,15 +77,15 @@ const Dashboard = () => {
     const devicesList = [
         {
             device_type: 'mobile',
-            deviceName: "Mobile"
+            deviceName: "mobile"
         },
         {
             device_type: 'laptop',
-            deviceName: "Laptop"
+            deviceName: "laptop"
         },
         {
             device_type: 'watch',
-            deviceName: "Watch"
+            deviceName: "watch"
         }
     ];
 
@@ -216,6 +216,12 @@ const Dashboard = () => {
                                                     options={devicesList}
                                                     labelField="deviceName"
                                                     valueField="device_type"
+                                                    values={[
+                                                        {
+                                                            device_type: 'mobile',
+                                                            deviceName: 'mobile'
+                                                        }
+                                                    ]}
                                                     onChange={(values) => setDevice(values)}
                                                 />
                                             </div>

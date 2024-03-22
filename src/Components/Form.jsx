@@ -124,7 +124,7 @@ const Form = () => {
 
                     <div className='sm:h-16'>
                         <div className='grid sm:grid-cols-2 gap-1 '>
-                            <label className='sm:text-lg font-bold text-slate-600'>Select Device: </label>
+                            <label className='sm:text-lg font-bold text-slate-600'>Select device type: </label>
                             <Select
                                 className='bg-white text-slate-600 font-semibold text-sm text-left'
                                 options={devicesList}

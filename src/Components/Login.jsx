@@ -91,7 +91,7 @@ const Login = () => {
 
             {
               validateUsernameFlag && !loader &&
-              <span className='text-red-600 text-xs text-left grid justify-end'>Username required</span>
+              <span className='text-red-700 text-xs text-left grid justify-end'>Username required</span>
             }
           </div>
 
@@ -112,7 +112,7 @@ const Login = () => {
 
             {
               validatePassFlag && !loader &&
-              <span className='text-red-600 text-xs text-left grid justify-end'>Password required</span>
+              <span className='text-red-700 text-xs text-left grid justify-end'>Password required</span>
             }
           </div>
 
@@ -129,7 +129,7 @@ const Login = () => {
 
           {
             invalidCredentials !== '' && !loader &&
-            <span className='text-red-600 text-md font-semibold animate-pulse'> {invalidCredentials} </span>
+            <span className='text-red-700 text-md font-semibold animate-pulse'> {invalidCredentials} </span>
           }
 
         </form>

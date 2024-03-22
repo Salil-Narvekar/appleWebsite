@@ -1,17 +1,62 @@
-import React, { useState } from 'react'
-import ButtonMain from './ButtonMain'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from "react-router-dom";
+import { DeviceFormDetails } from '../App';
+import Select from 'react-dropdown-select';
+import ButtonMain from './ButtonMain'
 import InputField from './InputField';
 import ValidationMsg from './ValidationMsg';
 
 const Form = () => {
     const navigate = useNavigate();
+    const deviceFormDetails = useContext(DeviceFormDetails);
 
-    const [validation, setValidation] = useState(false);
+    const [deviceDetails, setDeviceDetails] = useState({
+        base_price: deviceFormDetails.deviceForm.base_price ? deviceFormDetails.deviceForm.base_price : '',
+        condition_accepted: [],
+        device_id: deviceFormDetails.deviceForm.device_id ? deviceFormDetails.deviceForm.device_id : '',
+        device_name: deviceFormDetails.deviceForm.device_name ? deviceFormDetails.deviceForm.device_name : '',
+        device_type: deviceFormDetails.deviceForm.device_type ? deviceFormDetails.deviceForm.device_type : '',
+        storage_accepted: []
+    });
 
-    const submitDeviceDetails = () => {
-        // navigate('/dashboard');
-        setValidation(true);
+    // console.log("deviceDetails", deviceDetails);
+
+    const devicesList = [
+        {
+            device_type: 'mobile',
+            deviceName: "mobile"
+        },
+        {
+            device_type: 'laptop',
+            deviceName: "laptop"
+        },
+        {
+            device_type: 'watch',
+            deviceName: "watch"
+        }
+    ];
+
+    const setDevice = (value) => {
+        // console.log("SelectBox Value", value[0].device_type)
+        setDeviceDetails((prevSetDetails) => ({
+            ...prevSetDetails,
+            device_type: value[0].device_type
+        }));
+    };
+
+    const [validationFlag, setValidationFlag] = useState();
+
+    // function to validate fields & Submit form details
+    const submitDeviceDetails = () => {   
+
+        if (!deviceDetails.device_name || !deviceDetails.base_price || !deviceDetails.device_type) {
+            setValidationFlag(false);
+
+        } else {
+
+            setValidationFlag(true);
+            navigate('/dashboard');
+        }
     }
 
     return (
@@ -35,17 +80,21 @@ const Form = () => {
                     <div className='sm:h-16'>
                         <InputField
                             label="Device name"
-                            name="deviceName"
-                            id="deviceName"
+                            name="device_name"
+                            id="device_name"
                             type="text"
                             placeholder="Enter device name"
+                            value={deviceDetails.device_name}
                             onChange={(e) => {
-
+                                setDeviceDetails((prevSetDetails) => ({
+                                    ...prevSetDetails,
+                                    device_name: e.target.value
+                                }));
                             }}
                         />
 
                         {
-                            validation &&
+                            validationFlag === false && !deviceDetails.device_name && 
                             <ValidationMsg errorMsg="Device name required" />
                         }
                     </div>
@@ -53,21 +102,49 @@ const Form = () => {
                     <div className='sm:h-16'>
                         <InputField
                             label="Base price"
-                            name="basePrice"
-                            id="basePrice"
-                            type="text"
+                            name="base_price"
+                            id="base_price"
+                            type="number"
+                            min={1}
                             placeholder="Enter base price"
+                            value={deviceDetails.base_price}
                             onChange={(e) => {
-
+                                setDeviceDetails((prevSetDetails) => ({
+                                    ...prevSetDetails,
+                                    base_price: e.target.value
+                                }));
                             }}
                         />
 
                         {
-                            validation &&
+                            validationFlag === false && !deviceDetails.base_price && 
                             <ValidationMsg errorMsg="Base price required" />
                         }
                     </div>
 
+                    <div className='sm:h-16'>
+                        <div className='grid sm:grid-cols-2 gap-1 '>
+                            <label className='sm:text-lg font-bold text-slate-600'>Select Device: </label>
+                            <Select
+                                className='bg-white text-slate-600 font-semibold text-sm text-left'
+                                options={devicesList}
+                                labelField="deviceName"
+                                valueField="device_type"
+                                values={[
+                                    {
+                                        device_type: deviceFormDetails.deviceForm.device_type,
+                                        deviceName: deviceFormDetails.deviceForm.device_type
+                                    }
+                                ]}
+                                onChange={(values) => setDevice(values)}
+                            />
+                        </div>
+
+                        {
+                            validationFlag === false && !deviceDetails.device_type && 
+                            <ValidationMsg errorMsg="Select device type" />
+                        }
+                    </div>
 
                     <div className='sm:h-16'>
                         <InputField
@@ -81,10 +158,10 @@ const Form = () => {
                             }}
                         />
 
-                        {
-                            validation &&
+                        {/* {
+                            validationFlag &&
                             <ValidationMsg errorMsg="Condition required" />
-                        }
+                        } */}
                     </div>
 
                     <div className='sm:h-16'>
@@ -99,64 +176,10 @@ const Form = () => {
                             }}
                         />
 
-                        {
-                            validation &&
+                        {/* {
+                            validationFlag &&
                             <ValidationMsg errorMsg="Storgae required" />
-                        }
-                    </div>
-
-                    <div className='sm:h-16'>
-                        <InputField
-                            label="Storgae accepted"
-                            name="storgaeAccepted"
-                            id="storgaeAccepted"
-                            type="text"
-                            placeholder="Enter storgae accepted"
-                            onChange={(e) => {
-
-                            }}
-                        />
-
-                        {
-                            validation &&
-                            <ValidationMsg errorMsg="Device name required" />
-                        }
-                    </div>
-
-                    <div className='sm:h-16'>
-                        <InputField
-                            label="Storgae accepted"
-                            name="storgaeAccepted"
-                            id="storgaeAccepted"
-                            type="text"
-                            placeholder="Enter storgae accepted"
-                            onChange={(e) => {
-
-                            }}
-                        />
-
-                        {
-                            validation &&
-                            <ValidationMsg errorMsg="Device name required" />
-                        }
-                    </div>
-
-                    <div className='sm:h-16'>
-                        <InputField
-                            label="Storgae accepted"
-                            name="storgaeAccepted"
-                            id="storgaeAccepted"
-                            type="text"
-                            placeholder="Enter storgae accepted"
-                            onChange={(e) => {
-
-                            }}
-                        />
-
-                        {
-                            validation &&
-                            <ValidationMsg errorMsg="Device name required" />
-                        }
+                        } */}
                     </div>
                 </div>
 

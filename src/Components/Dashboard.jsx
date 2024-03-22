@@ -18,21 +18,41 @@ const Dashboard = () => {
     const loggedUserDetails = useContext(LoggedUserDetails);
 
     const [showListing, setShowListing] = useState('submittedForms');
-    const [showDevice, setShowDevice] = useState('Mobile');
+    const [showDeviceType, setShowDeviceType] = useState('mobile');
 
     const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
+    const [devicesListArr, setDevicesListArr] = useState([]);
 
+    // useEffect to mount submitted forms list data
     useEffect(() => {
         axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms')
             .then(res => {
 
                 if (res.data.data.length > 0) {
-                    console.log("submitted form data found");
                     const submittedFormData = res.data.data;
                     setSubmittedFormListArr([submittedFormData]);
                 } else {
                     console.log("submitted form data empty");
                     setSubmittedFormListArr([]);
+                }
+
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, [])
+
+    // useEffect to mount devices list data
+    useEffect(() => {
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-devices/mobile')
+            .then(res => {
+
+                if (res.data.data.length > 0) {
+                    const devicesData = res.data.data;
+                    setDevicesListArr([devicesData]);
+                } else {
+                    console.log("devices data empty");
+                    setDevicesListArr([]);
                 }
 
             })
@@ -56,22 +76,22 @@ const Dashboard = () => {
 
     const devicesList = [
         {
-            deviceId: 0,
+            device_type: 'mobile',
             deviceName: "Mobile"
         },
         {
-            deviceId: 1,
+            device_type: 'laptop',
             deviceName: "Laptop"
         },
         {
-            deviceId: 2,
+            device_type: 'watch',
             deviceName: "Watch"
         }
     ];
 
     const setDevice = (value) => {
-        // console.log("SelectBox Value", value[0].deviceName)
-        setShowDevice(value[0].deviceName);
+        // console.log("SelectBox Value", value[0].device_type)
+        setShowDeviceType(value[0].device_type);
     };
 
 
@@ -103,7 +123,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Dasboard right Listing*/}
-                <div className='col-span-6 border rounded-lg py-4 pl-4 pr-4'>
+                <div className='col-span-6 rounded-lg py-4 pl-4 pr-4'>
 
                     {
                         showListing === 'submittedForms' ?
@@ -113,38 +133,36 @@ const Dashboard = () => {
                                     <ListingTitle titlename="Submitted Forms List" icon={<FaWpforms />} />
                                 </div>
 
-                                <div className='row-span-11 grid grid-rows-5 gap-2 h-full overflow-auto'>
-
+                                <div className='row-span-11 h-full overflow-auto'>
                                     {
                                         submittedFormListArr.length > 0 ?
-                                            submittedFormListArr.map((formData, index) => (
 
-                                                console.log("formData", formData),
+                                            submittedFormListArr.map((formDataArr, arrayIndex) => (
 
-                                                <div key={index}>
-                                                    <ListingPlates
-                                                        contentLine1A={formData[index].device_name}
-                                                        contentLine1B='Carrier name'
-                                                        contentLine1C='Storage'
-                                                        contentLine2A={formData[index].email_id}
-                                                        contentLine2B={formData[index].contact_number}
-                                                        contentLine2C='condition name'
-                                                        contentLine3A={formData[index].quoted_price}
-                                                        contentLine3B={formData[index].device_id}
-                                                        contentLine3C=''
-                                                    />
+                                                <div className='grid gap-2 mt-2' key={arrayIndex}>
+                                                    {
+                                                        formDataArr.map((formData, innerIndex) => (
+
+                                                            <div key={innerIndex}>
+                                                                <ListingPlates
+                                                                    contentLine1A={formData.device_name}
+                                                                    contentLine1B='Carrier name'
+                                                                    contentLine1C='Storage'
+                                                                    contentLine2A={formData.email_id}
+                                                                    contentLine2B={formData.contact_number}
+                                                                    contentLine2C='condition name'
+                                                                    contentLine3A={formData.quoted_price + ' /-'}
+                                                                    contentLine3B={formData.device_id}
+                                                                    contentLine3C=''
+                                                                />
+                                                            </div>
+                                                        ))}
                                                 </div>
                                             ))
-
                                             :
-
                                             <LoadingPlate />
 
                                     }
-
-
-
-
                                 </div>
                             </div>
 
@@ -156,19 +174,7 @@ const Dashboard = () => {
                                         <ListingTitle titlename="Appointments List" icon={<FaClipboardList />} />
                                     </div>
 
-                                    <div className='row-span-11 grid grid-rows-5 gap-2 h-full overflow-auto'>
-                                        <ListingPlates
-                                            contentLine1A='Email'
-                                            contentLine1B='phone number'
-                                            contentLine1C=''
-                                            contentLine2A='shop address'
-                                            contentLine2B=''
-                                            contentLine2C=''
-                                            contentLine3A='date'
-                                            contentLine3B='time'
-                                            contentLine3C=''
-                                        />
-
+                                    <div className='row-span-11 h-full overflow-auto'>
                                         <ListingPlates
                                             contentLine1A='Email'
                                             contentLine1B='phone number'
@@ -209,38 +215,55 @@ const Dashboard = () => {
                                                     className='bg-white text-slate-600 font-semibold text-xs text-left'
                                                     options={devicesList}
                                                     labelField="deviceName"
-                                                    valueField="deviceId"
+                                                    valueField="device_type"
                                                     onChange={(values) => setDevice(values)}
                                                 />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className='row-span-11 grid grid-rows-5 gap-2 h-full overflow-auto'>
+                                    <div className='row-span-11 h-full overflow-auto'>
 
                                         {
-                                            showDevice === 'Mobile' ?
+                                            showDeviceType === 'mobile' ?
 
-                                                <ListingPlates
-                                                    contentLine1A='Mobile Device name'
-                                                    contentLine1B='Storage accepted'
-                                                    contentLine1C='Condition accepted'
-                                                    contentLine2A='base price'
-                                                    contentLine2B=''
-                                                    contentLine2C=''
-                                                    contentLine3A=''
-                                                    contentLine3B=''
-                                                    contentLine3C=''
-                                                    buttonRequired='yes'
-                                                    dateTimeRequired='yes'
-                                                    createdDate='dd/mm/yyyy'
-                                                    updatedDate='dd/mm/yyyy'
-                                                />
+                                                devicesListArr.length > 0 ?
 
-                                                : showDevice === 'Laptop' ?
+                                                    devicesListArr.map((deviceArray, arrayIndex) => (
 
-                                                    < ListingPlates
-                                                        contentLine1A='Laptop Device name'
+                                                        <div className='grid gap-2 mt-2' key={arrayIndex}>
+                                                            {
+                                                                deviceArray.map((deviceData, innerIndex) => (
+
+                                                                    <div key={innerIndex}>
+                                                                        <ListingPlates
+                                                                            contentLine1A={deviceData.device_name}
+                                                                            contentLine1B='Storage accepted'
+                                                                            contentLine1C='Condition accepted'
+                                                                            contentLine2A={deviceData.base_price + ' /-'}
+                                                                            contentLine2B=''
+                                                                            contentLine2C=''
+                                                                            contentLine3A=''
+                                                                            contentLine3B=''
+                                                                            contentLine3C=''
+                                                                            buttonRequired='yes'
+                                                                            dateTimeRequired='yes'
+                                                                            createdDate='dd/mm/yyyy'
+                                                                            updatedDate='dd/mm/yyyy'
+                                                                            fetchEditArr={deviceData}
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                        </div>
+                                                    ))
+                                                    :
+                                                    <LoadingPlate />
+
+
+                                                : showDeviceType === 'laptop' ?
+
+                                                    <ListingPlates
+                                                        contentLine1A='Laptop Device Demo'
                                                         contentLine1B='Storage accepted'
                                                         contentLine1C='Condition accepted'
                                                         contentLine2A='base price'
@@ -255,10 +278,10 @@ const Dashboard = () => {
                                                         updatedDate='dd/mm/yyyy'
                                                     />
 
-                                                    : showDevice === "Watch" &&
+                                                    : showDeviceType === "watch" &&
 
                                                     <ListingPlates
-                                                        contentLine1A='Watch Device name'
+                                                        contentLine1A='Watch Device Demo'
                                                         contentLine1B='Storage accepted'
                                                         contentLine1C='Condition accepted'
                                                         contentLine2A='base price'

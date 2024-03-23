@@ -69,11 +69,11 @@ const ListingPlates = ({ fetchEditArr, contentLine1A, contentLine1B, contentLine
                         type: "edit",
                         value: {
                           base_price: fetchEditArr.base_price,
-                          condition_accepted: [],
+                          condition_accepted: {},
                           device_id: fetchEditArr.device_id,
                           device_name: fetchEditArr.device_name,
                           device_type: fetchEditArr.device_type,
-                          storage_accepted: []
+                          storage_accepted: {}
                         }
                       }
                     );

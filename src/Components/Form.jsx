@@ -18,18 +18,22 @@ const Form = () => {
         device_id: deviceFormDetails.deviceForm.device_id ? deviceFormDetails.deviceForm.device_id : '',
         device_name: deviceFormDetails.deviceForm.device_name ? deviceFormDetails.deviceForm.device_name : '',
         device_type: deviceFormDetails.deviceForm.device_type ? deviceFormDetails.deviceForm.device_type : '',
-        storage_accepted: {},
-        condition_accepted: {},
         carriers_accepted: {},
+        condition_accepted: {},
+        storage_accepted: {},
     });
     // console.log("deviceDetails", deviceDetails);
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
+
     const [carriersArr, setCarriersArr] = useState([]);
-    const [carriersArrLenght, setCarriersArrLenght] = useState();
-    const [selectedStorages, setSelectedStorages] = useState([]);
+
+    const [storagesArrData, setStoragesArrData] = useState([]);
+    const [conditionsArrData, setConditionsArrData] = useState([]);
+
     const [selectedConditions, setSelectedConditions] = useState([]);
+    const [selectedStorages, setSelectedStorages] = useState([]);
 
     // useEffect to mount carriers data
     useEffect(() => {
@@ -39,34 +43,72 @@ const Form = () => {
 
                 if (res.data.data.length > 0) {
                     const carriersData = res.data.data;
-                    setCarriersArr([carriersData]);
+                    setCarriersArr(carriersData);
                     setLoader(false);
                 } else {
-                    console.log("devices data empty");
+                    console.log("Carriers data empty");
                     setCarriersArr([]);
                 }
 
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching carriers data:', error);
             });
     }, [])
 
-    const storagesArr = [
-        { label: "126 gb", value: "126" },
-        { label: "256 gb", value: "256" },
-        { label: "1 tb", value: "1", },
-        { label: "2 tb", value: "2", },
-        { label: "3 tb", value: "3", },
-        { label: "4 tb", value: "4", },
-        { label: "5 tb", value: "5", },
-    ];
+    // useEffect to mount conditions data
+    useEffect(() => {
+        setLoader(true);
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions')
+            .then(res => {
 
-    const conditionsArr = [
-        { label: "new", value: "new" },
-        { label: "old", value: "old" },
-        { label: "refurbished", value: "refurbished" },
-    ];
+                if (res.data.data.length > 0) {
+                    const conditionsData = res.data.data;
+                    setConditionsArrData(conditionsData);
+                    setLoader(false);
+                } else {
+                    console.log("Conditions data empty");
+                    setConditionsArrData([]);
+                }
+
+            })
+            .catch(error => {
+                console.error('Error fetching conditions data:', error);
+            });
+    }, [])
+
+    // useEffect to mount storages data
+    useEffect(() => {
+        setLoader(true);
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages')
+            .then(res => {
+
+                if (res.data.data.length > 0) {
+                    const storagesData = res.data.data;
+                    setStoragesArrData(storagesData);
+                    setLoader(false);
+                } else {
+                    console.log("Storages data empty");
+                    setStoragesArrData([]);
+                }
+
+            })
+            .catch(error => {
+                console.error('Error fetching storages data:', error);
+            });
+    }, [])
+
+    // conditions array mapping for multiselect
+    const storagesArr = storagesArrData.map(storage => ({
+        label: storage.storage_value + ' ' + storage.storage_unit,
+        value: storage.storage_id
+    }));
+
+    // conditions array mapping for multiselect
+    const conditionsArr = conditionsArrData.map(condition => ({
+        label: condition.condition_title,
+        value: condition.condition_id
+    }));
 
     const devicesList = [
         {
@@ -91,7 +133,7 @@ const Form = () => {
         }));
     };
 
-    // function to set / update carriers details
+    // function to set  carriers_accepted details
     const setCarriersDetails = (carrierId, carrierPrice, index) => {
 
         // console.log(carrierId, carrierPrice, index);
@@ -106,15 +148,49 @@ const Form = () => {
         }));
     }
 
+    // function to set conditions_accepted details
+    const setConditionsDetails = (conditionId, conditionPrice, index) => {
+        // console.log(conditionId, conditionPrice, index);
+        const updatedConditionData = {
+            ...deviceDetails.condition_accepted,
+            [conditionId]: conditionPrice
+        };
+
+        setDeviceDetails((prevDeviceDetails) => ({
+            ...prevDeviceDetails,
+            condition_accepted: updatedConditionData
+        }));
+    }
+
+    // function to set storage_accepted details
+    const setStoragesDetails = (storageId, storagePrice, index) => {
+        // console.log(storageId, storagePrice, index);
+        const updatedStorageData = {
+            ...deviceDetails.storage_accepted,
+            [storageId]: storagePrice
+        };
+
+        setDeviceDetails((prevDeviceDetails) => ({
+            ...prevDeviceDetails,
+            storage_accepted: updatedStorageData
+        }));
+    }
+
     // function to validate fields & Submit form details
     const submitDeviceDetails = () => {
 
-        carriersArr.map((carriersArr) => setCarriersArrLenght(carriersArr.length))
-
         // to validate & Submit
-        if (!deviceDetails.device_name || !deviceDetails.base_price || !deviceDetails.device_type || Object.values(deviceDetails.carriers_accepted).length !== carriersArrLenght) {
-            setValidationFlag(false);
+        if (!deviceDetails.device_name ||
+            !deviceDetails.base_price ||
+            !deviceDetails.device_type ||
+            Object.values(deviceDetails.carriers_accepted).filter(Boolean).length !== carriersArr.length ||
+            Object.values(deviceDetails.condition_accepted).length !== selectedConditions.length ||
+            Object.values(deviceDetails.storage_accepted).length !== selectedStorages.length ||
+            selectedConditions.length === 0 ||
+            selectedStorages.length === 0
+        ) {
 
+            setValidationFlag(false);
         } else {
 
             console.log("final deviceDetails payload -> ", deviceDetails);
@@ -216,41 +292,40 @@ const Form = () => {
                         <span className='grid sm:justify-items-start font-bold text-lg underline ml-4 mb-2'>Carriers Details:</span>
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.carriers_accepted).length !== carriersArrLenght &&
+                                validationFlag === false && Object.values(deviceDetails.carriers_accepted).filter(Boolean).length !== carriersArr.length &&
                                 <ValidationMsg errorMsg="All carriers prices required" />
                             }
                         </div>
                     </div>
 
                     {
-                        carriersArr.map((carriersArr, arrayIndex) => (
+                        !loader ?
 
-                            <div className='grid sm:grid-cols-4 gap-1 sm:justify-items-start sm:ml-4' key={arrayIndex}>
+                            <div className='grid sm:grid-cols-4 gap-1 sm:justify-items-start sm:ml-4'>
                                 {
-                                    !loader ?
-                                        carriersArr.map((carriersData, innerIndex) => (
+                                    carriersArr.map((carriersData, index) => (
 
-                                            <div key={innerIndex}>
-                                                <InputField
-                                                    key={carriersData.carrier_id}
-                                                    label={carriersData.carrier_name}
-                                                    name="storagePrice"
-                                                    id="storagePrice"
-                                                    type="number"
-                                                    min={1}
-                                                    placeholder={"Enter " + carriersData.carrier_name + " price"}
-                                                    onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, innerIndex)}
-                                                />
-                                            </div>
-                                        ))
-                                        :
-                                        <div className='grid sm:grid-cols-3 gap-2'>
-                                            <span className='sm:col-span-2 text-lg font-semibold text-cyan-800'>Loading available carriers... </span>
-                                            <Loader />
+                                        <div key={index}>
+                                            <InputField
+                                                key={carriersData.carrier_id}
+                                                label={carriersData.carrier_name}
+                                                name="storagePrice"
+                                                id="storagePrice"
+                                                type="number"
+                                                min={1}
+                                                placeholder={"Enter " + carriersData.carrier_name + " price"}
+                                                onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
+                                            />
                                         </div>
+                                    ))
+
                                 }
                             </div>
-                        ))
+                            :
+                            <div className='grid ml-4 gap-2'>
+                                <span className='text-lg font-semibold text-cyan-800'>Loading available carriers... </span>
+                                <Loader />
+                            </div>
                     }
 
                 </div>
@@ -260,26 +335,32 @@ const Form = () => {
 
                     {/* Condition details */}
                     <div className='grid sm:justify-items-start border-r border-dashed w-full pl-4 py-2 pt-4'>
-                        <div className='grid sm:grid-cols-4 gap-1'>
-                            <label className='sm:text-md font-bold text-slate-600'>Conditions accepted: </label>
-                            <MultiSelect
-                                className='sm:col-span-3 text-xs'
-                                options={conditionsArr}
-                                value={selectedConditions}
-                                onChange={setSelectedConditions}
-                                labelledBy="Select Conditions"
-                                overrideStrings={{
-                                    selectSomeItems: 'Select accepted conditions...',
-                                    allItemsAreSelected: 'All conditions selected.',
-                                    selectAll: 'Select All',
-                                    search: 'Search available conditions',
-                                }}
-                            />
+                        <div>
+                            <div className='grid sm:grid-cols-4 gap-1'>
+                                <label className='sm:text-md font-bold text-slate-600'>Conditions accepted: </label>
+                                <MultiSelect
+                                    className='sm:col-span-3 text-xs'
+                                    options={conditionsArr}
+                                    value={selectedConditions}
+                                    onChange={setSelectedConditions}
+                                    labelledBy="Select Conditions"
+                                    overrideStrings={{
+                                        selectSomeItems: 'Select accepted conditions...',
+                                        allItemsAreSelected: 'All conditions selected.',
+                                        selectAll: 'Select All',
+                                        search: 'Search available conditions',
+                                    }}
+                                />
+                            </div>
+                            {
+                                validationFlag === false && selectedConditions.length === 0 &&
+                                <ValidationMsg errorMsg="Select conditions" />
+                            }
                         </div>
 
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
-                                selectedConditions.map((condition) => (
+                                selectedConditions.map((condition, index) => (
 
                                     <InputField
                                         key={condition.value}
@@ -289,37 +370,48 @@ const Form = () => {
                                         type="number"
                                         min={1}
                                         placeholder={"Enter " + condition.label + " price"}
-                                        onChange={(e) => {
-
-                                        }}
+                                        onChange={(e) => setConditionsDetails(condition.value, e.target.value, index)}
                                     />
                                 ))
+                            }
+                        </div>
+
+                        <div className='grid sm:justify-items-start'>
+                            {
+                                validationFlag === false && Object.values(deviceDetails.condition_accepted).length !== selectedConditions.length &&
+                                <ValidationMsg errorMsg="All selected conditions prices required" />
                             }
                         </div>
                     </div>
 
                     {/* Storage details */}
                     <div className='grid sm:justify-items-start w-full pl-4 py-2 pt-4'>
-                        <div className='grid sm:grid-cols-4 gap-1'>
-                            <label className='sm:text-md font-bold text-slate-600'>Storage accepted: </label>
-                            <MultiSelect
-                                className='sm:col-span-3 text-xs'
-                                options={storagesArr}
-                                value={selectedStorages}
-                                onChange={setSelectedStorages}
-                                labelledBy="Select Storages"
-                                overrideStrings={{
-                                    selectSomeItems: 'Select accepted storages...',
-                                    allItemsAreSelected: 'All storages selected.',
-                                    selectAll: 'Select All',
-                                    search: 'Search available storages',
-                                }}
-                            />
+                        <div>
+                            <div className='grid sm:grid-cols-4 gap-1'>
+                                <label className='sm:text-md font-bold text-slate-600'>Storage accepted: </label>
+                                <MultiSelect
+                                    className='sm:col-span-3 text-xs'
+                                    options={storagesArr}
+                                    value={selectedStorages}
+                                    onChange={setSelectedStorages}
+                                    labelledBy="Select Storages"
+                                    overrideStrings={{
+                                        selectSomeItems: 'Select accepted storages...',
+                                        allItemsAreSelected: 'All storages selected.',
+                                        selectAll: 'Select All',
+                                        search: 'Search available storages',
+                                    }}
+                                />
+                            </div>
+                            {
+                                validationFlag === false && selectedStorages.length === 0 &&
+                                <ValidationMsg errorMsg="Select storages" />
+                            }
                         </div>
 
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
-                                selectedStorages.map((storages) => (
+                                selectedStorages.map((storages, index) => (
 
                                     <InputField
                                         key={storages.value}
@@ -329,11 +421,16 @@ const Form = () => {
                                         type="number"
                                         min={1}
                                         placeholder={"Enter " + storages.label + " price"}
-                                        onChange={(e) => {
-
-                                        }}
+                                        onChange={(e) => setStoragesDetails(storages.value, e.target.value, index)}
                                     />
                                 ))
+                            }
+                        </div>
+
+                        <div className='grid sm:justify-items-start'>
+                            {
+                                validationFlag === false && Object.values(deviceDetails.storage_accepted).length !== selectedStorages.length &&
+                                <ValidationMsg errorMsg="All selected storages prices required" />
                             }
                         </div>
                     </div>

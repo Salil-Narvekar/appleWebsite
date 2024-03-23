@@ -113,7 +113,7 @@ const Dashboard = () => {
             </div>
 
             {/* Dasboard panel */}
-            <div className='row-span-9 sm:grid grid-cols-7 gap-1 border border-slate-300 items-start rounded-lg bg-sky-50 sm:ml-4 sm:mr-4'>
+            <div className='row-span-9 sm:grid grid-cols-7 gap-1 shadow border border-slate-300 items-start rounded-lg bg-sky-50 sm:ml-4 sm:mr-4'>
 
                 {/* Dasboard left Nav */}
                 <div className='grid sm:grid-rows-12 gap-1 text-left rounded-lg bg-indigo-200 py-5 pl-4 pr-4 sm:h-full'>

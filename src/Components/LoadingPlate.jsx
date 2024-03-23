@@ -11,7 +11,7 @@ const LoadingPlate = () => {
 
                     <span className='mt-2 text-sm font-semibold'>
                         <Loader />
-                        Fetching list...
+                        <span className='text-cyan-900'>Fetching list...</span>
                     </span>
 
                     <div className="flex-1 space-y-4 py-1">

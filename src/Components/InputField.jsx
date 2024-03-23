@@ -33,7 +33,7 @@ const InputField = ({ labelTop, label, name, id, type, placeholder, min, maxLeng
 
 
                     <div className='font-sans text-slate-600'>
-                        <span className="sm:text-lg text-right mr-2"><b>{label}:</b></span>
+                        <span className="sm:text-md text-right mr-2"><b>{label}:</b></span>
 
                         <input
                             className="py-1 pl-2 sm:w-52 border border-slate-300 rounded text-black

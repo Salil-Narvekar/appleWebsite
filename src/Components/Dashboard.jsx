@@ -126,9 +126,10 @@ const Dashboard = () => {
 
                 {/* Dasboard left Nav */}
                 <div className='grid sm:grid-rows-12 gap-1 text-left rounded-lg bg-indigo-200 py-5 pl-4 pr-4 sm:h-full'>
-                    <NavContent title="Submitted Forms" onClick={() => setShowListing('submittedForms')} />
+                    <NavContent title="Submitted forms" onClick={() => setShowListing('submittedForms')} />
                     <NavContent title="Apointments" onClick={() => setShowListing('appointments')} />
                     <NavContent title="Devices" onClick={() => setShowListing('devices')} />
+                    <NavContent title="Add storage" onClick={() => navigate('/storageForm')} />
                 </div>
 
                 {/* Dasboard right Listing*/}

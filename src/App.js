@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from './Components/Login'
 import Dashboard from './Components/Dashboard';
 import Form from './Components/Form';
+import StorageForm from './Components/StorageForm';
 
 export const LoggedUserDetails = createContext();
 export const DeviceFormDetails = createContext();
@@ -76,6 +77,7 @@ function App() {
               <Route path='/login' element={<Login />} />
               <Route path='/dashboard' element={<Dashboard />} />
               <Route path='/deviceForm' element={<Form />} />
+              <Route path='/storageForm' element={<StorageForm />} />
             </Routes>
           </HashRouter>
         </div>

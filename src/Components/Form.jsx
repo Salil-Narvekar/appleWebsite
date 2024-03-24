@@ -4,6 +4,7 @@ import { DeviceFormDetails } from '../App';
 import { MultiSelect } from "react-multi-select-component";
 import axios from "axios";
 import Select from 'react-dropdown-select';
+import Modal from 'react-modal';
 import ButtonMain from './ButtonMain'
 import InputField from './InputField';
 import ValidationMsg from './ValidationMsg';
@@ -27,6 +28,7 @@ const Form = () => {
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [modal, setModal] = useState(false);
 
     const [carriersArr, setCarriersArr] = useState([]);
 
@@ -179,7 +181,7 @@ const Form = () => {
     }
 
     // function to validate fields & Submit form details
-    const submitDeviceDetails = () => {
+    const submitDeviceDetails = (action) => {
 
         // to validate & Submit
         if (!deviceDetails.device_name ||
@@ -198,27 +200,48 @@ const Form = () => {
             setValidationFlag(true);
             setSubmitLoader(true);
 
-            axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', deviceDetails)
-                .then(res => {
+            if (action === 'add') {
 
-                    console.log(res.data.status === 200);
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', deviceDetails)
+                    .then(res => {
 
-                    if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                        console.log("device added successfully - deviceDetails payload -> ", deviceDetails);
-                        setSubmitLoader(false);
-                        // navigate('/dashboard');
-                    } else {
+                            console.log("device added successfully - deviceDetails payload -> ", deviceDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                        console.log("failed to add device !! ");
-                        setSubmitLoader(false);
+                        } else {
 
-                    }
+                            console.log("failed to add device !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching storages data:', error);
+                    });
 
-                })
-                .catch(error => {
-                    console.error('Error fetching storages data:', error);
-                });
+            } else if (action === 'update') {
+
+                axios.post(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-mobile/${deviceDetails.device_id}`, deviceDetails)
+                    .then(res => {
+
+                        if (res.data.status === 200) {
+
+                            console.log("device updated successfully - deviceDetails payload -> ", deviceDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
+
+                        } else {
+
+                            console.log("failed to update device !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching storages data:', error);
+                    });
+            }
         }
     }
 
@@ -465,7 +488,7 @@ const Form = () => {
                         !loader ?
                             !deviceDetails.device_id ?
                                 !submitLoader ?
-                                    <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails()} />
+                                    <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails('add')} />
                                     :
                                     <div className='grid grid-rows-2 gap-1'>
                                         <Loader />
@@ -474,7 +497,7 @@ const Form = () => {
 
                                 :
                                 !submitLoader ?
-                                    <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails()} />
+                                    <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails('update')} />
                                     :
                                     <ButtonMain buttonLable='Updating device... ' color='green' />
 
@@ -485,7 +508,36 @@ const Form = () => {
                 </div>
             </div>
 
-        </div >
+            {
+                modal &&
+
+                <Modal
+                    isOpen={modal}
+                    className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
+                >
+                    <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
+
+                        <div className='grid justify-items-center'>
+                            <span className='text-normal font-bold text-green-700'>Successfully added the device details !!</span>
+                            <small className='text-xs font-bold text-green-600'>Go to dashboard to view updated device list</small>
+                        </div>
+
+                        <div className='grid justify-items-center'>
+                            <ButtonMain
+                                name="closeModal"
+                                buttonLable="Ok go to dahborad"
+                                onClick={() => {
+                                    setModal(false);
+                                    navigate('/dashboard');
+                                }}
+                            />
+                        </div>
+
+
+                    </div>
+                </Modal>
+            }
+        </div>
     )
 }
 

@@ -48,7 +48,6 @@ const Dashboard = () => {
         axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
             .then(res => {
 
-                console.log(res.data.data)
                 if (res.data.data.length > 0) {
                     const devicesData = res.data.data;
                     setDevicesListArr(devicesData);
@@ -87,6 +86,21 @@ const Dashboard = () => {
     const setDevice = (value) => {
         // console.log("SelectBox Value", value[0].device_type)
         setShowDeviceType(value[0].device_type);
+    };
+
+    // function to convert backend created & updated date data into date format
+    const formatDate = (timestamp) => {
+    
+        if (!timestamp || !timestamp._seconds || !timestamp._nanoseconds) {
+            return '';
+        }
+    
+        const date = new Date(timestamp._seconds * 1000 + Math.floor(timestamp._nanoseconds / 1e6));
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        // console.log('Formatted Date:', `${day}/${month}/${year}`);
+        return `${day}/${month}/${year}`;
     };
 
 
@@ -129,15 +143,15 @@ const Dashboard = () => {
                                     <ListingTitle titlename="Submitted Forms List" icon={<FaWpforms />} />
                                 </div>
 
-                                <div className='row-span-11 h-full overflow-auto'>
+                                <div className='row-span-11'>
                                     {
                                         submittedFormListArr.length > 0 ?
 
-                                            <div className='grid gap-2 mt-2'>
+                                            <div className='h-[34rem] overflow-auto'>
                                                 {
                                                     submittedFormListArr.map((formData, index) => (
 
-                                                        <div key={index}>
+                                                        <div className='mb-2' key={index}>
                                                             <ListingPlates
                                                                 contentLine1A={formData.device_name}
                                                                 contentLine1B='Carrier name'
@@ -145,7 +159,7 @@ const Dashboard = () => {
                                                                 contentLine2A={formData.email_id}
                                                                 contentLine2B={formData.contact_number}
                                                                 contentLine2C='condition name'
-                                                                contentLine3A={formData.quoted_price + ' /-'}
+                                                                contentLine3A={"$" + formData.quoted_price}
                                                                 contentLine3B={formData.device_id}
                                                                 contentLine3C=''
                                                             />
@@ -163,7 +177,7 @@ const Dashboard = () => {
                             : showListing === "appointments" ?
 
                                 // appointments listing section
-                                <div className='grid sm:grid-rows-12 h-full'>
+                                <div className='grid sm:grid-rows-12 h-full mb-2'>
                                     <div className='grid'>
                                         <ListingTitle titlename="Appointments List" icon={<FaClipboardList />} />
                                     </div>
@@ -200,7 +214,7 @@ const Dashboard = () => {
                                                 buttonLable='Add New Device'
                                                 onClick={() => {
                                                     navigate('/deviceForm');
-                                                    deviceFormDetails.dispatch({type: "add"})
+                                                    deviceFormDetails.dispatch({ type: "add" })
                                                 }}
                                             />
                                         </div>
@@ -226,23 +240,23 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    <div className='row-span-11 h-full overflow-auto'>
+                                    <div className='row-span-11'>
                                         {
                                             showDeviceType === 'mobile' ?
 
                                                 devicesListArr.length > 0 ?
 
                                                     // mobile device lisiting section
-                                                    <div className='grid gap-2 mt-2'>
+                                                    <div className='h-[34rem] overflow-auto'>
                                                         {
                                                             devicesListArr.map((deviceData, index) => (
 
-                                                                <div key={index}>
+                                                                <div className='mb-2' key={index}>
                                                                     <ListingPlates
                                                                         contentLine1A={deviceData.device_data.device_name}
                                                                         contentLine1B='Storages available:'
                                                                         contentLine1C='Conditions available:'
-                                                                        contentLine2A={deviceData.device_data.base_price + ' /-'}
+                                                                        contentLine2A={'$' + deviceData.device_data.base_price}
                                                                         contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
                                                                         contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
                                                                         contentLine3A=''
@@ -250,9 +264,11 @@ const Dashboard = () => {
                                                                         contentLine3C=''
                                                                         buttonRequired='yes'
                                                                         dateTimeRequired='yes'
-                                                                        createdDate='dd/mm/yyyy'
-                                                                        updatedDate='dd/mm/yyyy'
+                                                                        createdDate={formatDate(deviceData.device_data.created_at)}
+                                                                        updatedDate={formatDate(deviceData.device_data.updated_at)}
                                                                         fetchEditArr={deviceData.device_data}
+                                                                        fetchEditConditionArr={deviceData.conditions}
+                                                                        fetchEditStorageArr={deviceData.storages}
                                                                     />
                                                                 </div>
                                                             ))}

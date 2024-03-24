@@ -36,11 +36,11 @@ function App() {
   // Reducer function for fetching device details for edit
   const initialDeviceForm = {
     base_price: "",
-    condition_accepted: {},
+    conditionData: [],
     device_id: "",
     device_name: "",
     device_type: "",
-    storage_accepted: {}
+    storageData: []
   };
 
   const reducerDeviceForm = (state, action) => {
@@ -48,11 +48,11 @@ function App() {
       case 'edit':
         return {
           base_price: action.value.base_price,
-          condition_accepted: {},
+          conditionData: action.value.conditionData,
           device_id: action.value.device_id,
           device_name: action.value.device_name,
           device_type: action.value.device_type,
-          storage_accepted: {}
+          storageData: action.value.storageData
         }
         // return console.log("edit", action.value);
       case 'add':

@@ -3,7 +3,7 @@ import ButtonMain from './ButtonMain'
 import { useNavigate } from 'react-router-dom'
 import { DeviceFormDetails } from '../App';
 
-const ListingPlates = ({ fetchEditArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine3A, contentLine3B, contentLine3C, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
+const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine3A, contentLine3B, contentLine3C, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
   const navigate = useNavigate();
   const deviceFormDetails = useContext(DeviceFormDetails);
@@ -47,11 +47,17 @@ const ListingPlates = ({ fetchEditArr, contentLine1A, contentLine1B, contentLine
           <div className='sm:grid grid-cols-12 gap-2 text-xs font-medium text-red-700'>
 
             <div className='col-span-3 text-left'>
-              Created on: {createdDate}
+              {
+                fetchEditArr.created_at &&
+                <span> Created at: {createdDate} </span>
+              }
             </div>
 
             <div className='col-span-3 text-left'>
-              Updated on: {updatedDate}
+              {
+                fetchEditArr.updated_at &&
+                <span> Updated at: {updatedDate} </span>
+              }
             </div>
 
             <div className='col-span-6 justify-self-end'>
@@ -64,16 +70,21 @@ const ListingPlates = ({ fetchEditArr, contentLine1A, contentLine1B, contentLine
                   color='green'
                   onClick={() => {
                     navigate('/deviceForm');
+
+                    // console.log(fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title })))
+                    const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title }));
+                    const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit }));
+
                     deviceFormDetails.dispatch(
                       {
                         type: "edit",
                         value: {
                           base_price: fetchEditArr.base_price,
-                          condition_accepted: {},
+                          conditionData,
                           device_id: fetchEditArr.device_id,
                           device_name: fetchEditArr.device_name,
                           device_type: fetchEditArr.device_type,
-                          storage_accepted: {}
+                          storageData
                         }
                       }
                     );

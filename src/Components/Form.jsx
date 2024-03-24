@@ -12,17 +12,17 @@ import Loader from './Loader';
 const Form = () => {
     const navigate = useNavigate();
     const deviceFormDetails = useContext(DeviceFormDetails);
+    // console.log(deviceFormDetails.deviceForm)
 
     const [deviceDetails, setDeviceDetails] = useState({
         base_price: deviceFormDetails.deviceForm.base_price ? deviceFormDetails.deviceForm.base_price : '',
         device_id: deviceFormDetails.deviceForm.device_id ? deviceFormDetails.deviceForm.device_id : '',
         device_name: deviceFormDetails.deviceForm.device_name ? deviceFormDetails.deviceForm.device_name : '',
         device_type: deviceFormDetails.deviceForm.device_type ? deviceFormDetails.deviceForm.device_type : '',
-        carriers_accepted: {},
-        condition_accepted: {},
-        storage_accepted: {},
+        carrierData: {},
+        conditionData: {},
+        storageData: {},
     });
-    // console.log("deviceDetails", deviceDetails);
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
@@ -33,8 +33,8 @@ const Form = () => {
     const [storagesArrData, setStoragesArrData] = useState([]);
     const [conditionsArrData, setConditionsArrData] = useState([]);
 
-    const [selectedConditions, setSelectedConditions] = useState([]);
-    const [selectedStorages, setSelectedStorages] = useState([]);
+    const [selectedConditions, setSelectedConditions] = useState(deviceFormDetails.deviceForm.conditionData.length > 0 ? deviceFormDetails.deviceForm.conditionData : []);
+    const [selectedStorages, setSelectedStorages] = useState(deviceFormDetails.deviceForm.storageData.length > 0 ? deviceFormDetails.deviceForm.storageData : []);
 
     // useEffect to mount carriers data
     useEffect(() => {
@@ -99,6 +99,7 @@ const Form = () => {
             });
     }, [])
 
+
     // conditions array mapping for multiselect
     const storagesArr = storagesArrData.map(storage => ({
         label: storage.storage_value + ' ' + storage.storage_unit,
@@ -134,46 +135,46 @@ const Form = () => {
         }));
     };
 
-    // function to set  carriers_accepted details
+    // function to set  carrierData details
     const setCarriersDetails = (carrierId, carrierPrice, index) => {
 
         // console.log(carrierId, carrierPrice, index);
         const updatedCarrierData = {
-            ...deviceDetails.carriers_accepted,
+            ...deviceDetails.carrierData,
             [carrierId]: carrierPrice
         };
 
         setDeviceDetails((prevDeviceDetails) => ({
             ...prevDeviceDetails,
-            carriers_accepted: updatedCarrierData
+            carrierData: updatedCarrierData
         }));
     }
 
-    // function to set conditions_accepted details
+    // function to set conditionData details
     const setConditionsDetails = (conditionId, conditionPrice, index) => {
         // console.log(conditionId, conditionPrice, index);
         const updatedConditionData = {
-            ...deviceDetails.condition_accepted,
+            ...deviceDetails.conditionData,
             [conditionId]: conditionPrice
         };
 
         setDeviceDetails((prevDeviceDetails) => ({
             ...prevDeviceDetails,
-            condition_accepted: updatedConditionData
+            conditionData: updatedConditionData
         }));
     }
 
-    // function to set storage_accepted details
+    // function to set storageData details
     const setStoragesDetails = (storageId, storagePrice, index) => {
         // console.log(storageId, storagePrice, index);
         const updatedStorageData = {
-            ...deviceDetails.storage_accepted,
+            ...deviceDetails.storageData,
             [storageId]: storagePrice
         };
 
         setDeviceDetails((prevDeviceDetails) => ({
             ...prevDeviceDetails,
-            storage_accepted: updatedStorageData
+            storageData: updatedStorageData
         }));
     }
 
@@ -184,9 +185,9 @@ const Form = () => {
         if (!deviceDetails.device_name ||
             !deviceDetails.base_price ||
             !deviceDetails.device_type ||
-            Object.values(deviceDetails.carriers_accepted).filter(Boolean).length !== carriersArr.length ||
-            Object.values(deviceDetails.condition_accepted).length !== selectedConditions.length ||
-            Object.values(deviceDetails.storage_accepted).length !== selectedStorages.length ||
+            Object.values(deviceDetails.carrierData).filter(Boolean).length !== carriersArr.length ||
+            Object.values(deviceDetails.conditionData).length !== selectedConditions.length ||
+            Object.values(deviceDetails.storageData).length !== selectedStorages.length ||
             selectedConditions.length === 0 ||
             selectedStorages.length === 0
         ) {
@@ -204,7 +205,7 @@ const Form = () => {
 
                     if (res.data.status === 200) {
 
-                        console.log("device added suucesfully - deviceDetails payload -> ", deviceDetails);
+                        console.log("device added successfully - deviceDetails payload -> ", deviceDetails);
                         setSubmitLoader(false);
                         // navigate('/dashboard');
                     } else {
@@ -314,7 +315,7 @@ const Form = () => {
                         <span className='grid sm:justify-items-start font-bold text-lg underline ml-4 mb-2'>Carriers Details:</span>
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.carriers_accepted).filter(Boolean).length !== carriersArr.length &&
+                                validationFlag === false && Object.values(deviceDetails.carrierData).filter(Boolean).length !== carriersArr.length &&
                                 <ValidationMsg errorMsg="All carriers prices required" />
                             }
                         </div>
@@ -400,7 +401,7 @@ const Form = () => {
 
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.condition_accepted).length !== selectedConditions.length &&
+                                validationFlag === false && Object.values(deviceDetails.conditionData).length !== selectedConditions.length &&
                                 <ValidationMsg errorMsg="All selected conditions prices required" />
                             }
                         </div>
@@ -451,7 +452,7 @@ const Form = () => {
 
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.storage_accepted).length !== selectedStorages.length &&
+                                validationFlag === false && Object.values(deviceDetails.storageData).length !== selectedStorages.length &&
                                 <ValidationMsg errorMsg="All selected storages prices required" />
                             }
                         </div>

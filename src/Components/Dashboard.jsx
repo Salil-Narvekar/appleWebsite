@@ -48,6 +48,7 @@ const Dashboard = () => {
         axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
             .then(res => {
 
+                console.log(res.data.data)
                 if (res.data.data.length > 0) {
                     const devicesData = res.data.data;
                     setDevicesListArr(devicesData);
@@ -242,8 +243,8 @@ const Dashboard = () => {
                                                                         contentLine1B='Storages available:'
                                                                         contentLine1C='Conditions available:'
                                                                         contentLine2A={deviceData.device_data.base_price + ' /-'}
-                                                                        contentLine2B={deviceData.storages[0].storage_value + ' ' + deviceData.storages[0].storage_unit}
-                                                                        contentLine2C={deviceData.conditions[0].condition_title + ', ' + deviceData.conditions[1].condition_title}
+                                                                        contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
+                                                                        contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
                                                                         contentLine3A=''
                                                                         contentLine3B=''
                                                                         contentLine3C=''

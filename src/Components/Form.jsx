@@ -26,6 +26,7 @@ const Form = () => {
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
+    const [submitLoader, setSubmitLoader] = useState(false);
 
     const [carriersArr, setCarriersArr] = useState([]);
 
@@ -193,9 +194,30 @@ const Form = () => {
             setValidationFlag(false);
         } else {
 
-            console.log("final deviceDetails payload -> ", deviceDetails);
             setValidationFlag(true);
-            // navigate('/dashboard');
+            setSubmitLoader(true);
+
+            axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', deviceDetails)
+                .then(res => {
+
+                    console.log(res.data.status === 200);
+
+                    if (res.data.status === 200) {
+
+                        console.log("device added suucesfully - deviceDetails payload -> ", deviceDetails);
+                        setSubmitLoader(false);
+                        // navigate('/dashboard');
+                    } else {
+
+                        console.log("failed to add device !! ");
+                        setSubmitLoader(false);
+
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching storages data:', error);
+                });
         }
     }
 
@@ -441,9 +463,20 @@ const Form = () => {
                     {
                         !loader ?
                             !deviceDetails.device_id ?
-                                <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails()} />
+                                !submitLoader ?
+                                    <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails()} />
+                                    :
+                                    <div className='grid grid-rows-2 gap-1'>
+                                        <Loader />
+                                        <ButtonMain buttonLable='Adding device... ' color='green' />
+                                    </div>
+
                                 :
-                                <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails()} />
+                                !submitLoader ?
+                                    <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails()} />
+                                    :
+                                    <ButtonMain buttonLable='Updating device... ' color='green' />
+
                             :
                             <ButtonMain color='green' buttonLable='Wait unitl loading carriers...' />
 

@@ -30,6 +30,7 @@ const Form = () => {
     const [submitLoader, setSubmitLoader] = useState(false);
     const [modal, setModal] = useState(false);
 
+    // const [carriersArr, setCarriersArr] = useState(deviceFormDetails.deviceForm.carrierData.length > 0 ? deviceFormDetails.deviceForm.carrierData : []);
     const [carriersArr, setCarriersArr] = useState([]);
 
     const [storagesArrData, setStoragesArrData] = useState([]);
@@ -359,6 +360,7 @@ const Form = () => {
                                                 id="storagePrice"
                                                 type="number"
                                                 min={1}
+                                                value={carriersData.price ? carriersData.price : ''}
                                                 placeholder={"Enter " + carriersData.carrier_name + " price"}
                                                 onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
                                             />
@@ -415,6 +417,7 @@ const Form = () => {
                                         id="conditionPrice"
                                         type="number"
                                         min={1}
+                                        value={condition.price ? condition.price : ''}
                                         placeholder={"Enter " + condition.label + " price"}
                                         onChange={(e) => setConditionsDetails(condition.value, e.target.value, index)}
                                     />
@@ -466,6 +469,7 @@ const Form = () => {
                                         id="storagePrice"
                                         type="number"
                                         min={1}
+                                        value={storages.price ? storages.price : ''}
                                         placeholder={"Enter " + storages.label + " price"}
                                         onChange={(e) => setStoragesDetails(storages.value, e.target.value, index)}
                                     />

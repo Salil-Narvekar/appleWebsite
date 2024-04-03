@@ -137,48 +137,85 @@ const Form = () => {
         }));
     };
 
+    //...............(for old references).................................................................
+
+    // function to set  carrierData details 
+    // const setCarriersDetails = (carrierId, carrierPrice, index) => {
+
+    //     // console.log(carrierId, carrierPrice, index);
+    //     const updatedCarrierData = {
+    //         ...deviceDetails.carrierData,
+    //         [carrierId]: carrierPrice
+    //     };
+
+    //     setDeviceDetails((prevDeviceDetails) => ({
+    //         ...prevDeviceDetails,
+    //         carrierData: updatedCarrierData
+    //     }));
+    // }
+
+    // // function to set conditionData details
+    // const setConditionsDetails = (conditionId, conditionPrice, index) => {
+    //     // console.log(conditionId, conditionPrice, index);
+    //     const updatedConditionData = {
+    //         ...deviceDetails.conditionData,
+    //         [conditionId]: conditionPrice
+    //     };
+
+    //     setDeviceDetails((prevDeviceDetails) => ({
+    //         ...prevDeviceDetails,
+    //         conditionData: updatedConditionData
+    //     }));
+    // }
+
+    // // function to set storageData details
+    // const setStoragesDetails = (storageId, storagePrice, index) => {
+    //     // console.log(storageId, storagePrice, index);
+    //     const updatedStorageData = {
+    //         ...deviceDetails.storageData,
+    //         [storageId]: storagePrice
+    //     };
+
+    //     setDeviceDetails((prevDeviceDetails) => ({
+    //         ...prevDeviceDetails,
+    //         storageData: updatedStorageData
+    //     }));
+    // }
+    
+    //......................................................................................................
+
     // function to set  carrierData details
     const setCarriersDetails = (carrierId, carrierPrice, index) => {
-
-        // console.log(carrierId, carrierPrice, index);
-        const updatedCarrierData = {
-            ...deviceDetails.carrierData,
-            [carrierId]: carrierPrice
-        };
-
-        setDeviceDetails((prevDeviceDetails) => ({
-            ...prevDeviceDetails,
-            carrierData: updatedCarrierData
-        }));
-    }
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedCarrierData = { ...prevDeviceDetails.carrierData };
+            updatedCarrierData[carrierId] = carrierPrice;
+            return { ...prevDeviceDetails, carrierData: updatedCarrierData };
+        });
+    };
 
     // function to set conditionData details
     const setConditionsDetails = (conditionId, conditionPrice, index) => {
-        // console.log(conditionId, conditionPrice, index);
-        const updatedConditionData = {
-            ...deviceDetails.conditionData,
-            [conditionId]: conditionPrice
-        };
-
-        setDeviceDetails((prevDeviceDetails) => ({
-            ...prevDeviceDetails,
-            conditionData: updatedConditionData
-        }));
-    }
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedConditionData = { ...prevDeviceDetails.conditionData };
+            updatedConditionData[conditionId] = conditionPrice;
+            return {
+                ...prevDeviceDetails,
+                conditionData: updatedConditionData
+            };
+        });
+    };
 
     // function to set storageData details
     const setStoragesDetails = (storageId, storagePrice, index) => {
-        // console.log(storageId, storagePrice, index);
-        const updatedStorageData = {
-            ...deviceDetails.storageData,
-            [storageId]: storagePrice
-        };
-
-        setDeviceDetails((prevDeviceDetails) => ({
-            ...prevDeviceDetails,
-            storageData: updatedStorageData
-        }));
-    }
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedStorageData = { ...prevDeviceDetails.storageData };
+            updatedStorageData[storageId] = storagePrice;
+            return {
+                ...prevDeviceDetails,
+                storageData: updatedStorageData
+            };
+        });
+    };
 
     // function to validate fields & Submit form details
     const submitDeviceDetails = (action) => {
@@ -368,19 +405,20 @@ const Form = () => {
                                 {
                                     deviceFormDetails.deviceForm.carrierData.length > 0 ?
 
-                                        deviceFormDetails.deviceForm.carrierData.map((carriersData, index) => (
+                                        deviceFormDetails.deviceForm.carrierData.map((carrierData, index) => (
 
+                                            // console.log('salil',deviceDetails.carrierData[carrierData.value])
                                             <div key={index}>
                                                 <InputField
-                                                    key={carriersData.value}
-                                                    label={carriersData.label}
+                                                    key={carrierData.value}
+                                                    label={carrierData.label}
                                                     name="carrierPrice"
                                                     id="carrierPrice"
                                                     type="number"
                                                     min={1}
-                                                    value={deviceDetails.carrierData[carriersData.value]}
-                                                    placeholder={"Enter " + carriersData.label + " price"}
-                                                    onChange={(e) => setCarriersDetails(carriersData.value, e.target.value, index)}
+                                                    value={deviceDetails.carrierData[carrierData.value]}
+                                                    placeholder={"Enter " + carrierData.label + " price"}
+                                                    onChange={(e) => setCarriersDetails(carrierData.value, e.target.value, index)}
                                                 />
                                             </div>
                                         ))

@@ -7,6 +7,7 @@ import StorageForm from './Components/StorageForm';
 
 export const LoggedUserDetails = createContext();
 export const DeviceFormDetails = createContext();
+export const BackToPreviousList = createContext();
 
 function App() {
 
@@ -57,7 +58,7 @@ function App() {
           storageData: action.value.storageData,
           carrierData: action.value.carrierData
         }
-        // return console.log("edit", action.value);
+      // return console.log("edit", action.value);
       case 'add':
         return initialDeviceForm;
       default:
@@ -65,25 +66,44 @@ function App() {
     }
   }
 
+  // Reducer function for go back to required listing
+  const initialPreviousList = {
+    showDeviceList: false
+  }
+
+  const reducerPreviousList = (state, action) => {
+    switch (action.type) {
+      case 'deviceList':
+        return {
+          showDeviceList: true
+        }
+      default:
+        return initialDeviceForm;
+    }
+  }
+
   const [loggedUser, dispatchUser] = useReducer(reducerUser, initialUserState);
   const [deviceForm, dispatchDeviceForm] = useReducer(reducerDeviceForm, initialDeviceForm);
+  const [previousList, dispatchPreviousList] = useReducer(reducerPreviousList, initialPreviousList);
 
   return (
     <LoggedUserDetails.Provider value={{ loggedUser: loggedUser, dispatch: dispatchUser }}>
       <DeviceFormDetails.Provider value={{ deviceForm: deviceForm, dispatch: dispatchDeviceForm }}>
+        <BackToPreviousList.Provider value={{ previousList: previousList, dispatch: dispatchPreviousList }}>
 
-        <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
-          <HashRouter>
-            <Routes>
-              <Route path='/' element={<Navigate to='/login' />} />
-              <Route path='/login' element={<Login />} />
-              <Route path='/dashboard' element={<Dashboard />} />
-              <Route path='/deviceForm' element={<Form />} />
-              <Route path='/storageForm' element={<StorageForm />} />
-            </Routes>
-          </HashRouter>
-        </div>
+          <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
+            <HashRouter>
+              <Routes>
+                <Route path='/' element={<Navigate to='/login' />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/dashboard' element={<Dashboard />} />
+                <Route path='/deviceForm' element={<Form />} />
+                <Route path='/storageForm' element={<StorageForm />} />
+              </Routes>
+            </HashRouter>
+          </div>
 
+        </BackToPreviousList.Provider>
       </DeviceFormDetails.Provider>
     </LoggedUserDetails.Provider>
   );

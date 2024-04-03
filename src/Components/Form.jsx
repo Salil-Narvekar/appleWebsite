@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import { DeviceFormDetails } from '../App';
+import { DeviceFormDetails, BackToPreviousList } from '../App';
 import { MultiSelect } from "react-multi-select-component";
 import axios from "axios";
 import Select from 'react-dropdown-select';
@@ -13,7 +13,7 @@ import Loader from './Loader';
 const Form = () => {
     const navigate = useNavigate();
     const deviceFormDetails = useContext(DeviceFormDetails);
-    // console.log(deviceFormDetails.deviceForm)
+    const backToPreviousList = useContext(BackToPreviousList);
 
     const [deviceDetails, setDeviceDetails] = useState({
         base_price: deviceFormDetails.deviceForm.base_price ? deviceFormDetails.deviceForm.base_price : '',
@@ -24,7 +24,7 @@ const Form = () => {
         conditionData: {},
         storageData: {},
     });
-    console.log("deviceDetails", deviceDetails)
+    // console.log("deviceDetails", deviceDetails)
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
@@ -181,7 +181,7 @@ const Form = () => {
     //         storageData: updatedStorageData
     //     }));
     // }
-    
+
     //......................................................................................................
 
     // function to set  carrierData details
@@ -308,7 +308,11 @@ const Form = () => {
                     <ButtonMain
                         name="back"
                         buttonLable="Back to dashboard"
-                        onClick={() => navigate('/dashboard')}
+                        onClick={() => {
+                            backToPreviousList.dispatch({ type: "deviceList" });
+                            navigate('/dashboard')
+                        }
+                        }
                     />
                 </div>
             </div>
@@ -604,8 +608,14 @@ const Form = () => {
                     <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
 
                         <div className='grid justify-items-center'>
-                            <span className='text-normal font-bold text-green-700'>Successfully added the device details !!</span>
-                            <small className='text-xs font-bold text-green-600'>Go to dashboard to view updated device list</small>
+                            {
+                                !deviceDetails.device_id ?
+                                    <span className='text-normal font-bold text-green-700'>Successfully added the new device details !!</span>
+                                    :
+                                    <span className='text-normal font-bold text-green-700'>{'Successfully updated the ' + deviceDetails.device_name + ' details !!'}</span>
+                            }
+
+                            <small className='text-xs font-bold text-green-600'>View the updated device list on dashboard</small>
                         </div>
 
                         <div className='grid justify-items-center'>
@@ -615,6 +625,7 @@ const Form = () => {
                                 onClick={() => {
                                     setModal(false);
                                     navigate('/dashboard');
+                                    backToPreviousList.dispatch({ type: "deviceList" });
                                 }}
                             />
                         </div>

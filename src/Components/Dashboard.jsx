@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import { LoggedUserDetails, DeviceFormDetails } from '../App';
+import { LoggedUserDetails, DeviceFormDetails, BackToPreviousList } from '../App';
 import { FaWpforms } from "react-icons/fa";
 import { FaClipboardList } from "react-icons/fa";
 import { MdDevicesOther } from "react-icons/md";
@@ -17,8 +17,10 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const loggedUserDetails = useContext(LoggedUserDetails);
     const deviceFormDetails = useContext(DeviceFormDetails);
+    const backToPreviousList = useContext(BackToPreviousList);
+    console.log(backToPreviousList.previousList.showDeviceList);
 
-    const [showListing, setShowListing] = useState('submittedForms');
+    const [showListing, setShowListing] = useState(backToPreviousList.previousList.showDeviceList ? 'devices' : 'submittedForms');
     const [showDeviceType, setShowDeviceType] = useState('mobile');
 
     const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
@@ -67,8 +69,6 @@ const Dashboard = () => {
     useEffect(() => {
         axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
             .then(res => {
-
-                console.log('device list data', res.data.data);
                 
                 if (res.data.data.length > 0) {
                     const devicesData = res.data.data;

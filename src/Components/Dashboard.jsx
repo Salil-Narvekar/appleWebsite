@@ -68,7 +68,8 @@ const Dashboard = () => {
         axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
             .then(res => {
 
-                console.log(res.data.data)
+                console.log('device list data', res.data.data);
+                
                 if (res.data.data.length > 0) {
                     const devicesData = res.data.data;
                     setDevicesListArr(devicesData);

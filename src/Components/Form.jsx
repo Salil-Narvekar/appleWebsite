@@ -245,6 +245,7 @@ const Form = () => {
         }
     }
 
+    // useEffect to set the carrier, condition & storage values for edit state
     useEffect(() => {
         deviceFormDetails.deviceForm.carrierData.forEach((carriersData, index) => {
             setCarriersDetails(carriersData.value, carriersData.price, index);

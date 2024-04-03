@@ -37,11 +37,12 @@ function App() {
   // Reducer function for fetching device details for edit
   const initialDeviceForm = {
     base_price: "",
-    conditionData: [],
     device_id: "",
     device_name: "",
     device_type: "",
-    storageData: []
+    conditionData: [],
+    storageData: [],
+    carrierData: []
   };
 
   const reducerDeviceForm = (state, action) => {
@@ -49,11 +50,12 @@ function App() {
       case 'edit':
         return {
           base_price: action.value.base_price,
-          conditionData: action.value.conditionData,
           device_id: action.value.device_id,
           device_name: action.value.device_name,
           device_type: action.value.device_type,
-          storageData: action.value.storageData
+          conditionData: action.value.conditionData,
+          storageData: action.value.storageData,
+          carrierData: action.value.carrierData
         }
         // return console.log("edit", action.value);
       case 'add':
@@ -70,7 +72,7 @@ function App() {
     <LoggedUserDetails.Provider value={{ loggedUser: loggedUser, dispatch: dispatchUser }}>
       <DeviceFormDetails.Provider value={{ deviceForm: deviceForm, dispatch: dispatchDeviceForm }}>
 
-        <div className="text-center h-screen font-sans sm:overflow-hidden bg-sky-100">
+        <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
           <HashRouter>
             <Routes>
               <Route path='/' element={<Navigate to='/login' />} />

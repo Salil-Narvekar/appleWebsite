@@ -68,7 +68,7 @@ const StorageForm = () => {
                 </div>
             </div>
 
-            <div className="row-span-9 shadow border border-slate-300 rounded-lg bg-sky-50 sm:ml-4 sm:mr-4 pt-5 pb-2">
+            <div className="row-span-9 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Device details */}
                 <div className='grid sm:grid-rows-3 gap-3 sm:justify-items-start text-left ml-4 mt-2'>

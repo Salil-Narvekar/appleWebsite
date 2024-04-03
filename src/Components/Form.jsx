@@ -24,13 +24,13 @@ const Form = () => {
         conditionData: {},
         storageData: {},
     });
+    console.log("deviceDetails", deviceDetails)
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
     const [submitLoader, setSubmitLoader] = useState(false);
     const [modal, setModal] = useState(false);
 
-    // const [carriersArr, setCarriersArr] = useState(deviceFormDetails.deviceForm.carrierData.length > 0 ? deviceFormDetails.deviceForm.carrierData : []);
     const [carriersArr, setCarriersArr] = useState([]);
 
     const [storagesArrData, setStoragesArrData] = useState([]);
@@ -101,7 +101,6 @@ const Form = () => {
                 console.error('Error fetching storages data:', error);
             });
     }, [])
-
 
     // conditions array mapping for multiselect
     const storagesArr = storagesArrData.map(storage => ({
@@ -246,8 +245,24 @@ const Form = () => {
         }
     }
 
+    useEffect(() => {
+        deviceFormDetails.deviceForm.carrierData.forEach((carriersData, index) => {
+            setCarriersDetails(carriersData.value, carriersData.price, index);
+        });
+
+        selectedConditions.forEach((condition, index) => {
+            setConditionsDetails(condition.value, condition.price, index);
+        });
+
+        selectedStorages.forEach((storage, index) => {
+            setStoragesDetails(storage.value, storage.price, index);
+        });
+
+    }, []);
+
     return (
         <div className='grid sm:grid-rows-10 gap-1'>
+
             {/* Header */}
             <div className='grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
                 <div className='grid justify-items-start sm:text-xl text-slate-700'> {!deviceDetails.device_id ? "Add new device details" : "Update device details"} </div>
@@ -260,7 +275,7 @@ const Form = () => {
                 </div>
             </div>
 
-            <div className="row-span-9 grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg bg-sky-50 sm:ml-4 sm:mr-4 pt-5 pb-2">
+            <div className="row-span-9 grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Device details */}
                 <div className='row-span-1 grid sm:grid-cols-3 gap-1 sm:justify-items-start ml-4'>
@@ -350,22 +365,42 @@ const Form = () => {
 
                             <div className='grid sm:grid-cols-4 gap-1 sm:justify-items-start sm:ml-4'>
                                 {
-                                    carriersArr.map((carriersData, index) => (
+                                    deviceFormDetails.deviceForm.carrierData.length > 0 ?
 
-                                        <div key={index}>
-                                            <InputField
-                                                key={carriersData.carrier_id}
-                                                label={carriersData.carrier_name}
-                                                name="storagePrice"
-                                                id="storagePrice"
-                                                type="number"
-                                                min={1}
-                                                value={carriersData.price ? carriersData.price : ''}
-                                                placeholder={"Enter " + carriersData.carrier_name + " price"}
-                                                onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
-                                            />
-                                        </div>
-                                    ))
+                                        deviceFormDetails.deviceForm.carrierData.map((carriersData, index) => (
+
+                                            <div key={index}>
+                                                <InputField
+                                                    key={carriersData.value}
+                                                    label={carriersData.label}
+                                                    name="carrierPrice"
+                                                    id="carrierPrice"
+                                                    type="number"
+                                                    min={1}
+                                                    value={deviceDetails.carrierData[carriersData.value]}
+                                                    placeholder={"Enter " + carriersData.label + " price"}
+                                                    onChange={(e) => setCarriersDetails(carriersData.value, e.target.value, index)}
+                                                />
+                                            </div>
+                                        ))
+
+                                        :
+
+                                        carriersArr.map((carriersData, index) => (
+
+                                            <div key={index}>
+                                                <InputField
+                                                    key={carriersData.carrier_id}
+                                                    label={carriersData.carrier_name}
+                                                    name="carrierPrice"
+                                                    id="carrierPrice"
+                                                    type="number"
+                                                    min={1}
+                                                    placeholder={"Enter " + carriersData.carrier_name + " price"}
+                                                    onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
+                                                />
+                                            </div>
+                                        ))
 
                                 }
                             </div>
@@ -383,6 +418,8 @@ const Form = () => {
 
                     {/* Condition details */}
                     <div className='grid sm:justify-items-start border-r border-dashed w-full pl-4 py-2 pt-4'>
+
+                        {/* Multiselect box */}
                         <div>
                             <div className='grid sm:grid-cols-4 gap-1'>
                                 <label className='sm:text-md font-bold text-slate-600'>Conditions accepted: </label>
@@ -406,6 +443,7 @@ const Form = () => {
                             }
                         </div>
 
+                        {/* Dynamic fields */}
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
                                 selectedConditions.map((condition, index) => (
@@ -417,7 +455,7 @@ const Form = () => {
                                         id="conditionPrice"
                                         type="number"
                                         min={1}
-                                        value={condition.price ? condition.price : ''}
+                                        value={deviceDetails.conditionData[condition.value]}
                                         placeholder={"Enter " + condition.label + " price"}
                                         onChange={(e) => setConditionsDetails(condition.value, e.target.value, index)}
                                     />
@@ -425,6 +463,7 @@ const Form = () => {
                             }
                         </div>
 
+                        {/* Validations */}
                         <div className='grid sm:justify-items-start'>
                             {
                                 validationFlag === false && Object.values(deviceDetails.conditionData).length !== selectedConditions.length &&
@@ -435,6 +474,8 @@ const Form = () => {
 
                     {/* Storage details */}
                     <div className='grid sm:justify-items-start w-full pl-4 py-2 pt-4'>
+
+                        {/* Multiselect box */}
                         <div>
                             <div className='grid sm:grid-cols-4 gap-1'>
                                 <label className='sm:text-md font-bold text-slate-600'>Storage accepted: </label>
@@ -458,6 +499,7 @@ const Form = () => {
                             }
                         </div>
 
+                        {/* Dynamic fields */}
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
                                 selectedStorages.map((storages, index) => (
@@ -469,7 +511,7 @@ const Form = () => {
                                         id="storagePrice"
                                         type="number"
                                         min={1}
-                                        value={storages.price ? storages.price : ''}
+                                        value={deviceDetails.storageData[storages.value]}
                                         placeholder={"Enter " + storages.label + " price"}
                                         onChange={(e) => setStoragesDetails(storages.value, e.target.value, index)}
                                     />
@@ -477,6 +519,7 @@ const Form = () => {
                             }
                         </div>
 
+                        {/* Validations */}
                         <div className='grid sm:justify-items-start'>
                             {
                                 validationFlag === false && Object.values(deviceDetails.storageData).length !== selectedStorages.length &&

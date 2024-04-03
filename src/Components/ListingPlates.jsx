@@ -3,13 +3,13 @@ import ButtonMain from './ButtonMain'
 import { useNavigate } from 'react-router-dom'
 import { DeviceFormDetails } from '../App';
 
-const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine3A, contentLine3B, contentLine3C, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
+const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, fetchEditCarrierArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine2D, contentLine3A, contentLine3B, contentLine3C, contentLine3D, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
   const navigate = useNavigate();
   const deviceFormDetails = useContext(DeviceFormDetails);
 
   return (
-    <div className='grid sm:grid-rows-3 rounded-lg bg-slate-200 sm:h-24 transition duration-500 ease-in-out hover:scale-95 shadow-md pl-2 pr-1 pb-1 pt-2 font-medium'>
+    <div className='grid sm:grid-rows-3 rounded-lg text-slate-700 sm:h-24 transition duration-500 ease-in-out hover:scale-95 shadow-md pl-2 pr-1 pb-1 pt-2 font-medium' style={{ backgroundColor: '#FFFFFF' }}>
 
       {/* content line 1 */}
       <div className='sm:grid grid-cols-12 gap-2 text-md'>
@@ -39,6 +39,10 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
         <div className='col-span-3 text-left'>
           {contentLine2C}
         </div>
+
+        <div className='col-span-3 text-left'>
+          {contentLine2D}
+        </div>
       </div>
 
       {/* content line 3 */}
@@ -48,15 +52,13 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
 
             <div className='col-span-3 text-left'>
               {
-                fetchEditArr.created_at &&
-                <span> Created at: {createdDate} </span>
+                <span>{fetchEditArr.created_at && 'Created at: ' + createdDate} </span>
               }
             </div>
 
             <div className='col-span-3 text-left'>
               {
-                fetchEditArr.updated_at &&
-                <span> Updated at: {updatedDate} </span>
+                <span>{fetchEditArr.updated_at && 'Updated at: ' + updatedDate} </span>
               }
             </div>
 
@@ -71,20 +73,21 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
                   onClick={() => {
                     navigate('/deviceForm');
 
-                    // console.log(fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title })))
-                    const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title }));
-                    const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit }));
+                    const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title, price: conditionData.price }));
+                    const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit, price: storageData.price }));
+                    const carrierData = fetchEditCarrierArr.map(carrierData => ({ value: carrierData.carrier_id, label: carrierData.carrier_name, price: carrierData.price }));
 
                     deviceFormDetails.dispatch(
                       {
                         type: "edit",
                         value: {
                           base_price: fetchEditArr.base_price,
-                          conditionData,
                           device_id: fetchEditArr.device_id,
                           device_name: fetchEditArr.device_name,
                           device_type: fetchEditArr.device_type,
-                          storageData
+                          conditionData,
+                          storageData, 
+                          carrierData
                         }
                       }
                     );
@@ -107,6 +110,10 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
 
             <div className='col-span-3 text-left'>
               {contentLine3C}
+            </div>
+
+            <div className='col-span-3 text-left'>
+              {contentLine3D}
             </div>
           </div>
       }

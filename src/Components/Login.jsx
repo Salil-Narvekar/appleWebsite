@@ -46,7 +46,7 @@ const Login = () => {
           navigate("/dashboard");
         }, 1000);
 
-        loggedUserDetails.dispatch({ type: "loggedIn", value: {username: username, password: userPass} });
+        loggedUserDetails.dispatch({ type: "loggedIn", value: { username: username, password: userPass } });
 
       } else {
         setInvalidCredentials('Invalid credentials, Try again !!')
@@ -65,75 +65,72 @@ const Login = () => {
 
   return (
 
-    <div className='grid gap-16 justify-center'>
+    <div className="grid sm:grid-rows-4 gap-20 justify-center">
 
-      <div className="grid gap-20 justify-center">
+      <LoginHeader />
 
-        <LoginHeader />
+      <form onSubmit={loginUser} className='row-span-2 border rounded-2xl grid gap-5 justify-center content-center py-12 pl-20 pr-20 drop-shadow-lg' style={{ backgroundColor: '#F0F2F5' }}>
 
-        <form onSubmit={loginUser} className='border rounded-2xl grid gap-5 justify-center content-center bg-neutral-50 py-12 pl-20 pr-20 drop-shadow-lg'>
+        <div className='h-16'>
 
-          <div className='h-16'>
-
-            <InputField
-              label="username"
-              name="username"
-              id="username"
-              type="text"
-              placeholder="Enter username"
-              labelTop={true}
-              onChange={(e) => {
-                setInvalidCredentials('');
-                setValidateUsernameFlag(false);
-                storeUsernameValue(e.target.value);
-              }}
-            />
-
-            {
-              validateUsernameFlag && !loader &&
-              <span className='text-red-700 text-xs text-left grid justify-end'>Username required</span>
-            }
-          </div>
-
-          <div className='h-16 mb-4'>
-            <InputField
-              label="password"
-              name="password"
-              id="password"
-              type="password"
-              placeholder="xxxxxx"
-              labelTop={true}
-              onChange={(e) => {
-                setInvalidCredentials('');
-                setValidatePassFlag(false);
-                storePassValue(e.target.value);
-              }}
-            />
-
-            {
-              validatePassFlag && !loader &&
-              <span className='text-red-700 text-xs text-left grid justify-end'>Password required</span>
-            }
-          </div>
-
+          <InputField
+            label="username"
+            name="username"
+            id="username"
+            type="text"
+            placeholder="Enter username"
+            labelTop={true}
+            onChange={(e) => {
+              setInvalidCredentials('');
+              setValidateUsernameFlag(false);
+              storeUsernameValue(e.target.value);
+            }}
+          />
 
           {
-            !loader ?
-              <ButtonMain
-                buttonLable="Login"
-                name="loginButton"
-              />
-              :
-              <Loader />
+            validateUsernameFlag && !loader &&
+            <span className='text-red-700 text-xs text-left grid justify-end'>Username required</span>
           }
+        </div>
+
+        <div className='h-16 mb-4'>
+          <InputField
+            label="password"
+            name="password"
+            id="password"
+            type="password"
+            placeholder="xxxxxx"
+            labelTop={true}
+            onChange={(e) => {
+              setInvalidCredentials('');
+              setValidatePassFlag(false);
+              storePassValue(e.target.value);
+            }}
+          />
 
           {
-            invalidCredentials !== '' && !loader &&
-            <span className='text-red-700 text-md font-semibold animate-pulse'> {invalidCredentials} </span>
+            validatePassFlag && !loader &&
+            <span className='text-red-700 text-xs text-left grid justify-end'>Password required</span>
           }
+        </div>
 
-        </form>
-      </div>
+
+        {
+          !loader ?
+            <ButtonMain
+              buttonLable="Login"
+              name="loginButton"
+            />
+            :
+            <Loader />
+        }
+
+        {
+          invalidCredentials !== '' && !loader &&
+          <span className='text-red-700 text-md font-semibold animate-pulse'> {invalidCredentials} </span>
+        }
+
+      </form>
     </div>
 
   )

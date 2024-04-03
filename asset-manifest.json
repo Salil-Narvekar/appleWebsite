@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/appleWebsite/static/css/main.81b9436b.css",
-    "main.js": "/appleWebsite/static/js/main.e9afbba6.js",
+    "main.css": "/appleWebsite/static/css/main.31627ffc.css",
+    "main.js": "/appleWebsite/static/js/main.21ec1811.js",
     "static/js/453.d855a71b.chunk.js": "/appleWebsite/static/js/453.d855a71b.chunk.js",
     "index.html": "/appleWebsite/index.html",
-    "main.81b9436b.css.map": "/appleWebsite/static/css/main.81b9436b.css.map",
-    "main.e9afbba6.js.map": "/appleWebsite/static/js/main.e9afbba6.js.map",
+    "main.31627ffc.css.map": "/appleWebsite/static/css/main.31627ffc.css.map",
+    "main.21ec1811.js.map": "/appleWebsite/static/js/main.21ec1811.js.map",
     "453.d855a71b.chunk.js.map": "/appleWebsite/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.81b9436b.css",
-    "static/js/main.e9afbba6.js"
+    "static/css/main.31627ffc.css",
+    "static/js/main.21ec1811.js"
   ]
 }

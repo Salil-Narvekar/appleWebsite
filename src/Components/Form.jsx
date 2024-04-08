@@ -309,10 +309,9 @@ const Form = () => {
                         name="back"
                         buttonLable="Back to dashboard"
                         onClick={() => {
-                            backToPreviousList.dispatch({ type: "deviceList" });
+                            backToPreviousList.dispatch({ type: "switchList", value: 'devices' });
                             navigate('/dashboard')
-                        }
-                        }
+                        }}
                     />
                 </div>
             </div>
@@ -625,7 +624,7 @@ const Form = () => {
                                 onClick={() => {
                                     setModal(false);
                                     navigate('/dashboard');
-                                    backToPreviousList.dispatch({ type: "deviceList" });
+                                    backToPreviousList.dispatch({ type: "switchList", value: 'devices' });
                                 }}
                             />
                         </div>

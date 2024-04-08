@@ -1,5 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import ButtonMain from './ButtonMain'
+import Modal from 'react-modal';
+import { MdDeleteForever } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
 import { DeviceFormDetails } from '../App';
 
@@ -7,6 +9,12 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
 
   const navigate = useNavigate();
   const deviceFormDetails = useContext(DeviceFormDetails);
+
+  const [modal, setModal] = useState(false);
+
+  const deleteItem = (itemId) => {
+    console.log("delete", itemId);
+  }
 
   return (
     <div className='grid sm:grid-rows-3 rounded-lg text-slate-700 sm:h-24 transition duration-500 ease-in-out hover:scale-95 shadow-md pl-2 pr-1 pb-1 pt-2 font-medium' style={{ backgroundColor: '#FFFFFF' }}>
@@ -65,34 +73,42 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
             <div className='col-span-6 justify-self-end'>
               {
                 buttonRequired === 'yes' &&
-                <ButtonMain
-                  name="edit"
-                  buttonLable="Edit device"
-                  size='small'
-                  color='green'
-                  onClick={() => {
-                    navigate('/deviceForm');
 
-                    const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title, price: conditionData.price }));
-                    const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit, price: storageData.price }));
-                    const carrierData = fetchEditCarrierArr.map(carrierData => ({ value: carrierData.carrier_id, label: carrierData.carrier_name, price: carrierData.price }));
+                <div className='grid grid-cols-3'>
 
-                    deviceFormDetails.dispatch(
-                      {
-                        type: "edit",
-                        value: {
-                          base_price: fetchEditArr.base_price,
-                          device_id: fetchEditArr.device_id,
-                          device_name: fetchEditArr.device_name,
-                          device_type: fetchEditArr.device_type,
-                          conditionData,
-                          storageData, 
-                          carrierData
-                        }
-                      }
-                    );
-                  }}
-                />
+                  <MdDeleteForever className='text-3xl cursor-pointer hover:animate-pulse' onClick={() => setModal(true)} />
+
+                  <div className='col-span-2'>
+                    <ButtonMain
+                      name="edit"
+                      buttonLable="Edit device"
+                      size='small'
+                      color='green'
+                      onClick={() => {
+                        navigate('/deviceForm');
+
+                        const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title, price: conditionData.price }));
+                        const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit, price: storageData.price }));
+                        const carrierData = fetchEditCarrierArr.map(carrierData => ({ value: carrierData.carrier_id, label: carrierData.carrier_name, price: carrierData.price }));
+
+                        deviceFormDetails.dispatch(
+                          {
+                            type: "edit",
+                            value: {
+                              base_price: fetchEditArr.base_price,
+                              device_id: fetchEditArr.device_id,
+                              device_name: fetchEditArr.device_name,
+                              device_type: fetchEditArr.device_type,
+                              conditionData,
+                              storageData,
+                              carrierData
+                            }
+                          }
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
               }
             </div>
           </div>
@@ -116,6 +132,40 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
               {contentLine3D}
             </div>
           </div>
+      }
+
+      {
+        modal &&
+
+        <Modal
+          isOpen={modal}
+          className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
+        >
+          <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
+
+            <div className='grid justify-items-center'>
+              <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete device - " + fetchEditArr.device_name + " ?" }</span>
+            </div>
+
+            <div className='grid sm:grid-cols-2 gap-2 justify-self-center'>
+              <ButtonMain
+                name="closeModal"
+                buttonLable="Cancel"
+                onClick={() => {
+                  setModal(false);
+                }}
+              />
+
+              <ButtonMain
+                name="deleteItem"
+                buttonLable="Confirm delete"
+                color='red'
+                onClick={() => deleteItem(fetchEditArr.device_id)}
+              />
+            </div>
+
+          </div>
+        </Modal>
       }
     </div>
   )

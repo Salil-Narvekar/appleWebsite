@@ -4,6 +4,8 @@ import Login from './Components/Login'
 import Dashboard from './Components/Dashboard';
 import Form from './Components/Form';
 import StorageForm from './Components/StorageForm';
+import ConditionForm from './Components/ConditionForm';
+import CarrierForm from './Components/CarrierForm';
 
 export const LoggedUserDetails = createContext();
 export const DeviceFormDetails = createContext();
@@ -67,18 +69,15 @@ function App() {
   }
 
   // Reducer function for go back to required listing
-  const initialPreviousList = {
-    showDeviceList: false
-  }
+  const initialPreviousList = ''
 
   const reducerPreviousList = (state, action) => {
     switch (action.type) {
-      case 'deviceList':
-        return {
-          showDeviceList: true
-        }
+      case 'switchList':
+        return action.value 
+        // return console.log("listing", action.value);
       default:
-        return initialDeviceForm;
+        return initialPreviousList;
     }
   }
 
@@ -99,6 +98,8 @@ function App() {
                 <Route path='/dashboard' element={<Dashboard />} />
                 <Route path='/deviceForm' element={<Form />} />
                 <Route path='/storageForm' element={<StorageForm />} />
+                <Route path='/conditionForm' element={<ConditionForm />} />
+                <Route path='/carrierForm' element={<CarrierForm />} />
               </Routes>
             </HashRouter>
           </div>

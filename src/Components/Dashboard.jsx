@@ -4,6 +4,9 @@ import { LoggedUserDetails, DeviceFormDetails, BackToPreviousList } from '../App
 import { FaWpforms } from "react-icons/fa";
 import { FaClipboardList } from "react-icons/fa";
 import { MdDevicesOther } from "react-icons/md";
+import { MdSdStorage } from "react-icons/md";
+import { MdGppGood } from "react-icons/md";
+import { FaCheckToSlot } from "react-icons/fa6";
 import axios from "axios";
 import LoadingPlate from './LoadingPlate';
 import Select from "react-dropdown-select";
@@ -18,9 +21,8 @@ const Dashboard = () => {
     const loggedUserDetails = useContext(LoggedUserDetails);
     const deviceFormDetails = useContext(DeviceFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
-    console.log(backToPreviousList.previousList.showDeviceList);
 
-    const [showListing, setShowListing] = useState(backToPreviousList.previousList.showDeviceList ? 'devices' : 'submittedForms');
+    const [showListing, setShowListing] = useState(backToPreviousList.previousList ? backToPreviousList.previousList : 'submittedForms');
     const [showDeviceType, setShowDeviceType] = useState('mobile');
 
     const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
@@ -48,41 +50,52 @@ const Dashboard = () => {
 
     // useEffect to mount appointment list data
     useEffect(() => {
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-appointment-details')
-            .then(res => {
 
-                if (res.data.data.length > 0) {
-                    const appointmentData = res.data.data;
-                    setAppointmentListArr(appointmentData);
-                } else {
-                    console.log("Appointment data empty");
-                    setAppointmentListArr([]);
-                }
+        if (showListing === 'appointments') {
 
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, [])
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-appointment-details')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const appointmentData = res.data.data;
+                        setAppointmentListArr(appointmentData);
+                    } else {
+                        console.log("Appointment data empty");
+                        setAppointmentListArr([]);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
 
     // useEffect to mount devices list data
     useEffect(() => {
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
-            .then(res => {
-                
-                if (res.data.data.length > 0) {
-                    const devicesData = res.data.data;
-                    setDevicesListArr(devicesData);
-                } else {
-                    console.log("devices data empty");
-                    setDevicesListArr([]);
-                }
 
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, [])
+        if (showListing === 'devices') {
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const devicesData = res.data.data;
+                        setDevicesListArr(devicesData);
+                    } else {
+                        console.log("devices data empty");
+                        setDevicesListArr([]);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
+    
 
     const logout = () => {
         console.log('logout')
@@ -151,7 +164,9 @@ const Dashboard = () => {
                     <NavContent title="Submitted forms" onClick={() => setShowListing('submittedForms')} />
                     <NavContent title="Apointments" onClick={() => setShowListing('appointments')} />
                     <NavContent title="Devices" onClick={() => setShowListing('devices')} />
-                    <NavContent title="Add storage" onClick={() => navigate('/storageForm')} />
+                    <NavContent title="Storages" onClick={() => setShowListing('storages')} />
+                    <NavContent title="Conditions" onClick={() => setShowListing('conditions')} />
+                    <NavContent title="Carriers" onClick={() => setShowListing('carriers')} />
                 </div>
 
                 {/* Dasboard right Listing*/}
@@ -239,127 +254,287 @@ const Dashboard = () => {
                                     </div>
                                 </div>
 
-                                : showListing === "devices" &&
+                                : showListing === "devices" ?
 
-                                // devices listing section
-                                <div className='grid sm:grid-rows-12 h-full'>
-                                    <div className='sm:grid grid-cols-6'>
+                                    // devices listing section
+                                    <div className='grid sm:grid-rows-12 h-full'>
+                                        <div className='sm:grid grid-cols-6'>
 
-                                        <div className='grid'>
-                                            <ListingTitle titlename="Devices Details List" icon={<MdDevicesOther />} />
-                                        </div>
+                                            <div className='grid'>
+                                                <ListingTitle titlename="Devices Details List" icon={<MdDevicesOther />} />
+                                            </div>
 
-                                        <div className='col-span-1 ml-2 grid justify-self-start'>
-                                            <ButtonMain
-                                                name='addDevice'
-                                                buttonLable='Add New Device'
-                                                onClick={() => {
-                                                    navigate('/deviceForm');
-                                                    deviceFormDetails.dispatch({ type: "add" })
-                                                }}
-                                            />
-                                        </div>
-
-                                        {/* device selection dropdown */}
-                                        <div className='col-span-4 sm:grid justify-self-end'>
-                                            <div className='grid sm:grid-cols-2 gap-1 '>
-                                                <label className='text-normal font-semibold text-slate-600'>Select Device: </label>
-                                                <Select
-                                                    className='bg-white text-slate-600 font-semibold text-xs text-left'
-                                                    options={devicesList}
-                                                    labelField="deviceName"
-                                                    valueField="device_type"
-                                                    values={[
-                                                        {
-                                                            device_type: 'mobile',
-                                                            deviceName: 'mobile'
-                                                        }
-                                                    ]}
-                                                    onChange={(values) => setDevice(values)}
+                                            <div className='col-span-1 ml-2 grid justify-self-start'>
+                                                <ButtonMain
+                                                    name='addDevice'
+                                                    buttonLable='Add New Device'
+                                                    onClick={() => {
+                                                        navigate('/deviceForm');
+                                                        deviceFormDetails.dispatch({ type: "add" })
+                                                    }}
                                                 />
                                             </div>
+
+                                            {/* device selection dropdown */}
+                                            <div className='col-span-4 sm:grid justify-self-end'>
+                                                <div className='grid sm:grid-cols-2 gap-1 '>
+                                                    <label className='text-normal font-semibold text-slate-600'>Select Device: </label>
+                                                    <Select
+                                                        className='bg-white text-slate-600 font-semibold text-xs text-left'
+                                                        options={devicesList}
+                                                        labelField="deviceName"
+                                                        valueField="device_type"
+                                                        values={[
+                                                            {
+                                                                device_type: 'mobile',
+                                                                deviceName: 'mobile'
+                                                            }
+                                                        ]}
+                                                        onChange={(values) => setDevice(values)}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className='row-span-11'>
+                                            {
+                                                showDeviceType === 'mobile' ?
+
+                                                    devicesListArr.length > 0 ?
+
+                                                        // mobile device lisiting section
+                                                        <div className='h-[34rem] overflow-auto'>
+                                                            {
+                                                                devicesListArr.map((deviceData, index) => (
+
+                                                                    <div className='mb-2' key={index}>
+                                                                        <ListingPlates
+                                                                            contentLine1A={deviceData.device_data.device_name}
+                                                                            contentLine1B='Storages available:'
+                                                                            contentLine1C='Conditions available:'
+                                                                            contentLine2A={'$' + deviceData.device_data.base_price}
+                                                                            contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
+                                                                            contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
+                                                                            contentLine2D={''}
+                                                                            // contentLine3A=''
+                                                                            // contentLine3B=''
+                                                                            // contentLine3C=''
+                                                                            buttonRequired='yes'
+                                                                            dateTimeRequired='yes'
+                                                                            createdDate={formatDate(deviceData.device_data.created_at)}
+                                                                            updatedDate={formatDate(deviceData.device_data.updated_at)}
+                                                                            fetchEditArr={deviceData.device_data}
+                                                                            fetchEditConditionArr={deviceData.conditions}
+                                                                            fetchEditStorageArr={deviceData.storages}
+                                                                            fetchEditCarrierArr={deviceData.carriers}
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                        </div>
+                                                        :
+                                                        <LoadingPlate />
+
+
+                                                    : showDeviceType === 'laptop' ?
+
+                                                        // laptop device lisiting section
+                                                        <ListingPlates
+                                                            contentLine1A='Laptop Device Demo'
+                                                            contentLine1B='Storage accepted'
+                                                            contentLine1C='Condition accepted'
+                                                            contentLine2A='base price'
+                                                            contentLine2B=''
+                                                            contentLine2C=''
+                                                            contentLine3A=''
+                                                            contentLine3B=''
+                                                            contentLine3C=''
+                                                            buttonRequired='yes'
+                                                            dateTimeRequired='yes'
+                                                            createdDate='dd/mm/yyyy'
+                                                            updatedDate='dd/mm/yyyy'
+                                                        />
+
+                                                        : showDeviceType === "watch" &&
+
+                                                        // watch device lisiting section
+                                                        <ListingPlates
+                                                            contentLine1A='Watch Device Demo'
+                                                            contentLine1B='Storage accepted'
+                                                            contentLine1C='Condition accepted'
+                                                            contentLine2A='base price'
+                                                            contentLine2B=''
+                                                            contentLine2C=''
+                                                            contentLine3A=''
+                                                            contentLine3B=''
+                                                            contentLine3C=''
+                                                            buttonRequired='yes'
+                                                            dateTimeRequired='yes'
+                                                            createdDate='dd/mm/yyyy'
+                                                            updatedDate='dd/mm/yyyy'
+                                                        />
+                                            }
                                         </div>
                                     </div>
 
-                                    <div className='row-span-11'>
-                                        {
-                                            showDeviceType === 'mobile' ?
+                                    : showListing === "storages" ?
 
-                                                devicesListArr.length > 0 ?
+                                        // storages listing section
+                                        <div className='grid sm:grid-rows-12 h-full'>
+                                            <div className='sm:grid grid-cols-8'>
+                                                <div className='grid'>
+                                                    <ListingTitle titlename="Storages List" icon={<MdSdStorage />} />
+                                                </div>
 
-                                                    // mobile device lisiting section
-                                                    <div className='h-[34rem] overflow-auto'>
-                                                        {
-                                                            devicesListArr.map((deviceData, index) => (
+                                                <div className='col-span-1 ml-2 grid justify-self-start'>
+                                                    <ButtonMain
+                                                        name='addStorage'
+                                                        buttonLable='Add New Storage'
+                                                        onClick={() => {
+                                                            navigate('/storageForm');
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
 
-                                                                <div className='mb-2' key={index}>
-                                                                    <ListingPlates
-                                                                        contentLine1A={deviceData.device_data.device_name}
-                                                                        contentLine1B='Storages available:'
-                                                                        contentLine1C='Conditions available:'
-                                                                        contentLine2A={'$' + deviceData.device_data.base_price}
-                                                                        contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
-                                                                        contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
-                                                                        contentLine2D={''}
-                                                                        // contentLine3A=''
-                                                                        // contentLine3B=''
-                                                                        // contentLine3C=''
-                                                                        buttonRequired='yes'
-                                                                        dateTimeRequired='yes'
-                                                                        createdDate={formatDate(deviceData.device_data.created_at)}
-                                                                        updatedDate={formatDate(deviceData.device_data.updated_at)}
-                                                                        fetchEditArr={deviceData.device_data}
-                                                                        fetchEditConditionArr={deviceData.conditions}
-                                                                        fetchEditStorageArr={deviceData.storages}
-                                                                        fetchEditCarrierArr={deviceData.carriers}
-                                                                    />
-                                                                </div>
-                                                            ))}
+                                            <div className='row-span-11'>
+                                                {
+                                                    appointmentListArr.length > 0 ?
+
+                                                        <div className='h-[34rem] overflow-auto'>
+                                                            {
+                                                                appointmentListArr.map((appointmentData, index) => (
+
+                                                                    <div className='mb-2' key={index}>
+                                                                        <ListingPlates
+                                                                            contentLine1A={formatDate(appointmentData.date)}
+                                                                            contentLine1B={'Time slot: ' + appointmentData.time_slot}
+                                                                            contentLine1C={appointmentData.shop_address}
+                                                                            contentLine2A={appointmentData.user_name}
+                                                                            contentLine2B={appointmentData.contact_number}
+                                                                            contentLine2C=''
+                                                                            contentLine2D=''
+                                                                            contentLine3A={appointmentData.email_id}
+                                                                            contentLine3B=''
+                                                                            contentLine3C=''
+                                                                            contentLine3D=''
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                        </div>
+                                                        :
+                                                        <LoadingPlate />
+
+                                                }
+                                            </div>
+                                        </div>
+
+                                        : showListing === "conditions" ?
+
+                                            // conditions listing section
+                                            <div className='grid sm:grid-rows-12 h-full'>
+                                                <div className='sm:grid grid-cols-7'>
+                                                    <div className='grid'>
+                                                        <ListingTitle titlename="Conditions List" icon={<MdGppGood />} />
                                                     </div>
-                                                    :
-                                                    <LoadingPlate />
+
+                                                    <div className='col-span-1 ml-2 grid justify-self-start'>
+                                                        <ButtonMain
+                                                            name='addCondition'
+                                                            buttonLable='Add New Condition'
+                                                            onClick={() => {
+                                                                navigate('/conditionForm');
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className='row-span-11'>
+                                                    {
+                                                        appointmentListArr.length > 0 ?
+
+                                                            <div className='h-[34rem] overflow-auto'>
+                                                                {
+                                                                    appointmentListArr.map((appointmentData, index) => (
+
+                                                                        <div className='mb-2' key={index}>
+                                                                            <ListingPlates
+                                                                                contentLine1A={formatDate(appointmentData.date)}
+                                                                                contentLine1B={'Time slot: ' + appointmentData.time_slot}
+                                                                                contentLine1C={appointmentData.shop_address}
+                                                                                contentLine2A={appointmentData.user_name}
+                                                                                contentLine2B={appointmentData.contact_number}
+                                                                                contentLine2C=''
+                                                                                contentLine2D=''
+                                                                                contentLine3A={appointmentData.email_id}
+                                                                                contentLine3B=''
+                                                                                contentLine3C=''
+                                                                                contentLine3D=''
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                            </div>
+                                                            :
+                                                            <LoadingPlate />
+
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            : showListing === "carriers" &&
+
+                                            // carriers listing section
+                                            <div className='grid sm:grid-rows-12 h-full'>
+
+                                                <div className='sm:grid grid-cols-8'>
+                                                    <div className='grid'>
+                                                        <ListingTitle titlename="Carriers List" icon={<FaCheckToSlot />} />
+                                                    </div>
+
+                                                    <div className='col-span-1 ml-2 grid justify-self-start'>
+                                                        <ButtonMain
+                                                            name='addCarrier'
+                                                            buttonLable='Add New Carrier'
+                                                            onClick={() => {
+                                                                navigate('/carrierForm');
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className='row-span-11'>
+                                                    {
+                                                        appointmentListArr.length > 0 ?
+
+                                                            <div className='h-[34rem] overflow-auto'>
+                                                                {
+                                                                    appointmentListArr.map((appointmentData, index) => (
+
+                                                                        <div className='mb-2' key={index}>
+                                                                            <ListingPlates
+                                                                                contentLine1A={formatDate(appointmentData.date)}
+                                                                                contentLine1B={'Time slot: ' + appointmentData.time_slot}
+                                                                                contentLine1C={appointmentData.shop_address}
+                                                                                contentLine2A={appointmentData.user_name}
+                                                                                contentLine2B={appointmentData.contact_number}
+                                                                                contentLine2C=''
+                                                                                contentLine2D=''
+                                                                                contentLine3A={appointmentData.email_id}
+                                                                                contentLine3B=''
+                                                                                contentLine3C=''
+                                                                                contentLine3D=''
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                            </div>
+                                                            :
+                                                            <LoadingPlate />
+
+                                                    }
+                                                </div>
+                                            </div>
 
 
-                                                : showDeviceType === 'laptop' ?
 
-                                                    // laptop device lisiting section
-                                                    <ListingPlates
-                                                        contentLine1A='Laptop Device Demo'
-                                                        contentLine1B='Storage accepted'
-                                                        contentLine1C='Condition accepted'
-                                                        contentLine2A='base price'
-                                                        contentLine2B=''
-                                                        contentLine2C=''
-                                                        contentLine3A=''
-                                                        contentLine3B=''
-                                                        contentLine3C=''
-                                                        buttonRequired='yes'
-                                                        dateTimeRequired='yes'
-                                                        createdDate='dd/mm/yyyy'
-                                                        updatedDate='dd/mm/yyyy'
-                                                    />
-
-                                                    : showDeviceType === "watch" &&
-
-                                                    // watch device lisiting section
-                                                    <ListingPlates
-                                                        contentLine1A='Watch Device Demo'
-                                                        contentLine1B='Storage accepted'
-                                                        contentLine1C='Condition accepted'
-                                                        contentLine2A='base price'
-                                                        contentLine2B=''
-                                                        contentLine2C=''
-                                                        contentLine3A=''
-                                                        contentLine3B=''
-                                                        contentLine3C=''
-                                                        buttonRequired='yes'
-                                                        dateTimeRequired='yes'
-                                                        createdDate='dd/mm/yyyy'
-                                                        updatedDate='dd/mm/yyyy'
-                                                    />
-                                        }
-                                    </div>
-                                </div>
                     }
 
                 </div>

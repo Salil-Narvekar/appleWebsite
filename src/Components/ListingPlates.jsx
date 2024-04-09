@@ -1,19 +1,48 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ButtonMain from './ButtonMain'
 import Modal from 'react-modal';
+import { DeviceFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails } from '../App';
+// import axios from "axios";
 import { MdDeleteForever } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
-import { DeviceFormDetails } from '../App';
 
-const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, fetchEditCarrierArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine2D, contentLine3A, contentLine3B, contentLine3C, contentLine3D, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
+const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, fetchEditCarrierArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine2D, contentLine3A, contentLine3B, contentLine3C, contentLine3D, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
   const navigate = useNavigate();
   const deviceFormDetails = useContext(DeviceFormDetails);
+  const storageFormDetails = useContext(StorageFormDetails);
+  const conditionFormDetails = useContext(ConditionFormDetails);
+  const carrierFormDetails = useContext(CarrierFormDetails);
 
   const [modal, setModal] = useState(false);
+  const [editItem, setEditItem] = useState('');
 
+  // useEffect to update edit item name
+  useEffect(() => {
+    setEditItem(fetchEditItem);
+  }, [fetchEditItem])
+
+  // function to delete item 
   const deleteItem = (itemId) => {
+
     console.log("delete", itemId);
+
+    // axios.post(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-mobile/${itemId}`)
+    //   .then(res => {
+
+    //     if (res.data.status === 200) {
+
+    //       setModal(false);
+
+    //     } else {
+
+    //       console.log("failed to delete device !! ");
+    //     }
+
+    //   })
+    //   .catch(error => {
+    //     console.error('Error deleting data:', error);
+    //   });
   }
 
   return (
@@ -55,38 +84,54 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
 
       {/* content line 3 */}
       {
-        dateTimeRequired === "yes" ?
-          <div className='sm:grid grid-cols-12 gap-2 text-xs font-medium text-red-700'>
+        buttonRequired === 'yes' ?
+          <div className='sm:grid grid-cols-12 gap-2 font-medium'>
 
-            <div className='col-span-3 text-left'>
-              {
-                <span>{fetchEditArr.created_at && 'Created at: ' + createdDate} </span>
-              }
-            </div>
+            {
+              dateTimeRequired === "yes" ?
+                <div className='col-span-6 grid grid-cols-2 text-left text-xs text-red-700'>
+                  <div>
+                    {
+                      <span>{fetchEditArr.created_at && 'Created at: ' + createdDate} </span>
+                    }
+                  </div>
 
-            <div className='col-span-3 text-left'>
-              {
-                <span>{fetchEditArr.updated_at && 'Updated at: ' + updatedDate} </span>
-              }
-            </div>
+                  <div>
+                    {
+                      <span>{fetchEditArr.updated_at && 'Updated at: ' + updatedDate} </span>
+                    }
+                  </div>
+                </div>
+
+                :
+
+                <div className='col-span-6 grid grid-cols-2 text-sm text-left'>
+                  <div>
+                    {contentLine3A}
+                  </div>
+
+                  <div>
+                    {contentLine3B}
+                  </div>
+                </div>
+            }
 
             <div className='col-span-6 justify-self-end'>
-              {
-                buttonRequired === 'yes' &&
 
-                <div className='grid grid-cols-3'>
+              <div className='grid grid-cols-3'>
 
-                  <MdDeleteForever className='text-3xl cursor-pointer hover:animate-pulse' onClick={() => setModal(true)} />
+                <MdDeleteForever className='text-3xl text-red-700 cursor-pointer hover:animate-pulse' onClick={() => setModal(true)} />
 
-                  <div className='col-span-2'>
-                    <ButtonMain
-                      name="edit"
-                      buttonLable="Edit device"
-                      size='small'
-                      color='green'
-                      onClick={() => {
-                        navigate('/deviceForm');
+                <div className='col-span-2'>
+                  <ButtonMain
+                    name="edit"
+                    buttonLable={"Edit " + editItem}
+                    size='small'
+                    color='green'
+                    onClick={() => {
+                      navigate('/' + editItem + 'Form');
 
+                      if (editItem === 'device') {
                         const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title, price: conditionData.price }));
                         const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit, price: storageData.price }));
                         const carrierData = fetchEditCarrierArr.map(carrierData => ({ value: carrierData.carrier_id, label: carrierData.carrier_name, price: carrierData.price }));
@@ -105,11 +150,55 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
                             }
                           }
                         );
-                      }}
-                    />
-                  </div>
+
+                      } else if (editItem === 'storage') {
+
+                        storageFormDetails.dispatch(
+                          {
+                            type: "edit",
+                            value: {
+                              storage_id: fetchEditArr.storage_id,
+                              storage_value: fetchEditArr.storage_value,
+                              storage_unit: fetchEditArr.storage_unit,
+                              storage_description: fetchEditArr.storage_description,
+                              price: ''
+                            }
+                          }
+                        );
+
+                      } else if (editItem === 'condition') {
+
+                        conditionFormDetails.dispatch(
+                          {
+                            type: "edit",
+                            value: {
+                              condition_id: fetchEditArr.condition_id,
+                              condition_title: fetchEditArr.condition_title,
+                              condition_description: fetchEditArr.condition_description,
+                              price: ''
+                            }
+                          }
+                        );
+
+                      } else if (editItem === 'carrier') {
+
+                        carrierFormDetails.dispatch(
+                          {
+                            type: "edit",
+                            value: {
+                              carrier_id: fetchEditArr.carrier_id,
+                              carrier_name: fetchEditArr.carrier_name,
+                              price: '',
+                            }
+                          }
+                        );
+
+                      }
+
+                    }}
+                  />
                 </div>
-              }
+              </div>
             </div>
           </div>
 
@@ -143,10 +232,24 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
         >
           <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
 
+            {/* Modal description */}
             <div className='grid justify-items-center'>
-              <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete device - " + fetchEditArr.device_name + " ?" }</span>
+              {
+                editItem === 'device' ?
+                  <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete device - " + fetchEditArr.device_name + " ?"}</span>
+
+                  : editItem === 'storage' ?
+                    <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete storage - " + fetchEditArr.storage_value + ' ' + fetchEditArr.storage_unit + " ?"}</span>
+
+                    : editItem === 'condition' ?
+                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete condition - " + fetchEditArr.condition_title + " ?"}</span>
+
+                      : editItem === 'carrier' &&
+                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete carrier - " + fetchEditArr.carrier_name + " ?"}</span>
+              }
             </div>
 
+            {/* Modal buttons */}
             <div className='grid sm:grid-cols-2 gap-2 justify-self-center'>
               <ButtonMain
                 name="closeModal"
@@ -160,7 +263,22 @@ const ListingPlates = ({ fetchEditArr, fetchEditConditionArr, fetchEditStorageAr
                 name="deleteItem"
                 buttonLable="Confirm delete"
                 color='red'
-                onClick={() => deleteItem(fetchEditArr.device_id)}
+                onClick={() => {
+
+                  if (editItem === 'device') {
+                    deleteItem(fetchEditArr.device_id);
+
+                  } else if (editItem === 'storage') {
+                    deleteItem(fetchEditArr.storage_id);
+
+                  } else if (editItem === 'condition') {
+                    deleteItem(fetchEditArr.condition_id);
+
+                  } else if (editItem === 'carrier') {
+                    deleteItem(fetchEditArr.carrier_id);
+
+                  }
+                }}
               />
             </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { BackToPreviousList } from '../App';
+import { CarrierFormDetails, BackToPreviousList } from '../App';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-modal';
 import ButtonMain from './ButtonMain';
@@ -10,10 +10,11 @@ import ValidationMsg from './ValidationMsg';
 const CarrierForm = () => {
     const navigate = useNavigate();
     const backToPreviousList = useContext(BackToPreviousList);
+    const carrierFormDetails = useContext(CarrierFormDetails);
 
     const [carrierDetails, setCarrierDetails] = useState({
-        carrier_id: '',
-        carrier_name: '',
+        carrier_id: carrierFormDetails.carrierForm.carrier_id ? carrierFormDetails.carrierForm.carrier_id : '',
+        carrier_name: carrierFormDetails.carrierForm.carrier_name ? carrierFormDetails.carrierForm.carrier_name : '',
         price: '',
     });
 
@@ -21,7 +22,7 @@ const CarrierForm = () => {
     const [submitLoader, setSubmitLoader] = useState(false);
     const [modal, setModal] = useState(false);
 
-    const submitCarrierDetails = () => {
+    const submitCarrierDetails = (action) => {
 
         // to validate & Submit
         if (!carrierDetails.carrier_name) {
@@ -32,25 +33,48 @@ const CarrierForm = () => {
             setSubmitLoader(true);
             console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
 
+            if (action === 'add') {
 
-            // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', carrierDetails)
-            //     .then(res => {
+                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', carrierDetails)
+                //     .then(res => {
 
-            //         if (res.data.status === 200) {
+                //         if (res.data.status === 200) {
 
-            //             console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
-            //             setSubmitLoader(false);
-            //             setModal(true);
+                //             console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
+                //             setSubmitLoader(false);
+                //             setModal(true);
 
-            //         } else {
+                //         } else {
 
-            //             console.log("failed to add carrier !! ");
-            //             setSubmitLoader(false);
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error('Error fetching carrier data:', error);
-            //     });
+                //             console.log("failed to add carrier !! ");
+                //             setSubmitLoader(false);
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error fetching carrier data:', error);
+                //     });
+
+            } else if (action === 'update') {
+
+                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile/${carrierDetails.carrier_id}', carrierDetails)
+                //     .then(res => {
+
+                //         if (res.data.status === 200) {
+
+                //             console.log("carrier updated successfully - carrierDetails payload -> ", carrierDetails);
+                //             setSubmitLoader(false);
+                //             setModal(true);
+
+                //         } else {
+
+                //             console.log("failed to updated carrier !! ");
+                //             setSubmitLoader(false);
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error fetching carrier data:', error);
+                //     });
+            }
         }
     }
 
@@ -59,7 +83,7 @@ const CarrierForm = () => {
 
             {/* Header */}
             <div className='grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
-                <div className='grid justify-items-start sm:text-xl text-slate-700'> Add new carrier details </div>
+                <div className='grid justify-items-start sm:text-xl text-slate-700'> {!carrierDetails.carrier_id ? "Add new carrier details" : "Update carrier details"} </div>
                 <div className='col-span-1 grid justify-items-end'>
                     <ButtonMain
                         name="back"
@@ -67,7 +91,7 @@ const CarrierForm = () => {
                         onClick={() => {
                             backToPreviousList.dispatch({ type: "switchList", value: 'carriers' });
                             navigate('/dashboard')
-                        }} 
+                        }}
                     />
                 </div>
             </div>
@@ -75,7 +99,7 @@ const CarrierForm = () => {
             <div className="row-span-9 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Enter carrier details */}
-                <div className='grid sm:grid-rows-2 gap-3 sm:justify-items-start text-left ml-4 mt-2'>
+                <div className='grid gap-3 sm:justify-items-start text-left ml-4 mt-2'>
                     <div className='grid sm:grid-cols-2 sm:gap-2 justify-items-start'>
                         <InputField
                             label="Carrier name"
@@ -83,6 +107,7 @@ const CarrierForm = () => {
                             id="carrier_name"
                             type="text"
                             placeholder="Enter carrier name"
+                            value={carrierDetails.carrier_name}
                             onChange={(e) => {
                                 setCarrierDetails((prevSetDetails) => ({
                                     ...prevSetDetails,
@@ -94,27 +119,36 @@ const CarrierForm = () => {
                         <div className='sm:mt-2'>
                             {
                                 validationFlag === false && !carrierDetails.carrier_name &&
-                                <ValidationMsg errorMsg="carrier name required" />
+                                <ValidationMsg errorMsg="Carrier name required" />
                             }
                         </div>
                     </div>
                 </div>
 
-
                 {/* Form section - Submit button */}
                 <div className='grid justify-items-start mt-4 ml-4'>
 
                     {
-                        !submitLoader ?
-                            <ButtonMain name='submit' buttonLable='Add carrier' color='green' onClick={() => submitCarrierDetails()} />
+                        !carrierDetails.carrier_id ?
+
+                            !submitLoader ?
+                                <ButtonMain name='submit' buttonLable='Add carrier' color='green' onClick={() => submitCarrierDetails('add')} />
+                                :
+                                <div className='grid grid-cols-2 gap-2 justify-items-start'>
+                                    <ButtonMain buttonLable='Adding carrier... ' color='green' />
+                                    <Loader />
+                                </div>
+
                             :
-                            <div className='grid grid-cols-2 gap-2 justify-items-start'>
-                                <ButtonMain buttonLable='Adding carrier... ' color='green' />
-                                <Loader />
-                            </div>
+
+                            !submitLoader ?
+                                <ButtonMain name='submit' buttonLable='Update carrier' color='green' onClick={() => submitCarrierDetails('update')} />
+                                :
+                                <div className='grid grid-cols-2 gap-2 justify-items-start'>
+                                    <ButtonMain buttonLable='Updating carrier... ' color='green' />
+                                    <Loader />
+                                </div>
                     }
-
-
                 </div>
             </div>
 

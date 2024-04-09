@@ -276,7 +276,7 @@ const Form = () => {
                         }
                     })
                     .catch(error => {
-                        console.error('Error fetching storages data:', error);
+                        console.error('Error fetching data:', error);
                     });
             }
         }

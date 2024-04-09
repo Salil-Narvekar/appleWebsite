@@ -9,6 +9,10 @@ import CarrierForm from './Components/CarrierForm';
 
 export const LoggedUserDetails = createContext();
 export const DeviceFormDetails = createContext();
+export const StorageFormDetails = createContext();
+export const ConditionFormDetails = createContext();
+export const CarrierFormDetails = createContext();
+
 export const BackToPreviousList = createContext();
 
 function App() {
@@ -36,6 +40,8 @@ function App() {
         return initialUserState
     }
   }
+  //.............................................................................................................................
+
 
   // Reducer function for fetching device details for edit
   const initialDeviceForm = {
@@ -60,51 +66,145 @@ function App() {
           storageData: action.value.storageData,
           carrierData: action.value.carrierData
         }
-      // return console.log("edit", action.value);
+      // return console.log("Device edit", action.value);
       case 'add':
         return initialDeviceForm;
       default:
         return initialDeviceForm;
     }
   }
+  //.............................................................................................................................
+
+
+  // Reducer function for fetching storage details for edit
+  const initialStorageForm = {
+    storage_id: '',
+    storage_value: '',
+    storage_unit: '',
+    storage_description: '',
+    price: ''
+  };
+
+  const reducerStorageForm = (state, action) => {
+    switch (action.type) {
+      case 'edit':
+        return {
+          storage_id: action.value.storage_id,
+          storage_value: action.value.storage_value,
+          storage_unit: action.value.storage_unit,
+          storage_description: action.value.storage_description,
+          price: ''
+        }
+      // return console.log("Storage edit", action.value);
+      case 'add':
+        return initialStorageForm;
+      default:
+        return initialStorageForm;
+    }
+  }
+  //.............................................................................................................................
+
+
+  // Reducer function for fetching condition details for edit
+  const initialConditionForm = {
+    condition_id: '',
+    condition_title: '',
+    condition_description: '',
+    price: ''
+  };
+
+  const reducerConditionForm = (state, action) => {
+    switch (action.type) {
+      case 'edit':
+        return {
+          condition_id: action.value.condition_id,
+          condition_title: action.value.condition_title,
+          condition_description: action.value.condition_description,
+          price: ''
+        }
+      // return console.log("Condition edit", action.value);
+      case 'add':
+        return initialConditionForm;
+      default:
+        return initialConditionForm;
+    }
+  }
+  //.............................................................................................................................
+
+
+  // Reducer function for fetching carrier details for edit
+  const initialCarrierForm = {
+    carrier_id: '',
+    carrier_name: '',
+    price: '',
+  };
+
+  const reducerCarrierForm = (state, action) => {
+    switch (action.type) {
+      case 'edit':
+        return {
+          carrier_id: action.value.carrier_id,
+          carrier_name: action.value.carrier_name,
+          price: '',
+        }
+      // return console.log("Carrier edit", action.value);
+      case 'add':
+        return initialCarrierForm;
+      default:
+        return initialCarrierForm;
+    }
+  }
+  //.............................................................................................................................
+
 
   // Reducer function for go back to required listing
   const initialPreviousList = ''
-
   const reducerPreviousList = (state, action) => {
     switch (action.type) {
       case 'switchList':
-        return action.value 
-        // return console.log("listing", action.value);
+        return action.value
+      // return console.log("listing", action.value);
       default:
         return initialPreviousList;
     }
   }
+  //.............................................................................................................................
+
 
   const [loggedUser, dispatchUser] = useReducer(reducerUser, initialUserState);
   const [deviceForm, dispatchDeviceForm] = useReducer(reducerDeviceForm, initialDeviceForm);
+  const [storageForm, dispatchStorageForm] = useReducer(reducerStorageForm, initialStorageForm);
+  const [conditionForm, dispatchConditionForm] = useReducer(reducerConditionForm, initialConditionForm);
+  const [carrierForm, dispatchCarrierForm] = useReducer(reducerCarrierForm, initialCarrierForm);
+
   const [previousList, dispatchPreviousList] = useReducer(reducerPreviousList, initialPreviousList);
 
   return (
     <LoggedUserDetails.Provider value={{ loggedUser: loggedUser, dispatch: dispatchUser }}>
       <DeviceFormDetails.Provider value={{ deviceForm: deviceForm, dispatch: dispatchDeviceForm }}>
-        <BackToPreviousList.Provider value={{ previousList: previousList, dispatch: dispatchPreviousList }}>
+        <StorageFormDetails.Provider value={{ storageForm: storageForm, dispatch: dispatchStorageForm }}>
+          <ConditionFormDetails.Provider value={{ conditionForm: conditionForm, dispatch: dispatchConditionForm }}>
+            <CarrierFormDetails.Provider value={{ carrierForm: carrierForm, dispatch: dispatchCarrierForm }}>
+              <BackToPreviousList.Provider value={{ previousList: previousList, dispatch: dispatchPreviousList }}>
 
-          <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
-            <HashRouter>
-              <Routes>
-                <Route path='/' element={<Navigate to='/login' />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-                <Route path='/deviceForm' element={<Form />} />
-                <Route path='/storageForm' element={<StorageForm />} />
-                <Route path='/conditionForm' element={<ConditionForm />} />
-                <Route path='/carrierForm' element={<CarrierForm />} />
-              </Routes>
-            </HashRouter>
-          </div>
+                <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
+                  <HashRouter>
+                    <Routes>
+                      <Route path='/' element={<Navigate to='/login' />} />
+                      <Route path='/login' element={<Login />} />
+                      <Route path='/dashboard' element={<Dashboard />} />
+                      <Route path='/deviceForm' element={<Form />} />
+                      <Route path='/storageForm' element={<StorageForm />} />
+                      <Route path='/conditionForm' element={<ConditionForm />} />
+                      <Route path='/carrierForm' element={<CarrierForm />} />
+                    </Routes>
+                  </HashRouter>
+                </div>
 
-        </BackToPreviousList.Provider>
+              </BackToPreviousList.Provider>
+            </CarrierFormDetails.Provider>
+          </ConditionFormDetails.Provider>
+        </StorageFormDetails.Provider>
       </DeviceFormDetails.Provider>
     </LoggedUserDetails.Provider>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { BackToPreviousList } from '../App';
+import { StorageFormDetails, BackToPreviousList } from '../App';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-modal';
 import ButtonMain from './ButtonMain';
@@ -10,12 +10,13 @@ import ValidationMsg from './ValidationMsg';
 const StorageForm = () => {
     const navigate = useNavigate();
     const backToPreviousList = useContext(BackToPreviousList);
+    const storageFormDetails = useContext(StorageFormDetails);
 
     const [storageDetails, setStorageDetails] = useState({
-        storage_id: '',
-        storage_value: '',
-        storage_unit: '',
-        storage_description: '',
+        storage_id: storageFormDetails.storageForm.storage_id ? storageFormDetails.storageForm.storage_id : '',
+        storage_value: storageFormDetails.storageForm.storage_value ? storageFormDetails.storageForm.storage_value : '',
+        storage_unit: storageFormDetails.storageForm.storage_unit ? storageFormDetails.storageForm.storage_unit : '',
+        storage_description: storageFormDetails.storageForm.storage_description ? storageFormDetails.storageForm.storage_description : '',
         price: ''
     });
 
@@ -23,7 +24,7 @@ const StorageForm = () => {
     const [submitLoader, setSubmitLoader] = useState(false);
     const [modal, setModal] = useState(false);
 
-    const submitStorageDetails = () => {
+    const submitStorageDetails = (action) => {
 
         // to validate & Submit
         if (!storageDetails.storage_value || !storageDetails.storage_unit) {
@@ -35,34 +36,58 @@ const StorageForm = () => {
             setSubmitLoader(true);
             console.log("storage added successfully - storageDetails payload -> ", storageDetails);
 
+            if (action === 'add') {
 
-            // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', storageDetails)
-            //     .then(res => {
+                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', storageDetails)
+                //     .then(res => {
 
-            //         if (res.data.status === 200) {
+                //         if (res.data.status === 200) {
 
-            //             console.log("storage added successfully - storageDetails payload -> ", storageDetails);
-            //             setSubmitLoader(false);
-            //             setModal(true);
+                //             console.log("storage added successfully - storageDetails payload -> ", storageDetails);
+                //             setSubmitLoader(false);
+                //             setModal(true);
 
-            //         } else {
+                //         } else {
 
-            //             console.log("failed to add storage !! ");
-            //             setSubmitLoader(false);
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error('Error fetching storages data:', error);
-            //     });
+                //             console.log("failed to add storage !! ");
+                //             setSubmitLoader(false);
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error fetching storages data:', error);
+                //     });
+
+            } else if (action === 'update') {
+
+                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile/${storageDetails.storage_id}', storageDetails)
+                //     .then(res => {
+
+                //         if (res.data.status === 200) {
+
+                //             console.log("storage updated successfully - storageDetails payload -> ", storageDetails);
+                //             setSubmitLoader(false);
+                //             setModal(true);
+
+                //         } else {
+
+                //             console.log("failed to updated storage !! ");
+                //             setSubmitLoader(false);
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error fetching storages data:', error);
+                //     });
+            }
+
         }
     }
 
     return (
         <div className='grid sm:grid-rows-10 gap-1'>
-            
+
             {/* Header */}
             <div className='grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
-                <div className='grid justify-items-start sm:text-xl text-slate-700'> Add new storage details </div>
+                <div className='grid justify-items-start sm:text-xl text-slate-700'> {!storageDetails.storage_id ? "Add new storage details" : "Update storage details"} </div>
                 <div className='col-span-1 grid justify-items-end'>
                     <ButtonMain
                         name="back"
@@ -87,6 +112,7 @@ const StorageForm = () => {
                             type="number"
                             min={1}
                             placeholder="Enter storage value"
+                            value={storageDetails.storage_value}
                             onChange={(e) => {
                                 setStorageDetails((prevSetDetails) => ({
                                     ...prevSetDetails,
@@ -110,6 +136,7 @@ const StorageForm = () => {
                             id="storage_unit"
                             type="text"
                             placeholder="Enter storage unit"
+                            value={storageDetails.storage_unit}
                             onChange={(e) => {
                                 setStorageDetails((prevSetDetails) => ({
                                     ...prevSetDetails,
@@ -133,6 +160,7 @@ const StorageForm = () => {
                             id="storage_description"
                             type="text"
                             placeholder="Enter storage description"
+                            value={storageDetails.storage_description}
                             onChange={(e) => {
                                 setStorageDetails((prevSetDetails) => ({
                                     ...prevSetDetails,
@@ -143,21 +171,30 @@ const StorageForm = () => {
                     </div>
                 </div>
 
-
                 {/* Form section - Submit button */}
                 <div className='grid justify-items-start mt-4 ml-4'>
-
                     {
-                        !submitLoader ?
-                            <ButtonMain name='submit' buttonLable='Add storage' color='green' onClick={() => submitStorageDetails()} />
+                        !storageDetails.storage_id ?
+
+                            !submitLoader ?
+                                <ButtonMain name='submit' buttonLable='Add storage' color='green' onClick={() => submitStorageDetails('add')} />
+                                :
+                                <div className='grid grid-cols-2 gap-2 justify-items-start'>
+                                    <ButtonMain buttonLable='Adding storage... ' color='green' />
+                                    <Loader />
+                                </div>
+
                             :
-                            <div className='grid grid-cols-2 gap-2 justify-items-start'>
-                                <ButtonMain buttonLable='Adding storage... ' color='green' />
-                                <Loader />
-                            </div>
+
+                            !submitLoader ?
+                                <ButtonMain name='submit' buttonLable='Update storage' color='green' onClick={() => submitStorageDetails('update')} />
+                                :
+                                <div className='grid grid-cols-2 gap-2 justify-items-start'>
+                                    <ButtonMain buttonLable='Updating storage... ' color='green' />
+                                    <Loader />
+                                </div>
+
                     }
-
-
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import { LoggedUserDetails, DeviceFormDetails, BackToPreviousList } from '../App';
+import { LoggedUserDetails, DeviceFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails, BackToPreviousList } from '../App';
 import { FaWpforms } from "react-icons/fa";
 import { FaClipboardList } from "react-icons/fa";
 import { MdDevicesOther } from "react-icons/md";
@@ -20,6 +20,9 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const loggedUserDetails = useContext(LoggedUserDetails);
     const deviceFormDetails = useContext(DeviceFormDetails);
+    const storageFormDetails = useContext(StorageFormDetails);
+    const conditionFormDetails = useContext(ConditionFormDetails);
+    const carrierFormDetails = useContext(CarrierFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
 
     const [showListing, setShowListing] = useState(backToPreviousList.previousList ? backToPreviousList.previousList : 'submittedForms');
@@ -28,6 +31,9 @@ const Dashboard = () => {
     const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
     const [appointmentListArr, setAppointmentListArr] = useState([]);
     const [devicesListArr, setDevicesListArr] = useState([]);
+    const [storagesListArr, setStoragesListArr] = useState([]);
+    const [conditionsListArr, setConditionsListArr] = useState([]);
+    const [carriersListArr, setCarriersListArr] = useState([]);
 
     // useEffect to mount submitted forms list data
     useEffect(() => {
@@ -95,7 +101,79 @@ const Dashboard = () => {
         }
 
     }, [showListing])
-    
+
+    // useEffect to mount storages list data
+    useEffect(() => {
+
+        if (showListing === 'storages') {
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const storagesData = res.data.data;
+                        setStoragesListArr(storagesData);
+                    } else {
+                        console.log("Storages data empty");
+                        setStoragesListArr([]);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
+
+    // useEffect to mount conditions list data
+    useEffect(() => {
+
+        if (showListing === 'conditions') {
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const conditionsData = res.data.data;
+                        setConditionsListArr(conditionsData);
+                    } else {
+                        console.log("Conditions data empty");
+                        setConditionsListArr([]);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
+
+    // useEffect to mount carriers list data
+    useEffect(() => {
+
+        if (showListing === 'carriers') {
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const carriersData = res.data.data;
+                        setCarriersListArr(carriersData);
+                    } else {
+                        console.log("Carriers data empty");
+                        setCarriersListArr([]);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
+
 
     const logout = () => {
         console.log('logout')
@@ -202,6 +280,7 @@ const Dashboard = () => {
                                                                 contentLine3B={formData.storage.storage_value ? formData.storage.storage_value + ' ' + formData.storage.storage_unit : ''}
                                                                 contentLine3C={formData.condition.condition_title ? formData.condition.condition_title : ''}
                                                                 contentLine3D={formData.carrier.carrier_name ? formData.carrier.carrier_name : ''}
+                                                                fetchEditItem=''
                                                             />
                                                         </div>
                                                     ))}
@@ -243,6 +322,7 @@ const Dashboard = () => {
                                                                     contentLine3B=''
                                                                     contentLine3C=''
                                                                     contentLine3D=''
+                                                                    fetchEditItem=''
                                                                 />
                                                             </div>
                                                         ))}
@@ -327,6 +407,7 @@ const Dashboard = () => {
                                                                             fetchEditConditionArr={deviceData.conditions}
                                                                             fetchEditStorageArr={deviceData.storages}
                                                                             fetchEditCarrierArr={deviceData.carriers}
+                                                                            fetchEditItem='device'
                                                                         />
                                                                     </div>
                                                                 ))}
@@ -391,6 +472,7 @@ const Dashboard = () => {
                                                         buttonLable='Add New Storage'
                                                         onClick={() => {
                                                             navigate('/storageForm');
+                                                            storageFormDetails.dispatch({ type: "add" })
                                                         }}
                                                     />
                                                 </div>
@@ -398,25 +480,26 @@ const Dashboard = () => {
 
                                             <div className='row-span-11'>
                                                 {
-                                                    appointmentListArr.length > 0 ?
+                                                    storagesListArr.length > 0 ?
 
                                                         <div className='h-[34rem] overflow-auto'>
                                                             {
-                                                                appointmentListArr.map((appointmentData, index) => (
+                                                                storagesListArr.map((storagesData, index) => (
 
                                                                     <div className='mb-2' key={index}>
                                                                         <ListingPlates
-                                                                            contentLine1A={formatDate(appointmentData.date)}
-                                                                            contentLine1B={'Time slot: ' + appointmentData.time_slot}
-                                                                            contentLine1C={appointmentData.shop_address}
-                                                                            contentLine2A={appointmentData.user_name}
-                                                                            contentLine2B={appointmentData.contact_number}
+                                                                            contentLine1A={storagesData.storage_value + ' ' + storagesData.storage_unit}
+                                                                            contentLine1B=''
+                                                                            contentLine1C=''
+                                                                            contentLine2A='Storage description: '
+                                                                            contentLine2B={storagesData.storage_description ? storagesData.storage_description : 'N/A'}
                                                                             contentLine2C=''
                                                                             contentLine2D=''
-                                                                            contentLine3A={appointmentData.email_id}
+                                                                            contentLine3A=''
                                                                             contentLine3B=''
-                                                                            contentLine3C=''
-                                                                            contentLine3D=''
+                                                                            buttonRequired='yes'
+                                                                            fetchEditArr={storagesData}
+                                                                            fetchEditItem='storage'
                                                                         />
                                                                     </div>
                                                                 ))}
@@ -443,6 +526,7 @@ const Dashboard = () => {
                                                             buttonLable='Add New Condition'
                                                             onClick={() => {
                                                                 navigate('/conditionForm');
+                                                                conditionFormDetails.dispatch({ type: "add" })
                                                             }}
                                                         />
                                                     </div>
@@ -450,25 +534,26 @@ const Dashboard = () => {
 
                                                 <div className='row-span-11'>
                                                     {
-                                                        appointmentListArr.length > 0 ?
+                                                        conditionsListArr.length > 0 ?
 
                                                             <div className='h-[34rem] overflow-auto'>
                                                                 {
-                                                                    appointmentListArr.map((appointmentData, index) => (
+                                                                    conditionsListArr.map((conditionData, index) => (
 
                                                                         <div className='mb-2' key={index}>
                                                                             <ListingPlates
-                                                                                contentLine1A={formatDate(appointmentData.date)}
-                                                                                contentLine1B={'Time slot: ' + appointmentData.time_slot}
-                                                                                contentLine1C={appointmentData.shop_address}
-                                                                                contentLine2A={appointmentData.user_name}
-                                                                                contentLine2B={appointmentData.contact_number}
+                                                                                contentLine1A={conditionData.condition_title}
+                                                                                contentLine1B=''
+                                                                                contentLine1C=''
+                                                                                contentLine2A='Condition description: '
+                                                                                contentLine2B={conditionData.condition_description ? conditionData.condition_description : 'N/A'}
                                                                                 contentLine2C=''
                                                                                 contentLine2D=''
-                                                                                contentLine3A={appointmentData.email_id}
+                                                                                contentLine3A=''
                                                                                 contentLine3B=''
-                                                                                contentLine3C=''
-                                                                                contentLine3D=''
+                                                                                buttonRequired='yes'
+                                                                                fetchEditArr={conditionData}
+                                                                                fetchEditItem='condition'
                                                                             />
                                                                         </div>
                                                                     ))}
@@ -496,6 +581,7 @@ const Dashboard = () => {
                                                             buttonLable='Add New Carrier'
                                                             onClick={() => {
                                                                 navigate('/carrierForm');
+                                                                carrierFormDetails.dispatch({ type: "add" })
                                                             }}
                                                         />
                                                     </div>
@@ -503,25 +589,26 @@ const Dashboard = () => {
 
                                                 <div className='row-span-11'>
                                                     {
-                                                        appointmentListArr.length > 0 ?
+                                                        carriersListArr.length > 0 ?
 
                                                             <div className='h-[34rem] overflow-auto'>
                                                                 {
-                                                                    appointmentListArr.map((appointmentData, index) => (
+                                                                    carriersListArr.map((carriersData, index) => (
 
                                                                         <div className='mb-2' key={index}>
                                                                             <ListingPlates
-                                                                                contentLine1A={formatDate(appointmentData.date)}
-                                                                                contentLine1B={'Time slot: ' + appointmentData.time_slot}
-                                                                                contentLine1C={appointmentData.shop_address}
-                                                                                contentLine2A={appointmentData.user_name}
-                                                                                contentLine2B={appointmentData.contact_number}
+                                                                                contentLine1A={carriersData.carrier_name}
+                                                                                contentLine1B=''
+                                                                                contentLine1C=''
+                                                                                contentLine2A='Carrier description: '
+                                                                                contentLine2B={carriersData.condition_description ? carriersData.condition_description : 'N/A'}
                                                                                 contentLine2C=''
                                                                                 contentLine2D=''
-                                                                                contentLine3A={appointmentData.email_id}
+                                                                                contentLine3A=''
                                                                                 contentLine3B=''
-                                                                                contentLine3C=''
-                                                                                contentLine3D=''
+                                                                                buttonRequired='yes'
+                                                                                fetchEditArr={carriersData}
+                                                                                fetchEditItem='carrier'
                                                                             />
                                                                         </div>
                                                                     ))}

@@ -10,7 +10,7 @@ import InputField from './InputField';
 import ValidationMsg from './ValidationMsg';
 import Loader from './Loader';
 
-const Form = () => {
+const MobileForm = () => {
     const navigate = useNavigate();
     const mobileFormDetails = useContext(MobileFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
@@ -637,4 +637,4 @@ const Form = () => {
     )
 }
 
-export default Form
+export default MobileForm

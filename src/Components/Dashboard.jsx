@@ -385,7 +385,17 @@ const Dashboard = () => {
                                                     name='addDevice'
                                                     buttonLable='Add New Device'
                                                     onClick={() => {
-                                                        navigate('/mobileForm');
+                                                        
+                                                        if (showDeviceType === 'mobile') {
+                                                            navigate('/mobileForm');
+
+                                                        } else if (showDeviceType === 'laptop') {
+                                                            navigate('/laptopForm');
+
+                                                        } else if (showDeviceType === 'watch') {
+                                                            navigate('/watchForm');
+                                                        }
+
                                                         mobileFormDetails.dispatch({ type: "add" })
                                                     }}
                                                 />

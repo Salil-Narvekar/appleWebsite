@@ -2,7 +2,9 @@ import React, { useReducer, createContext } from 'react'
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from './Components/Login'
 import Dashboard from './Components/Dashboard';
-import Form from './Components/Form';
+import MobileForm from './Components/MobileForm';
+import LaptopForm from './Components/LaptopForm';
+import WatchForm from './Components/WatchForm';
 import StorageForm from './Components/StorageForm';
 import ConditionForm from './Components/ConditionForm';
 import CarrierForm from './Components/CarrierForm';
@@ -193,7 +195,9 @@ function App() {
                       <Route path='/' element={<Navigate to='/login' />} />
                       <Route path='/login' element={<Login />} />
                       <Route path='/dashboard' element={<Dashboard />} />
-                      <Route path='/mobileForm' element={<Form />} />
+                      <Route path='/mobileForm' element={<MobileForm />} />
+                      <Route path='/laptopForm' element={<LaptopForm />} />
+                      <Route path='/watchForm' element={<WatchForm />} />
                       <Route path='/storageForm' element={<StorageForm />} />
                       <Route path='/conditionForm' element={<ConditionForm />} />
                       <Route path='/carrierForm' element={<CarrierForm />} />

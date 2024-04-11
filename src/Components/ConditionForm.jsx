@@ -104,7 +104,7 @@ const ConditionForm = () => {
                 <div className='grid sm:grid-rows-4 gap-3 sm:justify-items-start text-left ml-4 mt-2'>
                     <div className='grid sm:grid-cols-2 sm:gap-2 justify-items-start'>
                         <InputField
-                            label="condition title"
+                            label="Condition title"
                             name="condition_title"
                             id="condition_title"
                             type="text"

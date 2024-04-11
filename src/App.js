@@ -43,7 +43,7 @@ function App() {
   //.............................................................................................................................
 
 
-  // Reducer function for fetching Mobile device details for edit
+  // Reducer function for fetching mobile device details for edit
   const initialMobileForm = {
     base_price: "",
     device_id: "",

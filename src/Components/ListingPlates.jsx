@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import ButtonMain from './ButtonMain'
 import Modal from 'react-modal';
-import { DeviceFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails } from '../App';
+import { MobileFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails } from '../App';
 // import axios from "axios";
 import { MdDeleteForever } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, fetchEditCarrierArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine2D, contentLine3A, contentLine3B, contentLine3C, contentLine3D, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
   const navigate = useNavigate();
-  const deviceFormDetails = useContext(DeviceFormDetails);
+  const mobileFormDetails = useContext(MobileFormDetails);
   const storageFormDetails = useContext(StorageFormDetails);
   const conditionFormDetails = useContext(ConditionFormDetails);
   const carrierFormDetails = useContext(CarrierFormDetails);
@@ -36,7 +36,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
 
     //     } else {
 
-    //       console.log("failed to delete device !! ");
+    //       console.log("failed to delete mobile !! ");
     //     }
 
     //   })
@@ -131,12 +131,12 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
                     onClick={() => {
                       navigate('/' + editItem + 'Form');
 
-                      if (editItem === 'device') {
+                      if (editItem === 'mobile') {
                         const conditionData = fetchEditConditionArr.map(conditionData => ({ value: conditionData.condition_id, label: conditionData.condition_title, price: conditionData.price }));
                         const storageData = fetchEditStorageArr.map(storageData => ({ value: storageData.storage_id, label: storageData.storage_value + ' ' + storageData.storage_unit, price: storageData.price }));
                         const carrierData = fetchEditCarrierArr.map(carrierData => ({ value: carrierData.carrier_id, label: carrierData.carrier_name, price: carrierData.price }));
 
-                        deviceFormDetails.dispatch(
+                        mobileFormDetails.dispatch(
                           {
                             type: "edit",
                             value: {
@@ -235,8 +235,8 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
             {/* Modal description */}
             <div className='grid justify-items-center'>
               {
-                editItem === 'device' ?
-                  <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete device - " + fetchEditArr.device_name + " ?"}</span>
+                editItem === 'mobile' ?
+                  <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete mobile device - " + fetchEditArr.device_name + " ?"}</span>
 
                   : editItem === 'storage' ?
                     <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete storage - " + fetchEditArr.storage_value + ' ' + fetchEditArr.storage_unit + " ?"}</span>
@@ -265,7 +265,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
                 color='red'
                 onClick={() => {
 
-                  if (editItem === 'device') {
+                  if (editItem === 'mobile') {
                     deleteItem(fetchEditArr.device_id);
 
                   } else if (editItem === 'storage') {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import { DeviceFormDetails, BackToPreviousList } from '../App';
+import { MobileFormDetails, BackToPreviousList } from '../App';
 import { MultiSelect } from "react-multi-select-component";
 import axios from "axios";
 import Select from 'react-dropdown-select';
@@ -12,14 +12,14 @@ import Loader from './Loader';
 
 const Form = () => {
     const navigate = useNavigate();
-    const deviceFormDetails = useContext(DeviceFormDetails);
+    const mobileFormDetails = useContext(MobileFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
 
     const [deviceDetails, setDeviceDetails] = useState({
-        base_price: deviceFormDetails.deviceForm.base_price ? deviceFormDetails.deviceForm.base_price : '',
-        device_id: deviceFormDetails.deviceForm.device_id ? deviceFormDetails.deviceForm.device_id : '',
-        device_name: deviceFormDetails.deviceForm.device_name ? deviceFormDetails.deviceForm.device_name : '',
-        device_type: deviceFormDetails.deviceForm.device_type ? deviceFormDetails.deviceForm.device_type : '',
+        base_price: mobileFormDetails.mobileForm.base_price ? mobileFormDetails.mobileForm.base_price : '',
+        device_id: mobileFormDetails.mobileForm.device_id ? mobileFormDetails.mobileForm.device_id : '',
+        device_name: mobileFormDetails.mobileForm.device_name ? mobileFormDetails.mobileForm.device_name : '',
+        device_type: mobileFormDetails.mobileForm.device_type ? mobileFormDetails.mobileForm.device_type : '',
         carrierData: {},
         conditionData: {},
         storageData: {},
@@ -36,8 +36,8 @@ const Form = () => {
     const [storagesArrData, setStoragesArrData] = useState([]);
     const [conditionsArrData, setConditionsArrData] = useState([]);
 
-    const [selectedConditions, setSelectedConditions] = useState(deviceFormDetails.deviceForm.conditionData.length > 0 ? deviceFormDetails.deviceForm.conditionData : []);
-    const [selectedStorages, setSelectedStorages] = useState(deviceFormDetails.deviceForm.storageData.length > 0 ? deviceFormDetails.deviceForm.storageData : []);
+    const [selectedConditions, setSelectedConditions] = useState(mobileFormDetails.mobileForm.conditionData.length > 0 ? mobileFormDetails.mobileForm.conditionData : []);
+    const [selectedStorages, setSelectedStorages] = useState(mobileFormDetails.mobileForm.storageData.length > 0 ? mobileFormDetails.mobileForm.storageData : []);
 
     // useEffect to mount carriers data
     useEffect(() => {
@@ -284,7 +284,7 @@ const Form = () => {
 
     // useEffect to set the carrier, condition & storage values for edit state
     useEffect(() => {
-        deviceFormDetails.deviceForm.carrierData.forEach((carriersData, index) => {
+        mobileFormDetails.mobileForm.carrierData.forEach((carriersData, index) => {
             setCarriersDetails(carriersData.value, carriersData.price, index);
         });
 
@@ -375,8 +375,8 @@ const Form = () => {
                                 valueField="device_type"
                                 values={[
                                     {
-                                        device_type: deviceFormDetails.deviceForm.device_type,
-                                        deviceName: deviceFormDetails.deviceForm.device_type
+                                        device_type: mobileFormDetails.mobileForm.device_type,
+                                        deviceName: mobileFormDetails.mobileForm.device_type
                                     }
                                 ]}
                                 onChange={(values) => setDevice(values)}
@@ -406,9 +406,9 @@ const Form = () => {
 
                             <div className='grid sm:grid-cols-4 gap-1 sm:justify-items-start sm:ml-4'>
                                 {
-                                    deviceFormDetails.deviceForm.carrierData.length > 0 ?
+                                    mobileFormDetails.mobileForm.carrierData.length > 0 ?
 
-                                        deviceFormDetails.deviceForm.carrierData.map((carrierData, index) => (
+                                        mobileFormDetails.mobileForm.carrierData.map((carrierData, index) => (
 
                                             // console.log('salil',deviceDetails.carrierData[carrierData.value])
                                             <div key={index}>

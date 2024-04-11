@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import { LoggedUserDetails, DeviceFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails, BackToPreviousList } from '../App';
+import { LoggedUserDetails, MobileFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails, BackToPreviousList } from '../App';
 import { FaWpforms } from "react-icons/fa";
 import { FaClipboardList } from "react-icons/fa";
 import { MdDevicesOther } from "react-icons/md";
@@ -19,7 +19,7 @@ const Dashboard = () => {
 
     const navigate = useNavigate();
     const loggedUserDetails = useContext(LoggedUserDetails);
-    const deviceFormDetails = useContext(DeviceFormDetails);
+    const mobileFormDetails = useContext(MobileFormDetails);
     const storageFormDetails = useContext(StorageFormDetails);
     const conditionFormDetails = useContext(ConditionFormDetails);
     const carrierFormDetails = useContext(CarrierFormDetails);
@@ -385,8 +385,8 @@ const Dashboard = () => {
                                                     name='addDevice'
                                                     buttonLable='Add New Device'
                                                     onClick={() => {
-                                                        navigate('/deviceForm');
-                                                        deviceFormDetails.dispatch({ type: "add" })
+                                                        navigate('/mobileForm');
+                                                        mobileFormDetails.dispatch({ type: "add" })
                                                     }}
                                                 />
                                             </div>
@@ -444,7 +444,7 @@ const Dashboard = () => {
                                                                                 fetchEditConditionArr={deviceData.conditions}
                                                                                 fetchEditStorageArr={deviceData.storages}
                                                                                 fetchEditCarrierArr={deviceData.carriers}
-                                                                                fetchEditItem='device'
+                                                                                fetchEditItem='mobile'
                                                                             />
                                                                         </div>
                                                                     ))}

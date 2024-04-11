@@ -8,7 +8,7 @@ import ConditionForm from './Components/ConditionForm';
 import CarrierForm from './Components/CarrierForm';
 
 export const LoggedUserDetails = createContext();
-export const DeviceFormDetails = createContext();
+export const MobileFormDetails = createContext();
 export const StorageFormDetails = createContext();
 export const ConditionFormDetails = createContext();
 export const CarrierFormDetails = createContext();
@@ -43,8 +43,8 @@ function App() {
   //.............................................................................................................................
 
 
-  // Reducer function for fetching device details for edit
-  const initialDeviceForm = {
+  // Reducer function for fetching Mobile device details for edit
+  const initialMobileForm = {
     base_price: "",
     device_id: "",
     device_name: "",
@@ -54,7 +54,7 @@ function App() {
     carrierData: []
   };
 
-  const reducerDeviceForm = (state, action) => {
+  const reducerMobileForm = (state, action) => {
     switch (action.type) {
       case 'edit':
         return {
@@ -68,9 +68,9 @@ function App() {
         }
       // return console.log("Device edit", action.value);
       case 'add':
-        return initialDeviceForm;
+        return initialMobileForm;
       default:
-        return initialDeviceForm;
+        return initialMobileForm;
     }
   }
   //.............................................................................................................................
@@ -172,7 +172,7 @@ function App() {
 
 
   const [loggedUser, dispatchUser] = useReducer(reducerUser, initialUserState);
-  const [deviceForm, dispatchDeviceForm] = useReducer(reducerDeviceForm, initialDeviceForm);
+  const [mobileForm, dispatchMobileForm] = useReducer(reducerMobileForm, initialMobileForm);
   const [storageForm, dispatchStorageForm] = useReducer(reducerStorageForm, initialStorageForm);
   const [conditionForm, dispatchConditionForm] = useReducer(reducerConditionForm, initialConditionForm);
   const [carrierForm, dispatchCarrierForm] = useReducer(reducerCarrierForm, initialCarrierForm);
@@ -181,7 +181,7 @@ function App() {
 
   return (
     <LoggedUserDetails.Provider value={{ loggedUser: loggedUser, dispatch: dispatchUser }}>
-      <DeviceFormDetails.Provider value={{ deviceForm: deviceForm, dispatch: dispatchDeviceForm }}>
+      <MobileFormDetails.Provider value={{ mobileForm: mobileForm, dispatch: dispatchMobileForm }}>
         <StorageFormDetails.Provider value={{ storageForm: storageForm, dispatch: dispatchStorageForm }}>
           <ConditionFormDetails.Provider value={{ conditionForm: conditionForm, dispatch: dispatchConditionForm }}>
             <CarrierFormDetails.Provider value={{ carrierForm: carrierForm, dispatch: dispatchCarrierForm }}>
@@ -193,7 +193,7 @@ function App() {
                       <Route path='/' element={<Navigate to='/login' />} />
                       <Route path='/login' element={<Login />} />
                       <Route path='/dashboard' element={<Dashboard />} />
-                      <Route path='/deviceForm' element={<Form />} />
+                      <Route path='/mobileForm' element={<Form />} />
                       <Route path='/storageForm' element={<StorageForm />} />
                       <Route path='/conditionForm' element={<ConditionForm />} />
                       <Route path='/carrierForm' element={<CarrierForm />} />
@@ -205,7 +205,7 @@ function App() {
             </CarrierFormDetails.Provider>
           </ConditionFormDetails.Provider>
         </StorageFormDetails.Provider>
-      </DeviceFormDetails.Provider>
+      </MobileFormDetails.Provider>
     </LoggedUserDetails.Provider>
   );
 }

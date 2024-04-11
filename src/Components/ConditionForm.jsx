@@ -101,7 +101,7 @@ const ConditionForm = () => {
             <div className="row-span-9 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Device details */}
-                <div className='grid sm:grid-rows-2 gap-3 sm:justify-items-start text-left ml-4 mt-2'>
+                <div className='grid sm:grid-rows-4 gap-3 sm:justify-items-start text-left ml-4 mt-2'>
                     <div className='grid sm:grid-cols-2 sm:gap-2 justify-items-start'>
                         <InputField
                             label="condition title"
@@ -126,10 +126,11 @@ const ConditionForm = () => {
                         </div>
                     </div>
 
-
-                    <div className='grid sm:grid-cols-2 sm:gap-2 justify-items-start'>
-                        <InputField
-                            label="condition description"
+                    <div className='row-span-3 grid sm:grid-cols-3 justify-items-start font-sans text-slate-600'>
+                        <span className="sm:text-md text-right mr-2"><b>Condition description: </b></span>
+                        <textarea
+                            className='col-span-2 w-full h-full border border-slate-300 rounded text-black
+                            transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold py-1 pl-2 '
                             name="condition_description"
                             id="condition_description"
                             type="text"

@@ -28,6 +28,8 @@ const Dashboard = () => {
     const [showListing, setShowListing] = useState(backToPreviousList.previousList ? backToPreviousList.previousList : 'submittedForms');
     const [showDeviceType, setShowDeviceType] = useState('mobile');
 
+    const [loader, setLoader] = useState(false);
+
     const [submittedFormListArr, setSubmittedFormListArr] = useState([]);
     const [appointmentListArr, setAppointmentListArr] = useState([]);
     const [devicesListArr, setDevicesListArr] = useState([]);
@@ -37,37 +39,50 @@ const Dashboard = () => {
 
     // useEffect to mount submitted forms list data
     useEffect(() => {
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms')
-            .then(res => {
 
-                if (res.data.data.length > 0) {
-                    const submittedFormData = res.data.data;
-                    setSubmittedFormListArr(submittedFormData);
-                } else {
-                    console.log("submitted form data empty");
-                    setSubmittedFormListArr([]);
-                }
+        if (showListing === 'submittedForms') {
 
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, [])
+            setLoader(true);
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms')
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const submittedFormData = res.data.data;
+                        setSubmittedFormListArr(submittedFormData);
+                        setLoader(false);
+
+                    } else {
+                        console.log("submitted form data empty");
+                        setSubmittedFormListArr([]);
+                        setLoader(false);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    }, [showListing])
 
     // useEffect to mount appointment list data
     useEffect(() => {
 
         if (showListing === 'appointments') {
 
+            setLoader(true);
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-appointment-details')
                 .then(res => {
 
                     if (res.data.data.length > 0) {
                         const appointmentData = res.data.data;
                         setAppointmentListArr(appointmentData);
+                        setLoader(false);
+
                     } else {
                         console.log("Appointment data empty");
                         setAppointmentListArr([]);
+                        setLoader(false);
                     }
 
                 })
@@ -83,15 +98,19 @@ const Dashboard = () => {
 
         if (showListing === 'devices') {
 
+            setLoader(true);
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
                 .then(res => {
 
                     if (res.data.data.length > 0) {
                         const devicesData = res.data.data;
                         setDevicesListArr(devicesData);
+                        setLoader(false);
+
                     } else {
                         console.log("devices data empty");
                         setDevicesListArr([]);
+                        setLoader(false);
                     }
 
                 })
@@ -107,15 +126,19 @@ const Dashboard = () => {
 
         if (showListing === 'storages') {
 
+            setLoader(true);
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages')
                 .then(res => {
 
                     if (res.data.data.length > 0) {
                         const storagesData = res.data.data;
                         setStoragesListArr(storagesData);
+                        setLoader(false);
+
                     } else {
                         console.log("Storages data empty");
                         setStoragesListArr([]);
+                        setLoader(false);
                     }
 
                 })
@@ -131,15 +154,19 @@ const Dashboard = () => {
 
         if (showListing === 'conditions') {
 
+            setLoader(true);
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions')
                 .then(res => {
 
                     if (res.data.data.length > 0) {
                         const conditionsData = res.data.data;
                         setConditionsListArr(conditionsData);
+                        setLoader(false);
+
                     } else {
                         console.log("Conditions data empty");
                         setConditionsListArr([]);
+                        setLoader(false);
                     }
 
                 })
@@ -155,15 +182,19 @@ const Dashboard = () => {
 
         if (showListing === 'carriers') {
 
+            setLoader(true);
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers')
                 .then(res => {
 
                     if (res.data.data.length > 0) {
                         const carriersData = res.data.data;
                         setCarriersListArr(carriersData);
+                        setLoader(false);
+
                     } else {
                         console.log("Carriers data empty");
                         setCarriersListArr([]);
+                        setLoader(false);
                     }
 
                 })
@@ -216,9 +247,7 @@ const Dashboard = () => {
         return `${day}/${month}/${year}`;
     };
 
-
     return (
-
         <div className='grid sm:grid-rows-10 gap-1'>
 
             {/* Header */}
@@ -261,37 +290,39 @@ const Dashboard = () => {
 
                                 <div className='row-span-11'>
                                     {
-                                        submittedFormListArr.length > 0 ?
+                                        !loader ?
 
-                                            <div className='h-[34rem] overflow-auto'>
-                                                {
-                                                    submittedFormListArr.map((formData, index) => (
+                                            submittedFormListArr.length > 0 ?
 
-                                                        <div className='mb-2' key={index}>
-                                                            <ListingPlates
-                                                                contentLine1A={formData.device_name}
-                                                                contentLine1B={formData.contact_number}
-                                                                contentLine1C={formData.email_id}
-                                                                contentLine2A='Quoted Price:'
-                                                                contentLine2B='Storage:'
-                                                                contentLine2C='Condition:'
-                                                                contentLine2D='Carrier:'
-                                                                contentLine3A={"$" + formData.quoted_price}
-                                                                contentLine3B={formData.storage.storage_value ? formData.storage.storage_value + ' ' + formData.storage.storage_unit : ''}
-                                                                contentLine3C={formData.condition.condition_title ? formData.condition.condition_title : ''}
-                                                                contentLine3D={formData.carrier.carrier_name ? formData.carrier.carrier_name : ''}
-                                                                fetchEditItem=''
-                                                            />
-                                                        </div>
-                                                    ))}
-                                            </div>
+                                                <div className='h-[34rem] overflow-auto'>
+                                                    {
+                                                        submittedFormListArr.map((formData, index) => (
+
+                                                            <div className='mb-2' key={index}>
+                                                                <ListingPlates
+                                                                    contentLine1A={formData.device_name}
+                                                                    contentLine1B={formData.contact_number}
+                                                                    contentLine1C={formData.email_id}
+                                                                    contentLine2A='Quoted Price:'
+                                                                    contentLine2B='Storage:'
+                                                                    contentLine2C='Condition:'
+                                                                    contentLine2D='Carrier:'
+                                                                    contentLine3A={"$" + formData.quoted_price}
+                                                                    contentLine3B={formData.storage.storage_value ? formData.storage.storage_value + ' ' + formData.storage.storage_unit : ''}
+                                                                    contentLine3C={formData.condition.condition_title ? formData.condition.condition_title : ''}
+                                                                    contentLine3D={formData.carrier.carrier_name ? formData.carrier.carrier_name : ''}
+                                                                    fetchEditItem=''
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                                :
+                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Forms Submitted !! </div>
                                             :
                                             <LoadingPlate />
-
                                     }
                                 </div>
                             </div>
-
 
                             : showListing === "appointments" ?
 
@@ -303,32 +334,37 @@ const Dashboard = () => {
 
                                     <div className='row-span-11'>
                                         {
-                                            appointmentListArr.length > 0 ?
+                                            !loader ?
 
-                                                <div className='h-[34rem] overflow-auto'>
-                                                    {
-                                                        appointmentListArr.map((appointmentData, index) => (
+                                                appointmentListArr.length > 0 ?
 
-                                                            <div className='mb-2' key={index}>
-                                                                <ListingPlates
-                                                                    contentLine1A={formatDate(appointmentData.date)}
-                                                                    contentLine1B={'Time slot: ' + appointmentData.time_slot}
-                                                                    contentLine1C={appointmentData.shop_address}
-                                                                    contentLine2A={appointmentData.user_name}
-                                                                    contentLine2B={appointmentData.contact_number}
-                                                                    contentLine2C=''
-                                                                    contentLine2D=''
-                                                                    contentLine3A={appointmentData.email_id}
-                                                                    contentLine3B=''
-                                                                    contentLine3C=''
-                                                                    contentLine3D=''
-                                                                    fetchEditItem=''
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                </div>
+                                                    <div className='h-[34rem] overflow-auto'>
+                                                        {
+                                                            appointmentListArr.map((appointmentData, index) => (
+
+                                                                <div className='mb-2' key={index}>
+                                                                    <ListingPlates
+                                                                        contentLine1A={formatDate(appointmentData.date)}
+                                                                        contentLine1B={'Time slot: ' + appointmentData.time_slot}
+                                                                        contentLine1C={appointmentData.shop_address}
+                                                                        contentLine2A={appointmentData.user_name}
+                                                                        contentLine2B={appointmentData.contact_number}
+                                                                        contentLine2C=''
+                                                                        contentLine2D=''
+                                                                        contentLine3A={appointmentData.email_id}
+                                                                        contentLine3B=''
+                                                                        contentLine3C=''
+                                                                        contentLine3D=''
+                                                                        fetchEditItem=''
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                    </div>
+                                                    :
+                                                    <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Appointments scheduled !! </div>
                                                 :
                                                 <LoadingPlate />
+
 
                                         }
                                     </div>
@@ -380,41 +416,43 @@ const Dashboard = () => {
                                             {
                                                 showDeviceType === 'mobile' ?
 
-                                                    devicesListArr.length > 0 ?
+                                                    !loader ?
+                                                        devicesListArr.length > 0 ?
 
-                                                        // mobile device lisiting section
-                                                        <div className='h-[34rem] overflow-auto'>
-                                                            {
-                                                                devicesListArr.map((deviceData, index) => (
+                                                            // mobile device lisiting section
+                                                            <div className='h-[34rem] overflow-auto'>
+                                                                {
+                                                                    devicesListArr.map((deviceData, index) => (
 
-                                                                    <div className='mb-2' key={index}>
-                                                                        <ListingPlates
-                                                                            contentLine1A={deviceData.device_data.device_name}
-                                                                            contentLine1B='Storages available:'
-                                                                            contentLine1C='Conditions available:'
-                                                                            contentLine2A={'$' + deviceData.device_data.base_price}
-                                                                            contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
-                                                                            contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
-                                                                            contentLine2D={''}
-                                                                            // contentLine3A=''
-                                                                            // contentLine3B=''
-                                                                            // contentLine3C=''
-                                                                            buttonRequired='yes'
-                                                                            dateTimeRequired='yes'
-                                                                            createdDate={formatDate(deviceData.device_data.created_at)}
-                                                                            updatedDate={formatDate(deviceData.device_data.updated_at)}
-                                                                            fetchEditArr={deviceData.device_data}
-                                                                            fetchEditConditionArr={deviceData.conditions}
-                                                                            fetchEditStorageArr={deviceData.storages}
-                                                                            fetchEditCarrierArr={deviceData.carriers}
-                                                                            fetchEditItem='device'
-                                                                        />
-                                                                    </div>
-                                                                ))}
-                                                        </div>
+                                                                        <div className='mb-2' key={index}>
+                                                                            <ListingPlates
+                                                                                contentLine1A={deviceData.device_data.device_name}
+                                                                                contentLine1B='Storages available:'
+                                                                                contentLine1C='Conditions available:'
+                                                                                contentLine2A={'$' + deviceData.device_data.base_price}
+                                                                                contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
+                                                                                contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
+                                                                                contentLine2D={''}
+                                                                                // contentLine3A=''
+                                                                                // contentLine3B=''
+                                                                                // contentLine3C=''
+                                                                                buttonRequired='yes'
+                                                                                dateTimeRequired='yes'
+                                                                                createdDate={formatDate(deviceData.device_data.created_at)}
+                                                                                updatedDate={formatDate(deviceData.device_data.updated_at)}
+                                                                                fetchEditArr={deviceData.device_data}
+                                                                                fetchEditConditionArr={deviceData.conditions}
+                                                                                fetchEditStorageArr={deviceData.storages}
+                                                                                fetchEditCarrierArr={deviceData.carriers}
+                                                                                fetchEditItem='device'
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                            </div>
+                                                            :
+                                                            <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Mobile devices available !! </div>
                                                         :
                                                         <LoadingPlate />
-
 
                                                     : showDeviceType === 'laptop' ?
 
@@ -480,30 +518,34 @@ const Dashboard = () => {
 
                                             <div className='row-span-11'>
                                                 {
-                                                    storagesListArr.length > 0 ?
+                                                    !loader ?
 
-                                                        <div className='h-[34rem] overflow-auto'>
-                                                            {
-                                                                storagesListArr.map((storagesData, index) => (
+                                                        storagesListArr.length > 0 ?
 
-                                                                    <div className='mb-2' key={index}>
-                                                                        <ListingPlates
-                                                                            contentLine1A={storagesData.storage_value + ' ' + storagesData.storage_unit}
-                                                                            contentLine1B=''
-                                                                            contentLine1C=''
-                                                                            contentLine2A='Storage description: '
-                                                                            contentLine2B={storagesData.storage_description ? storagesData.storage_description : 'N/A'}
-                                                                            contentLine2C=''
-                                                                            contentLine2D=''
-                                                                            contentLine3A=''
-                                                                            contentLine3B=''
-                                                                            buttonRequired='yes'
-                                                                            fetchEditArr={storagesData}
-                                                                            fetchEditItem='storage'
-                                                                        />
-                                                                    </div>
-                                                                ))}
-                                                        </div>
+                                                            <div className='h-[34rem] overflow-auto'>
+                                                                {
+                                                                    storagesListArr.map((storagesData, index) => (
+
+                                                                        <div className='mb-2' key={index}>
+                                                                            <ListingPlates
+                                                                                contentLine1A={storagesData.storage_value + ' ' + storagesData.storage_unit}
+                                                                                contentLine1B=''
+                                                                                contentLine1C=''
+                                                                                contentLine2A='Storage description: '
+                                                                                contentLine2B={storagesData.storage_description ? storagesData.storage_description : 'N/A'}
+                                                                                contentLine2C=''
+                                                                                contentLine2D=''
+                                                                                contentLine3A=''
+                                                                                contentLine3B=''
+                                                                                buttonRequired='yes'
+                                                                                fetchEditArr={storagesData}
+                                                                                fetchEditItem='storage'
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                            </div>
+                                                            :
+                                                            <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Storages available !! </div>
                                                         :
                                                         <LoadingPlate />
 
@@ -534,33 +576,36 @@ const Dashboard = () => {
 
                                                 <div className='row-span-11'>
                                                     {
-                                                        conditionsListArr.length > 0 ?
+                                                        !loader ?
 
-                                                            <div className='h-[34rem] overflow-auto'>
-                                                                {
-                                                                    conditionsListArr.map((conditionData, index) => (
+                                                            conditionsListArr.length > 0 ?
 
-                                                                        <div className='mb-2' key={index}>
-                                                                            <ListingPlates
-                                                                                contentLine1A={conditionData.condition_title}
-                                                                                contentLine1B=''
-                                                                                contentLine1C=''
-                                                                                contentLine2A='Condition description: '
-                                                                                contentLine2B={conditionData.condition_description ? conditionData.condition_description : 'N/A'}
-                                                                                contentLine2C=''
-                                                                                contentLine2D=''
-                                                                                contentLine3A=''
-                                                                                contentLine3B=''
-                                                                                buttonRequired='yes'
-                                                                                fetchEditArr={conditionData}
-                                                                                fetchEditItem='condition'
-                                                                            />
-                                                                        </div>
-                                                                    ))}
-                                                            </div>
+                                                                <div className='h-[34rem] overflow-auto'>
+                                                                    {
+                                                                        conditionsListArr.map((conditionData, index) => (
+
+                                                                            <div className='mb-2' key={index}>
+                                                                                <ListingPlates
+                                                                                    contentLine1A={conditionData.condition_title}
+                                                                                    contentLine1B=''
+                                                                                    contentLine1C=''
+                                                                                    contentLine2A='Condition description: '
+                                                                                    contentLine2B={conditionData.condition_description ? conditionData.condition_description : 'N/A'}
+                                                                                    contentLine2C=''
+                                                                                    contentLine2D=''
+                                                                                    contentLine3A=''
+                                                                                    contentLine3B=''
+                                                                                    buttonRequired='yes'
+                                                                                    fetchEditArr={conditionData}
+                                                                                    fetchEditItem='condition'
+                                                                                />
+                                                                            </div>
+                                                                        ))}
+                                                                </div>
+                                                                :
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Conditions available !! </div>
                                                             :
                                                             <LoadingPlate />
-
                                                     }
                                                 </div>
                                             </div>
@@ -589,38 +634,39 @@ const Dashboard = () => {
 
                                                 <div className='row-span-11'>
                                                     {
-                                                        carriersListArr.length > 0 ?
+                                                        !loader ?
 
-                                                            <div className='h-[34rem] overflow-auto'>
-                                                                {
-                                                                    carriersListArr.map((carriersData, index) => (
+                                                            carriersListArr.length > 0 ?
 
-                                                                        <div className='mb-2' key={index}>
-                                                                            <ListingPlates
-                                                                                contentLine1A={carriersData.carrier_name}
-                                                                                contentLine1B=''
-                                                                                contentLine1C=''
-                                                                                contentLine2A='Carrier description: '
-                                                                                contentLine2B={carriersData.condition_description ? carriersData.condition_description : 'N/A'}
-                                                                                contentLine2C=''
-                                                                                contentLine2D=''
-                                                                                contentLine3A=''
-                                                                                contentLine3B=''
-                                                                                buttonRequired='yes'
-                                                                                fetchEditArr={carriersData}
-                                                                                fetchEditItem='carrier'
-                                                                            />
-                                                                        </div>
-                                                                    ))}
-                                                            </div>
+                                                                <div className='h-[34rem] overflow-auto'>
+                                                                    {
+                                                                        carriersListArr.map((carriersData, index) => (
+
+                                                                            <div className='mb-2' key={index}>
+                                                                                <ListingPlates
+                                                                                    contentLine1A={carriersData.carrier_name}
+                                                                                    contentLine1B=''
+                                                                                    contentLine1C=''
+                                                                                    contentLine2A='Carrier description: '
+                                                                                    contentLine2B={carriersData.condition_description ? carriersData.condition_description : 'N/A'}
+                                                                                    contentLine2C=''
+                                                                                    contentLine2D=''
+                                                                                    contentLine3A=''
+                                                                                    contentLine3B=''
+                                                                                    buttonRequired='yes'
+                                                                                    fetchEditArr={carriersData}
+                                                                                    fetchEditItem='carrier'
+                                                                                />
+                                                                            </div>
+                                                                        ))}
+                                                                </div>
+                                                                :
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Carriers available !! </div>
                                                             :
                                                             <LoadingPlate />
-
                                                     }
                                                 </div>
                                             </div>
-
-
 
                     }
 

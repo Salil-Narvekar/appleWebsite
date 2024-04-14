@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { CarrierFormDetails, BackToPreviousList } from '../App';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-modal';
+import axios from "axios";
 import ButtonMain from './ButtonMain';
 import InputField from './InputField';
 import Loader from './Loader';
@@ -35,45 +36,45 @@ const CarrierForm = () => {
 
             if (action === 'add') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', carrierDetails)
-                //     .then(res => {
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-carrier', carrierDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to add carrier !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching carrier data:', error);
-                //     });
+                            console.log("failed to add carrier !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching carrier data:', error);
+                    });
 
             } else if (action === 'update') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile/${carrierDetails.carrier_id}', carrierDetails)
-                //     .then(res => {
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-carrier/${carrierDetails.carrier_id}`, carrierDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("carrier updated successfully - carrierDetails payload -> ", carrierDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("carrier updated successfully - carrierDetails payload -> ", carrierDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to updated carrier !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching carrier data:', error);
-                //     });
+                            console.log("failed to updated carrier !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching carrier data:', error);
+                    });
             }
         }
     }

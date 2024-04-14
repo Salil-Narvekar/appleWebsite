@@ -260,7 +260,7 @@ const MobileForm = () => {
 
             } else if (action === 'update') {
 
-                axios.post(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-mobile/${deviceDetails.device_id}`, deviceDetails)
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-mobile/${deviceDetails.device_id}`, deviceDetails)
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -606,6 +606,7 @@ const MobileForm = () => {
                 >
                     <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
 
+                        {/* Modal description */}
                         <div className='grid justify-items-center'>
                             {
                                 !deviceDetails.device_id ?
@@ -617,6 +618,7 @@ const MobileForm = () => {
                             <small className='text-xs font-bold text-green-600'>View the updated device list on dashboard</small>
                         </div>
 
+                        {/* Modal buttons */}
                         <div className='grid justify-items-center'>
                             <ButtonMain
                                 name="closeModal"
@@ -628,7 +630,6 @@ const MobileForm = () => {
                                 }}
                             />
                         </div>
-
 
                     </div>
                 </Modal>

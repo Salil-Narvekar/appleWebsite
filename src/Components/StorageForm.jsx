@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { StorageFormDetails, BackToPreviousList } from '../App';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-modal';
+import axios from "axios";
 import ButtonMain from './ButtonMain';
 import InputField from './InputField';
 import Loader from './Loader';
@@ -38,45 +39,45 @@ const StorageForm = () => {
 
             if (action === 'add') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', storageDetails)
-                //     .then(res => {
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-storage', storageDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("storage added successfully - storageDetails payload -> ", storageDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("storage added successfully - storageDetails payload -> ", storageDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to add storage !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching storages data:', error);
-                //     });
+                            console.log("failed to add storage !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching storages data:', error);
+                    });
 
             } else if (action === 'update') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile/${storageDetails.storage_id}', storageDetails)
-                //     .then(res => {
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-storage/${storageDetails.storage_id}`, storageDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("storage updated successfully - storageDetails payload -> ", storageDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("storage updated successfully - storageDetails payload -> ", storageDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to updated storage !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching storages data:', error);
-                //     });
+                            console.log("failed to updated storage !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching storages data:', error);
+                    });
             }
 
         }
@@ -140,7 +141,7 @@ const StorageForm = () => {
                             onChange={(e) => {
                                 setStorageDetails((prevSetDetails) => ({
                                     ...prevSetDetails,
-                                    storage_unit: e.target.value
+                                    storage_unit: e.target.value.toUpperCase()
                                 }));
                             }}
                         />
@@ -158,7 +159,6 @@ const StorageForm = () => {
                         <textarea
                             className='col-span-2 w-full h-full border border-slate-300 rounded text-black
                             transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold py-1 pl-2 '
-                            // label="Storage description"
                             name="storage_description"
                             id="storage_description"
                             type="text"

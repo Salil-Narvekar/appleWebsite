@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import ButtonMain from './ButtonMain'
 import Modal from 'react-modal';
 import { MobileFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails } from '../App';
-// import axios from "axios";
+import axios from "axios";
 import { MdDeleteForever } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
 
@@ -15,6 +15,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
   const carrierFormDetails = useContext(CarrierFormDetails);
 
   const [modal, setModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
   const [editItem, setEditItem] = useState('');
 
   // useEffect to update edit item name
@@ -23,26 +24,101 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
   }, [fetchEditItem])
 
   // function to delete item 
-  const deleteItem = (itemId) => {
+  const deleteItem = (itemId, editItem) => {
 
-    console.log("delete", itemId);
+    // console.log("delete", itemId, editItem);
 
-    // axios.post(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-mobile/${itemId}`)
-    //   .then(res => {
+    if (editItem === 'mobile') {
 
-    //     if (res.data.status === 200) {
+      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-mobile/${itemId}`)
+        .then(res => {
 
-    //       setModal(false);
+          if (res.data.status === 200) {
 
-    //     } else {
+            setModal(false);
+            showDeleteSuccess();
+            console.log("deleted mobile successfuly of id: " + itemId);
 
-    //       console.log("failed to delete mobile !! ");
-    //     }
+          } else {
+            console.log("failed to delete mobile !! ");
+          }
 
-    //   })
-    //   .catch(error => {
-    //     console.error('Error deleting data:', error);
-    //   });
+        })
+        .catch(error => {
+          console.error('Error deleting data:', error);
+        });
+
+    } else if (editItem === 'storage') {
+
+      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-storage/${itemId}`)
+        .then(res => {
+
+          if (res.data.status === 200) {
+
+            setModal(false);
+            showDeleteSuccess();
+            console.log("deleted storage successfuly id: " + itemId);
+
+          } else {
+            console.log("failed to delete storage !! ");
+          }
+
+        })
+        .catch(error => {
+          console.error('Error deleting data:', error);
+        });
+
+    } else if (editItem === 'condition') {
+
+      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-condition/${itemId}`)
+        .then(res => {
+
+          if (res.data.status === 200) {
+
+            setModal(false);
+            showDeleteSuccess();
+            console.log("deleted condition successfuly id: " + itemId);
+
+          } else {
+            console.log("failed to delete condition !! ");
+          }
+
+        })
+        .catch(error => {
+          console.error('Error deleting data:', error);
+        });
+
+    } else if (editItem === 'carrier') {
+
+      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-carrier/${itemId}`)
+        .then(res => {
+
+          if (res.data.status === 200) {
+
+            setModal(false);
+            showDeleteSuccess();
+            console.log("deleted carrier successfuly id: " + itemId);
+
+          } else {
+            console.log("failed to delete carrier !! ");
+          }
+
+        })
+        .catch(error => {
+          console.error('Error deleting data:', error);
+        });
+
+    }
+
+    // success modal
+    const showDeleteSuccess = () => {
+
+      setSuccessModal(true);
+
+      setTimeout(() => {
+        setSuccessModal(false);
+      }, 1500);
+    }
   }
 
   return (
@@ -198,6 +274,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
                     }}
                   />
                 </div>
+
               </div>
             </div>
           </div>
@@ -236,16 +313,16 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
             <div className='grid justify-items-center'>
               {
                 editItem === 'mobile' ?
-                  <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete mobile device - " + fetchEditArr.device_name + " ?"}</span>
+                  <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete mobile device: " + fetchEditArr.device_name + " ?"}</span>
 
                   : editItem === 'storage' ?
-                    <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete storage - " + fetchEditArr.storage_value + ' ' + fetchEditArr.storage_unit + " ?"}</span>
+                    <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete storage: " + fetchEditArr.storage_value + ' ' + fetchEditArr.storage_unit + " ?"}</span>
 
                     : editItem === 'condition' ?
-                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete condition - " + fetchEditArr.condition_title + " ?"}</span>
+                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete condition: " + fetchEditArr.condition_title + " ?"}</span>
 
                       : editItem === 'carrier' &&
-                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete carrier - " + fetchEditArr.carrier_name + " ?"}</span>
+                      <span className='text-normal font-bold text-red-700'>{"Are you sure you want to delete carrier: " + fetchEditArr.carrier_name + " ?"}</span>
               }
             </div>
 
@@ -266,20 +343,50 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
                 onClick={() => {
 
                   if (editItem === 'mobile') {
-                    deleteItem(fetchEditArr.device_id);
+                    deleteItem(fetchEditArr.device_id, editItem);
 
                   } else if (editItem === 'storage') {
-                    deleteItem(fetchEditArr.storage_id);
+                    deleteItem(fetchEditArr.storage_id, editItem);
 
                   } else if (editItem === 'condition') {
-                    deleteItem(fetchEditArr.condition_id);
+                    deleteItem(fetchEditArr.condition_id, editItem);
 
                   } else if (editItem === 'carrier') {
-                    deleteItem(fetchEditArr.carrier_id);
+                    deleteItem(fetchEditArr.carrier_id, editItem);
 
                   }
                 }}
               />
+            </div>
+
+          </div>
+        </Modal>
+      }
+
+      {
+        successModal &&
+
+        <Modal
+          isOpen={successModal}
+          className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
+        >
+          <div className='grid rounded-2xl bg-orange-200 py-6 pl-20 pr-20'>
+
+            {/* Modal description */}
+            <div className='grid justify-items-center'>
+              {
+                editItem === 'mobile' ?
+                  <span className='text-normal font-bold text-red-700'>{"Mobile device: " + fetchEditArr.device_name + ", deleted successfully !!"}</span>
+
+                  : editItem === 'storage' ?
+                    <span className='text-normal font-bold text-red-700'>{"Storage: " + fetchEditArr.storage_value + ' ' + fetchEditArr.storage_unit + ", deleted successfully !!"}</span>
+
+                    : editItem === 'condition' ?
+                      <span className='text-normal font-bold text-red-700'>{"Condition: " + fetchEditArr.condition_title + ", deleted successfully !!"}</span>
+
+                      : editItem === 'carrier' &&
+                      <span className='text-normal font-bold text-red-700'>{"Carrier: " + fetchEditArr.carrier_name + ", deleted successfully !!"}</span>
+              }
             </div>
 
           </div>

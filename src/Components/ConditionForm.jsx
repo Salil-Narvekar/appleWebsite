@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { ConditionFormDetails, BackToPreviousList } from '../App';
 import { useNavigate } from "react-router-dom";
 import Modal from 'react-modal';
+import axios from "axios";
 import ButtonMain from './ButtonMain';
 import InputField from './InputField';
 import Loader from './Loader';
@@ -36,45 +37,45 @@ const ConditionForm = () => {
 
             if (action === 'add') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', conditionDetails)
-                //     .then(res => {
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-condition', conditionDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("condition added successfully - conditionDetails payload -> ", conditionDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("condition added successfully - conditionDetails payload -> ", conditionDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to add condition !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching condition data:', error);
-                //     });
+                            console.log("failed to add condition !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching condition data:', error);
+                    });
 
             } else if (action === 'update') {
 
-                // axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile/${conditionDetails.condition_id}', conditionDetails)
-                //     .then(res => {
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-condition/${conditionDetails.condition_id}`, conditionDetails)
+                    .then(res => {
 
-                //         if (res.data.status === 200) {
+                        if (res.data.status === 200) {
 
-                //             console.log("condition updated successfully - conditionDetails payload -> ", conditionDetails);
-                //             setSubmitLoader(false);
-                //             setModal(true);
+                            console.log("condition updated successfully - conditionDetails payload -> ", conditionDetails);
+                            setSubmitLoader(false);
+                            setModal(true);
 
-                //         } else {
+                        } else {
 
-                //             console.log("failed to updated condition !! ");
-                //             setSubmitLoader(false);
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.error('Error fetching condition data:', error);
-                //     });
+                            console.log("failed to updated condition !! ");
+                            setSubmitLoader(false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching condition data:', error);
+                    });
             }
 
         }

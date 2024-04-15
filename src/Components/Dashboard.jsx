@@ -205,13 +205,6 @@ const Dashboard = () => {
 
     }, [showListing])
 
-
-    const logout = () => {
-        console.log('logout')
-        loggedUserDetails.dispatch({ type: "loggedOut", value: { username: '', password: '' } })
-        navigate("/login");
-    };
-
     const devicesList = [
         {
             device_type: 'mobile',
@@ -245,6 +238,13 @@ const Dashboard = () => {
         const year = date.getFullYear();
         // console.log('Formatted Date:', `${day}/${month}/${year}`);
         return `${day}/${month}/${year}`;
+    };
+
+    // function to logout
+    const logout = () => {
+
+        loggedUserDetails.dispatch({type: "loggedOut"})
+        navigate("/login");
     };
 
     return (
@@ -385,7 +385,7 @@ const Dashboard = () => {
                                                     name='addDevice'
                                                     buttonLable='Add New Device'
                                                     onClick={() => {
-                                                        
+
                                                         if (showDeviceType === 'mobile') {
                                                             navigate('/mobileForm');
 

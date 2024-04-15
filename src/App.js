@@ -21,18 +21,18 @@ function App() {
 
   // Reducer function for fetching logged-In User details on login
   const initialUserState = {
-    // userID: '',
-    username: '',
+    email: '',
     password: '',
+    token: '',
   };
 
   const reducerUser = (state, action) => {
     switch (action.type) {
       case 'loggedIn':
         return {
-          // userID: 'action.value.ID',
-          username: action.value.username,
-          password: action.value.Passwords,
+          email: action.value.email,
+          password: action.value.password,
+          token: action.value.token,
         }
       // return console.log("loggedIn", action.value);
 

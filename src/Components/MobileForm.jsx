@@ -319,7 +319,7 @@ const MobileForm = () => {
             <div className="row-span-9 grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Device details */}
-                <div className='row-span-1 grid sm:grid-cols-3 gap-1 sm:justify-items-start ml-4'>
+                <div className='row-span-1 grid sm:grid-cols-4 gap-1 sm:justify-items-start ml-4'>
                     <div>
                         <InputField
                             label="Device name"
@@ -382,10 +382,18 @@ const MobileForm = () => {
                                 onChange={(values) => setDevice(values)}
                             />
                         </div>
+
                         {
                             validationFlag === false && !deviceDetails.device_type &&
                             <ValidationMsg errorMsg="Select device type" />
                         }
+                    </div>
+
+                    {/* sadil - image */}
+                    <div>
+                        <div className='grid sm:grid-cols-2 gap-1 '>
+                            <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
+                        </div>
                     </div>
                 </div>
 

@@ -18,6 +18,7 @@ import NavContent from './NavContent';
 const Dashboard = () => {
 
     const navigate = useNavigate();
+
     const loggedUserDetails = useContext(LoggedUserDetails);
     const mobileFormDetails = useContext(MobileFormDetails);
     const storageFormDetails = useContext(StorageFormDetails);
@@ -43,18 +44,43 @@ const Dashboard = () => {
         if (showListing === 'submittedForms') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms')
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+            if (!authToken) {
+                console.error('Authentication token not found in local storage');
+                setLoader(false);
+                navigate('/login');
+                return;
+            }
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                }
+            )
                 .then(res => {
 
-                    if (res.data.data.length > 0) {
-                        const submittedFormData = res.data.data;
-                        setSubmittedFormListArr(submittedFormData);
-                        setLoader(false);
+                    if (res.data.status === 200) {
+
+                        if (res.data.data.length > 0) {
+                            const submittedFormData = res.data.data;
+                            setSubmittedFormListArr(submittedFormData);
+                            setLoader(false);
+
+                        } else {
+                            console.log("submitted form data empty");
+                            setSubmittedFormListArr([]);
+                            setLoader(false);
+                        }
 
                     } else {
-                        console.log("submitted form data empty");
-                        setSubmittedFormListArr([]);
-                        setLoader(false);
+
+                        console.error('Authentication token not found in local storage');
+                        setLoader(false);        
+                        navigate('/login');
                     }
 
                 })
@@ -243,7 +269,8 @@ const Dashboard = () => {
     // function to logout
     const logout = () => {
 
-        loggedUserDetails.dispatch({type: "loggedOut"})
+        loggedUserDetails.dispatch({ type: "loggedOut" })
+        localStorage.removeItem('authToken');
         navigate("/login");
     };
 

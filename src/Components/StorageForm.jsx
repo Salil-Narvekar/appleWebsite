@@ -206,14 +206,24 @@ const StorageForm = () => {
 
                 <Modal
                     isOpen={modal}
+                    ariaHideApp={false}
                     className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
                 >
                     <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
 
+                        {/* Modal description */}
                         <div className='grid justify-items-center'>
-                            <span className='text-normal font-bold text-green-700'>Successfully added new storage details !!</span>
+                            {
+                                !storageDetails.device_id ?
+                                    <span className='text-normal font-bold text-green-700'>Successfully added the new storage details !!</span>
+                                    :
+                                    <span className='text-normal font-bold text-green-700'>{'Successfully updated the ' + storageDetails.storage_value + ' ' + storageDetails.storage_unit + ' details !!'}</span>
+                            }
+
+                            <small className='text-xs font-bold text-green-600'>View the updated storages list on dashboard</small>
                         </div>
 
+                        {/* Modal buttons */}
                         <div className='grid justify-items-center'>
                             <ButtonMain
                                 name="closeModal"

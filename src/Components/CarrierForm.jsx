@@ -158,14 +158,24 @@ const CarrierForm = () => {
 
                 <Modal
                     isOpen={modal}
+                    ariaHideApp={false}
                     className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
                 >
                     <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
 
+                        {/* Modal description */}
                         <div className='grid justify-items-center'>
-                            <span className='text-normal font-bold text-green-700'>Successfully added new carrier details !!</span>
+                            {
+                                !carrierDetails.carrier_id ?
+                                    <span className='text-normal font-bold text-green-700'>Successfully added the new carrier details !!</span>
+                                    :
+                                    <span className='text-normal font-bold text-green-700'>{'Successfully updated the ' + carrierDetails.carrier_name + ' details !!'}</span>
+                            }
+
+                            <small className='text-xs font-bold text-green-600'>View the updated carriers list on dashboard</small>
                         </div>
 
+                        {/* Modal buttons */}
                         <div className='grid justify-items-center'>
                             <ButtonMain
                                 name="closeModal"

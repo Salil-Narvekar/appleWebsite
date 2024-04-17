@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import ButtonMain from './ButtonMain'
-import Modal from 'react-modal';
-import { MobileFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails } from '../App';
-import axios from "axios";
-import { MdDeleteForever } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
+import Modal from 'react-modal';
+import { MobileFormDetails, StorageFormDetails, ConditionFormDetails, CarrierFormDetails, BackToPreviousList } from '../App';
+import axios from "axios";
+import ButtonMain from './ButtonMain'
+import { MdDeleteForever } from "react-icons/md";
 
 const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fetchEditStorageArr, fetchEditCarrierArr, contentLine1A, contentLine1B, contentLine1C, contentLine2A, contentLine2B, contentLine2C, contentLine2D, contentLine3A, contentLine3B, contentLine3C, contentLine3D, buttonRequired, dateTimeRequired, createdDate, updatedDate }) => {
 
@@ -13,6 +13,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
   const storageFormDetails = useContext(StorageFormDetails);
   const conditionFormDetails = useContext(ConditionFormDetails);
   const carrierFormDetails = useContext(CarrierFormDetails);
+  const backToPreviousList = useContext(BackToPreviousList);
 
   const [modal, setModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -27,98 +28,42 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
   const deleteItem = (itemId, editItem) => {
 
     // console.log("delete", itemId, editItem);
+    navigate('/redirecting..');
 
-    if (editItem === 'mobile') {
+    axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-${editItem}/${itemId}`)
+      .then(res => {
 
-      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-mobile/${itemId}`)
-        .then(res => {
+        if (res.data.status === 200) {
 
-          if (res.data.status === 200) {
-
-            setModal(false);
-            showDeleteSuccess();
-            console.log("deleted mobile successfuly of id: " + itemId);
-
+          if (editItem === 'mobile') {
+            backToPreviousList.dispatch({ type: "switchList", value: 'devices' });
           } else {
-            console.log("failed to delete mobile !! ");
+            backToPreviousList.dispatch({ type: "switchList", value: editItem + 's' });
           }
 
-        })
-        .catch(error => {
-          console.error('Error deleting data:', error);
-        });
+          setModal(false);
+          navigate('/dashboard');
+          showDeleteSuccess();
+          console.log("deleted " + editItem + " successfuly id: " + itemId);
 
-    } else if (editItem === 'storage') {
+        } else {
 
-      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-storage/${itemId}`)
-        .then(res => {
+          setModal(false);
+          console.log("failed to delete " + editItem + " !! ");
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting data:', error);
+      });
+  }
 
-          if (res.data.status === 200) {
+  // delete success modal
+  const showDeleteSuccess = () => {
 
-            setModal(false);
-            showDeleteSuccess();
-            console.log("deleted storage successfuly id: " + itemId);
-
-          } else {
-            console.log("failed to delete storage !! ");
-          }
-
-        })
-        .catch(error => {
-          console.error('Error deleting data:', error);
-        });
-
-    } else if (editItem === 'condition') {
-
-      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-condition/${itemId}`)
-        .then(res => {
-
-          if (res.data.status === 200) {
-
-            setModal(false);
-            showDeleteSuccess();
-            console.log("deleted condition successfuly id: " + itemId);
-
-          } else {
-            console.log("failed to delete condition !! ");
-          }
-
-        })
-        .catch(error => {
-          console.error('Error deleting data:', error);
-        });
-
-    } else if (editItem === 'carrier') {
-
-      axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-carrier/${itemId}`)
-        .then(res => {
-
-          if (res.data.status === 200) {
-
-            setModal(false);
-            showDeleteSuccess();
-            console.log("deleted carrier successfuly id: " + itemId);
-
-          } else {
-            console.log("failed to delete carrier !! ");
-          }
-
-        })
-        .catch(error => {
-          console.error('Error deleting data:', error);
-        });
-
-    }
-
-    // success modal
-    const showDeleteSuccess = () => {
-
-      setSuccessModal(true);
-
-      setTimeout(() => {
-        setSuccessModal(false);
-      }, 1500);
-    }
+    setSuccessModal(true);
+    setTimeout(() => {
+      setSuccessModal(false);
+    }, 4000);
   }
 
   return (
@@ -163,6 +108,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
         buttonRequired === 'yes' ?
           <div className='sm:grid grid-cols-12 gap-2 font-medium'>
 
+            {/* datetime / content */}
             {
               dateTimeRequired === "yes" ?
                 <div className='col-span-6 grid grid-cols-2 text-left text-xs text-red-700'>
@@ -192,6 +138,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
                 </div>
             }
 
+            {/* buttons */}
             <div className='col-span-6 justify-self-end'>
 
               <div className='grid grid-cols-3'>
@@ -305,6 +252,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
 
         <Modal
           isOpen={modal}
+          ariaHideApp={false}
           className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
         >
           <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
@@ -368,6 +316,7 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
 
         <Modal
           isOpen={successModal}
+          ariaHideApp={false}
           className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
         >
           <div className='grid rounded-2xl bg-orange-200 py-6 pl-20 pr-20'>

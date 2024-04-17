@@ -8,6 +8,7 @@ import WatchForm from './Components/WatchForm';
 import StorageForm from './Components/StorageForm';
 import ConditionForm from './Components/ConditionForm';
 import CarrierForm from './Components/CarrierForm';
+import RedirectingPage from './Components/RedirectingPage';
 
 export const LoggedUserDetails = createContext();
 export const MobileFormDetails = createContext();
@@ -201,6 +202,7 @@ function App() {
                       <Route path='/storageForm' element={<StorageForm />} />
                       <Route path='/conditionForm' element={<ConditionForm />} />
                       <Route path='/carrierForm' element={<CarrierForm />} />
+                      <Route path='/redirecting..' element={<RedirectingPage />} />
                     </Routes>
                   </HashRouter>
                 </div>

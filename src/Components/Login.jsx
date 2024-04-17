@@ -42,17 +42,18 @@ const Login = () => {
 
           if (res.data.status === true) {
 
-            console.log("Generated token: ", res.data.data.token);
+            // auth token - localstorage 
+            const authToken = res.data.data.token;
+            localStorage.setItem('authToken', authToken);
 
-            loggedUserDetails.dispatch(
-              {
-                type: "loggedIn",
-                value: { 
-                  email: credentials.email, 
-                  password: credentials.password,
-                  token: res.data.data.token
-                }
-              });
+            loggedUserDetails.dispatch({
+              type: "loggedIn",
+              value: {
+                email: credentials.email,
+                password: credentials.password,
+                token: authToken
+              }
+            });
 
             setLoader(false);
             setInvalidCredentials(false);

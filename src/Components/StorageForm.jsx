@@ -36,10 +36,18 @@ const StorageForm = () => {
             setValidationFlag(true);
             setSubmitLoader(true);
             console.log("storage added successfully - storageDetails payload -> ", storageDetails);
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
             if (action === 'add') {
 
-                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-storage', storageDetails)
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-storage', storageDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -54,13 +62,30 @@ const StorageForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching storages data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
 
             } else if (action === 'update') {
 
-                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-storage/${storageDetails.storage_id}`, storageDetails)
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-storage/${storageDetails.storage_id}`, storageDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -75,8 +100,18 @@ const StorageForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching storages data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
             }
 

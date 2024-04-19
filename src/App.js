@@ -193,7 +193,7 @@ function App() {
                 <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
                   <HashRouter>
                     <Routes>
-                      <Route path='/' element={<Navigate to='/login' />} />
+                      <Route path='/' element={<Navigate to='/dashboard' />} />
                       <Route path='/login' element={<Login />} />
                       <Route path='/dashboard' element={<Dashboard />} />
                       <Route path='/mobileForm' element={<MobileForm />} />

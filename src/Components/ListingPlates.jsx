@@ -29,8 +29,16 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
 
     // console.log("delete", itemId, editItem);
     navigate('/redirecting..');
+    const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
-    axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-${editItem}/${itemId}`)
+    axios.delete(`https://sell-iphone-backend-production.up.railway.app/api/admin/delete-${editItem}/${itemId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${authToken}`,
+        }
+      }
+    )
       .then(res => {
 
         if (res.data.status === 200) {
@@ -52,8 +60,18 @@ const ListingPlates = ({ fetchEditItem, fetchEditArr, fetchEditConditionArr, fet
           console.log("failed to delete " + editItem + " !! ");
         }
       })
+
       .catch(error => {
-        console.error('Error deleting data:', error);
+
+        if (error.response.status === 401) {
+
+          console.error('Unauthorised User - Auth token not found');
+          localStorage.removeItem('authToken');
+          navigate('/login');
+
+        } else {
+          console.error('Error fetching data:', error.response);
+        }
       });
   }
 

@@ -41,8 +41,18 @@ const MobileForm = () => {
 
     // useEffect to mount carriers data
     useEffect(() => {
+
         setLoader(true);
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers')
+        const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers',
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${authToken}`,
+                }
+            }
+        )
             .then(res => {
 
                 if (res.data.data.length > 0) {
@@ -55,15 +65,37 @@ const MobileForm = () => {
                 }
 
             })
+
             .catch(error => {
-                console.error('Error fetching carriers data:', error);
+
+                if (error.response.status === 401) {
+
+                    console.error('Unauthorised User - Auth token not found');
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                    setLoader(false);
+
+                } else {
+                    console.error('Error fetching data:', error.response);
+                }
             });
-    }, [])
+
+    }, [navigate])
 
     // useEffect to mount conditions data
     useEffect(() => {
+
         setLoader(true);
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions')
+        const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions',
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${authToken}`,
+                }
+            }
+        )
             .then(res => {
 
                 if (res.data.data.length > 0) {
@@ -76,15 +108,37 @@ const MobileForm = () => {
                 }
 
             })
+
             .catch(error => {
-                console.error('Error fetching conditions data:', error);
+
+                if (error.response.status === 401) {
+
+                    console.error('Unauthorised User - Auth token not found');
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                    setLoader(false);
+
+                } else {
+                    console.error('Error fetching data:', error.response);
+                }
             });
-    }, [])
+
+    }, [navigate])
 
     // useEffect to mount storages data
     useEffect(() => {
+
         setLoader(true);
-        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages')
+        const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+        axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages',
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${authToken}`,
+                }
+            }
+        )
             .then(res => {
 
                 if (res.data.data.length > 0) {
@@ -97,10 +151,22 @@ const MobileForm = () => {
                 }
 
             })
+
             .catch(error => {
-                console.error('Error fetching storages data:', error);
+
+                if (error.response.status === 401) {
+
+                    console.error('Unauthorised User - Auth token not found');
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                    setLoader(false);
+
+                } else {
+                    console.error('Error fetching data:', error.response);
+                }
             });
-    }, [])
+
+    }, [navigate])
 
     // conditions array mapping for multiselect
     const storagesArr = storagesArrData.map(storage => ({
@@ -237,9 +303,18 @@ const MobileForm = () => {
             setValidationFlag(true);
             setSubmitLoader(true);
 
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
             if (action === 'add') {
 
-                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', deviceDetails)
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-mobile', deviceDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -254,13 +329,32 @@ const MobileForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching storages data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+                            setLoader(false);
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
+
 
             } else if (action === 'update') {
 
-                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-mobile/${deviceDetails.device_id}`, deviceDetails)
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-mobile/${deviceDetails.device_id}`, deviceDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -275,9 +369,21 @@ const MobileForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+                            setLoader(false);
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
+
             }
         }
     }
@@ -296,7 +402,7 @@ const MobileForm = () => {
             setStoragesDetails(storage.value, storage.price, index);
         });
 
-    }, []);
+    }, [mobileFormDetails, selectedConditions, selectedStorages]);
 
     return (
         <div className='grid sm:grid-rows-10 gap-1'>

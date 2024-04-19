@@ -37,7 +37,7 @@ const Login = () => {
       setValidationFlag(true);
       // console.log("credentials payload -> ", credentials);
 
-      axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/login', credentials)
+      axios.post('https://sell-iphone-backend-production.up.railway.app/api/auth/login', credentials)
         .then(res => {
 
           if (res.data.status === true) {

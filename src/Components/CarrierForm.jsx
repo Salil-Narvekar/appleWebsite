@@ -33,10 +33,18 @@ const CarrierForm = () => {
             setValidationFlag(true);
             setSubmitLoader(true);
             console.log("carrier added successfully - carrierDetails payload -> ", carrierDetails);
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
             if (action === 'add') {
 
-                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-carrier', carrierDetails)
+                axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/add-new-carrier', carrierDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -51,13 +59,30 @@ const CarrierForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching carrier data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
 
             } else if (action === 'update') {
 
-                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-carrier/${carrierDetails.carrier_id}`, carrierDetails)
+                axios.put(`https://sell-iphone-backend-production.up.railway.app/api/admin/update-carrier/${carrierDetails.carrier_id}`, carrierDetails,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
                     .then(res => {
 
                         if (res.data.status === 200) {
@@ -72,8 +97,18 @@ const CarrierForm = () => {
                             setSubmitLoader(false);
                         }
                     })
+
                     .catch(error => {
-                        console.error('Error fetching carrier data:', error);
+
+                        if (error.response.status === 401) {
+
+                            console.error('Unauthorised User - Auth token not found');
+                            localStorage.removeItem('authToken');
+                            navigate('/login');
+
+                        } else {
+                            console.error('Error fetching data:', error.response);
+                        }
                     });
             }
         }

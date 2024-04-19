@@ -46,50 +46,52 @@ const Dashboard = () => {
             setLoader(true);
             const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
-            if (!authToken) {
-                console.error('Authentication token not found in local storage');
-                setLoader(false);
-                navigate('/login');
-                return;
-            }
+            // if (!authToken) {
+            //     console.error('Authentication token not found in local storage');
+            //     setLoader(false);
+            //     navigate('/login');
+            //     return;
+            // }
 
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms',
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`,
-                    },
+                        'Authorization': `${authToken}`,
+                    }
                 }
             )
                 .then(res => {
 
-                    if (res.data.status === 200) {
-
-                        if (res.data.data.length > 0) {
-                            const submittedFormData = res.data.data;
-                            setSubmittedFormListArr(submittedFormData);
-                            setLoader(false);
-
-                        } else {
-                            console.log("submitted form data empty");
-                            setSubmittedFormListArr([]);
-                            setLoader(false);
-                        }
+                    if (res.data.data.length > 0) {
+                        const submittedFormData = res.data.data;
+                        setSubmittedFormListArr(submittedFormData);
+                        setLoader(false);
 
                     } else {
+                        console.log("submitted form data empty");
+                        setSubmittedFormListArr([]);
+                        setLoader(false);
+                    }
+                })
 
-                        console.error('Authentication token not found in local storage');
-                        setLoader(false);        
+                .catch(error => {
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
                         navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
                     }
 
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
                 });
         }
 
-    }, [showListing])
+    }, [showListing, navigate])
 
     // useEffect to mount appointment list data
     useEffect(() => {
@@ -97,7 +99,16 @@ const Dashboard = () => {
         if (showListing === 'appointments') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-appointment-details')
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-appointment-details',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    }
+                }
+            )
                 .then(res => {
 
                     if (res.data.data.length > 0) {
@@ -112,20 +123,41 @@ const Dashboard = () => {
                     }
 
                 })
+
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
                 });
         }
 
-    }, [showListing])
+    }, [showListing, navigate])
 
-    // useEffect to mount devices list data
+    // useEffect to mount device list data
     useEffect(() => {
 
-        if (showListing === 'devices') {
+        const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+        if (showListing === 'devices' && showDeviceType === 'mobile') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile')
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/mobile',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    }
+                }
+            )
                 .then(res => {
 
                     if (res.data.data.length > 0) {
@@ -140,12 +172,106 @@ const Dashboard = () => {
                     }
 
                 })
+
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
+                });
+
+        } else if (showListing === 'devices' && showDeviceType === 'laptop') {
+
+            setLoader(true);
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/laptop',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    },
+                }
+            )
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const devicesData = res.data.data;
+                        setDevicesListArr(devicesData);
+                        setLoader(false);
+
+                    } else {
+                        console.log("devices data empty");
+                        setDevicesListArr([]);
+                        setLoader(false);
+                    }
+
+                })
+
+                .catch(error => {
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
+                });
+
+        } else if (showListing === 'devices' && showDeviceType === 'watch') {
+
+            setLoader(true);
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-devices/watch',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    },
+                }
+            )
+                .then(res => {
+
+                    if (res.data.data.length > 0) {
+                        const devicesData = res.data.data;
+                        setDevicesListArr(devicesData);
+                        setLoader(false);
+
+                    } else {
+                        console.log("devices data empty");
+                        setDevicesListArr([]);
+                        setLoader(false);
+                    }
+
+                })
+
+                .catch(error => {
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
                 });
         }
 
-    }, [showListing])
+    }, [showListing, showDeviceType, navigate])
 
     // useEffect to mount storages list data
     useEffect(() => {
@@ -153,7 +279,16 @@ const Dashboard = () => {
         if (showListing === 'storages') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages')
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-storages',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    }
+                }
+            )
                 .then(res => {
 
                     if (res.data.data.length > 0) {
@@ -168,12 +303,24 @@ const Dashboard = () => {
                     }
 
                 })
+
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
                 });
         }
 
-    }, [showListing])
+    }, [showListing, navigate])
 
     // useEffect to mount conditions list data
     useEffect(() => {
@@ -181,7 +328,16 @@ const Dashboard = () => {
         if (showListing === 'conditions') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions')
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/all-conditions',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    }
+                }
+            )
                 .then(res => {
 
                     if (res.data.data.length > 0) {
@@ -196,12 +352,24 @@ const Dashboard = () => {
                     }
 
                 })
+
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
+
                 });
         }
 
-    }, [showListing])
+    }, [showListing, navigate])
 
     // useEffect to mount carriers list data
     useEffect(() => {
@@ -209,7 +377,16 @@ const Dashboard = () => {
         if (showListing === 'carriers') {
 
             setLoader(true);
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers')
+            const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+
+            axios.get('https://sell-iphone-backend-production.up.railway.app/api/device/get-all-carriers',
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
+                    }
+                }
+            )
                 .then(res => {
 
                     if (res.data.data.length > 0) {
@@ -222,14 +399,24 @@ const Dashboard = () => {
                         setCarriersListArr([]);
                         setLoader(false);
                     }
-
                 })
+
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+
+                    if (error.response.status === 401) {
+
+                        console.error('Unauthorised User - Auth token not found');
+                        localStorage.removeItem('authToken');
+                        navigate('/login');
+                        setLoader(false);
+
+                    } else {
+                        console.error('Error fetching data:', error.response);
+                    }
                 });
         }
 
-    }, [showListing])
+    }, [showListing, navigate])
 
     const devicesList = [
         {
@@ -453,10 +640,9 @@ const Dashboard = () => {
                                             {
                                                 showDeviceType === 'mobile' ?
 
+                                                    // mobile device lisiting section
                                                     !loader ?
                                                         devicesListArr.length > 0 ?
-
-                                                            // mobile device lisiting section
                                                             <div className='h-[34rem] overflow-auto'>
                                                                 {
                                                                     devicesListArr.map((deviceData, index) => (
@@ -494,40 +680,83 @@ const Dashboard = () => {
                                                     : showDeviceType === 'laptop' ?
 
                                                         // laptop device lisiting section
-                                                        <ListingPlates
-                                                            contentLine1A='Laptop Device Demo'
-                                                            contentLine1B='Storage accepted'
-                                                            contentLine1C='Condition accepted'
-                                                            contentLine2A='base price'
-                                                            contentLine2B=''
-                                                            contentLine2C=''
-                                                            contentLine3A=''
-                                                            contentLine3B=''
-                                                            contentLine3C=''
-                                                            buttonRequired='yes'
-                                                            dateTimeRequired='yes'
-                                                            createdDate='dd/mm/yyyy'
-                                                            updatedDate='dd/mm/yyyy'
-                                                        />
+                                                        !loader ?
+                                                            devicesListArr.length > 0 ?
+                                                                <div className='h-[34rem] overflow-auto'>
+                                                                    {
+                                                                        devicesListArr.map((deviceData, index) => (
+
+                                                                            <div className='mb-2' key={index}>
+                                                                                <ListingPlates
+                                                                                    contentLine1A={deviceData.device_data.device_name}
+                                                                                    contentLine1B='Storages available:'
+                                                                                    contentLine1C='Conditions available:'
+                                                                                    contentLine2A={'$' + deviceData.device_data.base_price}
+                                                                                    contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
+                                                                                    contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
+                                                                                    contentLine2D={''}
+                                                                                    // contentLine3A=''
+                                                                                    // contentLine3B=''
+                                                                                    // contentLine3C=''
+                                                                                    buttonRequired='yes'
+                                                                                    dateTimeRequired='yes'
+                                                                                    createdDate={formatDate(deviceData.device_data.created_at)}
+                                                                                    updatedDate={formatDate(deviceData.device_data.updated_at)}
+                                                                                    fetchEditArr={deviceData.device_data}
+                                                                                    fetchEditConditionArr={deviceData.conditions}
+                                                                                    fetchEditStorageArr={deviceData.storages}
+                                                                                    fetchEditCarrierArr={deviceData.carriers}
+                                                                                    fetchEditItem='laptop'
+                                                                                />
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                                :
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Mobile devices available !! </div>
+                                                            :
+                                                            <LoadingPlate />
+
 
                                                         : showDeviceType === "watch" &&
 
-                                                        // watch device lisiting section
-                                                        <ListingPlates
-                                                            contentLine1A='Watch Device Demo'
-                                                            contentLine1B='Storage accepted'
-                                                            contentLine1C='Condition accepted'
-                                                            contentLine2A='base price'
-                                                            contentLine2B=''
-                                                            contentLine2C=''
-                                                            contentLine3A=''
-                                                            contentLine3B=''
-                                                            contentLine3C=''
-                                                            buttonRequired='yes'
-                                                            dateTimeRequired='yes'
-                                                            createdDate='dd/mm/yyyy'
-                                                            updatedDate='dd/mm/yyyy'
-                                                        />
+                                                            // watch device lisiting section
+                                                            !loader ?
+                                                            devicesListArr.length > 0 ?
+                                                                <div className='h-[34rem] overflow-auto'>
+                                                                    {
+                                                                        devicesListArr.map((deviceData, index) => (
+
+                                                                            <div className='mb-2' key={index}>
+                                                                                <ListingPlates
+                                                                                    contentLine1A={deviceData.device_data.device_name}
+                                                                                    contentLine1B='Storages available:'
+                                                                                    contentLine1C='Conditions available:'
+                                                                                    contentLine2A={'$' + deviceData.device_data.base_price}
+                                                                                    contentLine2B={deviceData.storages.map(storage => `${storage.storage_value} ${storage.storage_unit}`).join(', ')}
+                                                                                    contentLine2C={deviceData.conditions.map(condition => `${condition.condition_title}`).join(', ')}
+                                                                                    contentLine2D={''}
+                                                                                    // contentLine3A=''
+                                                                                    // contentLine3B=''
+                                                                                    // contentLine3C=''
+                                                                                    buttonRequired='yes'
+                                                                                    dateTimeRequired='yes'
+                                                                                    createdDate={formatDate(deviceData.device_data.created_at)}
+                                                                                    updatedDate={formatDate(deviceData.device_data.updated_at)}
+                                                                                    fetchEditArr={deviceData.device_data}
+                                                                                    fetchEditConditionArr={deviceData.conditions}
+                                                                                    fetchEditStorageArr={deviceData.storages}
+                                                                                    fetchEditCarrierArr={deviceData.carriers}
+                                                                                    fetchEditItem='watch'
+                                                                                />
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                                :
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Mobile devices available !! </div>
+                                                            :
+                                                            <LoadingPlate />
                                             }
                                         </div>
                                     </div>

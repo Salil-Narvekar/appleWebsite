@@ -24,7 +24,6 @@ const MobileForm = () => {
         conditionData: {},
         storageData: {},
     });
-    // console.log("deviceDetails", deviceDetails)
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
@@ -255,7 +254,10 @@ const MobileForm = () => {
         setDeviceDetails(prevDeviceDetails => {
             const updatedCarrierData = { ...prevDeviceDetails.carrierData };
             updatedCarrierData[carrierId] = carrierPrice;
-            return { ...prevDeviceDetails, carrierData: updatedCarrierData };
+            return {
+                ...prevDeviceDetails,
+                carrierData: updatedCarrierData
+            };
         });
     };
 
@@ -285,6 +287,8 @@ const MobileForm = () => {
 
     // function to validate fields & Submit form details
     const submitDeviceDetails = (action) => {
+
+        console.log(deviceDetails)
 
         // to validate & Submit
         if (!deviceDetails.device_name ||
@@ -388,21 +392,32 @@ const MobileForm = () => {
         }
     }
 
-    // useEffect to set the carrier, condition & storage values for edit state
+    // useEffect to set the carrier values for edit state
     useEffect(() => {
+
         mobileFormDetails.mobileForm.carrierData.forEach((carriersData, index) => {
             setCarriersDetails(carriersData.value, carriersData.price, index);
         });
+
+    }, [mobileFormDetails]);
+
+    // useEffect to set the condition values for edit state
+    useEffect(() => {
 
         selectedConditions.forEach((condition, index) => {
             setConditionsDetails(condition.value, condition.price, index);
         });
 
+    }, [selectedConditions]);
+
+    // useEffect to set the storage values for edit state
+    useEffect(() => {
+
         selectedStorages.forEach((storage, index) => {
             setStoragesDetails(storage.value, storage.price, index);
         });
 
-    }, [mobileFormDetails, selectedConditions, selectedStorages]);
+    }, [selectedStorages]);
 
     return (
         <div className='grid sm:grid-rows-10 gap-1'>

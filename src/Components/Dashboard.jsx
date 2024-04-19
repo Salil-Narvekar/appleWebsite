@@ -46,12 +46,13 @@ const Dashboard = () => {
             setLoader(true);
             const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
-            if (!authToken) {
-                console.error('Authentication token not found in local storage');
-                setLoader(false);
-                navigate('/login');
-                return;
-            }
+            // uncomment this if statement to handle auth from frontend (if required) --
+            // if (!authToken) {
+            //     console.error('Authentication token not found in local storage');
+            //     setLoader(false);
+            //     navigate('/login');
+            //     return;
+            // }
 
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms',
                 {
@@ -458,6 +459,7 @@ const Dashboard = () => {
 
         loggedUserDetails.dispatch({ type: "loggedOut" })
         localStorage.removeItem('authToken');
+        backToPreviousList.dispatch({ type: "switchList", value: 'submittedForms' });
         navigate("/login");
     };
 

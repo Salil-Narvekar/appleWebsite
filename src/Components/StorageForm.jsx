@@ -25,6 +25,13 @@ const StorageForm = () => {
     const [submitLoader, setSubmitLoader] = useState(false);
     const [modal, setModal] = useState(false);
 
+    const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
+    if (!authToken) {
+        console.error('Authentication token not found in local storage');
+        navigate('/login');
+        return;
+    }
+
     const submitStorageDetails = (action) => {
 
         // to validate & Submit

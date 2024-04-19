@@ -46,12 +46,12 @@ const Dashboard = () => {
             setLoader(true);
             const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
 
-            // if (!authToken) {
-            //     console.error('Authentication token not found in local storage');
-            //     setLoader(false);
-            //     navigate('/login');
-            //     return;
-            // }
+            if (!authToken) {
+                console.error('Authentication token not found in local storage');
+                setLoader(false);
+                navigate('/login');
+                return;
+            }
 
             axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms',
                 {

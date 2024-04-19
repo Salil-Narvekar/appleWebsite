@@ -249,42 +249,6 @@ const MobileForm = () => {
 
     //......................................................................................................
 
-    // function to set  carrierData details
-    const setCarriersDetails = (carrierId, carrierPrice, index) => {
-        setDeviceDetails(prevDeviceDetails => {
-            const updatedCarrierData = { ...prevDeviceDetails.carrierData };
-            updatedCarrierData[carrierId] = carrierPrice;
-            return {
-                ...prevDeviceDetails,
-                carrierData: updatedCarrierData
-            };
-        });
-    };
-
-    // function to set conditionData details
-    const setConditionsDetails = (conditionId, conditionPrice, index) => {
-        setDeviceDetails(prevDeviceDetails => {
-            const updatedConditionData = { ...prevDeviceDetails.conditionData };
-            updatedConditionData[conditionId] = conditionPrice;
-            return {
-                ...prevDeviceDetails,
-                conditionData: updatedConditionData
-            };
-        });
-    };
-
-    // function to set storageData details
-    const setStoragesDetails = (storageId, storagePrice, index) => {
-        setDeviceDetails(prevDeviceDetails => {
-            const updatedStorageData = { ...prevDeviceDetails.storageData };
-            updatedStorageData[storageId] = storagePrice;
-            return {
-                ...prevDeviceDetails,
-                storageData: updatedStorageData
-            };
-        });
-    };
-
     // function to validate fields & Submit form details
     const submitDeviceDetails = (action) => {
 
@@ -295,8 +259,8 @@ const MobileForm = () => {
             !deviceDetails.base_price ||
             !deviceDetails.device_type ||
             Object.values(deviceDetails.carrierData).filter(Boolean).length !== carriersArr.length ||
-            Object.values(deviceDetails.conditionData).length !== selectedConditions.length ||
-            Object.values(deviceDetails.storageData).length !== selectedStorages.length ||
+            Object.values(deviceDetails.conditionData).filter(Boolean).length !== selectedConditions.length ||
+            Object.values(deviceDetails.storageData).filter(Boolean).length !== selectedStorages.length ||
             selectedConditions.length === 0 ||
             selectedStorages.length === 0
         ) {
@@ -391,6 +355,42 @@ const MobileForm = () => {
             }
         }
     }
+
+    // function to set  carrierData details
+    const setCarriersDetails = (carrierId, carrierPrice, index) => {
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedCarrierData = { ...prevDeviceDetails.carrierData };
+            updatedCarrierData[carrierId] = carrierPrice;
+            return {
+                ...prevDeviceDetails,
+                carrierData: updatedCarrierData
+            };
+        });
+    };
+
+    // function to set conditionData details
+    const setConditionsDetails = (conditionId, conditionPrice, index) => {
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedConditionData = { ...prevDeviceDetails.conditionData };
+            updatedConditionData[conditionId] = conditionPrice;
+            return {
+                ...prevDeviceDetails,
+                conditionData: updatedConditionData
+            };
+        });
+    };
+
+    // function to set storageData details
+    const setStoragesDetails = (storageId, storagePrice, index) => {
+        setDeviceDetails(prevDeviceDetails => {
+            const updatedStorageData = { ...prevDeviceDetails.storageData };
+            updatedStorageData[storageId] = storagePrice;
+            return {
+                ...prevDeviceDetails,
+                storageData: updatedStorageData
+            };
+        });
+    };
 
     // useEffect to set the carrier values for edit state
     useEffect(() => {
@@ -637,7 +637,7 @@ const MobileForm = () => {
                         {/* Validations */}
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.conditionData).length !== selectedConditions.length &&
+                                validationFlag === false && Object.values(deviceDetails.conditionData).filter(Boolean).length !== selectedConditions.length &&
                                 <ValidationMsg errorMsg="All selected conditions prices required" />
                             }
                         </div>
@@ -693,7 +693,7 @@ const MobileForm = () => {
                         {/* Validations */}
                         <div className='grid sm:justify-items-start'>
                             {
-                                validationFlag === false && Object.values(deviceDetails.storageData).length !== selectedStorages.length &&
+                                validationFlag === false && Object.values(deviceDetails.storageData).filter(Boolean).length !== selectedStorages.length &&
                                 <ValidationMsg errorMsg="All selected storages prices required" />
                             }
                         </div>

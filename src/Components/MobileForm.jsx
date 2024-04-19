@@ -39,13 +39,6 @@ const MobileForm = () => {
     const [selectedConditions, setSelectedConditions] = useState(mobileFormDetails.mobileForm.conditionData.length > 0 ? mobileFormDetails.mobileForm.conditionData : []);
     const [selectedStorages, setSelectedStorages] = useState(mobileFormDetails.mobileForm.storageData.length > 0 ? mobileFormDetails.mobileForm.storageData : []);
 
-    const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
-    if (!authToken) {
-        console.error('Authentication token not found in local storage');
-        navigate('/login');
-        return;
-    }
-    
     // useEffect to mount carriers data
     useEffect(() => {
 

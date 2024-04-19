@@ -196,7 +196,7 @@ const Dashboard = () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${authToken}`,
-                    },
+                    }
                 }
             )
                 .then(res => {
@@ -237,7 +237,7 @@ const Dashboard = () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${authToken}`,
-                    },
+                    }
                 }
             )
                 .then(res => {

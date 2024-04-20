@@ -417,7 +417,7 @@ const handleImageUpload = async (e) => {
 
         const authToken = localStorage.getItem('authToken'); 
 
-        const response = await axios.post('http://localhost:8001/api/admin/upload-image', formData,
+        const response = await axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/upload-image', formData,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -811,7 +811,7 @@ const handleImageUpload = async (e) => {
                         <div className='grid justify-items-center'>
                             <ButtonMain
                                 name="closeModal"
-                                buttonLable="Ok go to dahborad"
+                                buttonLable="Return To Dashboard"
                                 onClick={() => {
                                     setModal(false);
                                     navigate('/dashboard');

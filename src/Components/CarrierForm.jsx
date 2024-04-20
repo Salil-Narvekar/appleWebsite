@@ -223,7 +223,7 @@ const CarrierForm = () => {
                         <div className='grid justify-items-center'>
                             <ButtonMain
                                 name="closeModal"
-                                buttonLable="Ok go to dahborad"
+                                buttonLable="Return To Dashboard"
                                 onClick={() => {
                                     setModal(false);
                                     backToPreviousList.dispatch({ type: "switchList", value: 'carriers' });

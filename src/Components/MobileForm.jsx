@@ -14,6 +14,7 @@ const MobileForm = () => {
     const navigate = useNavigate();
     const mobileFormDetails = useContext(MobileFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
+    const [imageUrl, setImageUrl] = useState('');
 
     const [deviceDetails, setDeviceDetails] = useState({
         base_price: mobileFormDetails.mobileForm.base_price ? mobileFormDetails.mobileForm.base_price : '',
@@ -23,7 +24,11 @@ const MobileForm = () => {
         carrierData: {},
         conditionData: {},
         storageData: {},
+        image_url:""
+
     });
+
+        // Add a state to store the uploaded image URL
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
@@ -392,6 +397,52 @@ const MobileForm = () => {
         });
     };
 
+
+
+// Function to handle image upload
+const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Create FormData object
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        // Send image to the image upload API
+        // const response = await fetch('http://localhost:8001/api/admin/upload-image', {
+        //     method: 'POST',
+        //     body: formData
+        // });
+
+        const authToken = localStorage.getItem('authToken'); 
+
+        const response = await axios.post('http://localhost:8001/api/admin/upload-image', formData,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${authToken}`,
+                        }
+                    }
+                )
+
+                console.log("RESPONSE>>>>>>",response);
+        
+        // Assuming the image upload API returns a JSON object with the URL
+        // const data = await response.json();
+        let image_url = response.data.data.imageUrl
+        console.log("image Url is >>>>>>", image_url)
+        // Set the uploaded image URL in state
+        // setImageUrl(image_url);
+        setDeviceDetails((prevSetDetails) => ({
+            ...prevSetDetails,
+            image_url:image_url
+        }));
+    } catch (error) {
+        console.error('Error uploading image:', error);
+    }
+};
+
     // useEffect to set the carrier values for edit state
     useEffect(() => {
 
@@ -511,11 +562,19 @@ const MobileForm = () => {
                     </div>
 
                     {/* sadil - image */}
-                    <div>
-                        <div className='grid sm:grid-cols-2 gap-1 '>
-                            <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
-                        </div>
-                    </div>
+                    {/* sadil - image */}
+<div>
+    <div className='grid sm:grid-cols-2 gap-1'>
+        <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
+        <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className='border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'
+        />
+    </div>
+</div>
+
                 </div>
 
                 {/* Form section - Carriers details */}

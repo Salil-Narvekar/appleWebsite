@@ -3,32 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { MobileFormDetails, BackToPreviousList } from '../App';
 import { MultiSelect } from "react-multi-select-component";
 import axios from "axios";
-import Select from 'react-dropdown-select';
 import Modal from 'react-modal';
 import ButtonMain from './ButtonMain'
 import InputField from './InputField';
 import ValidationMsg from './ValidationMsg';
 import Loader from './Loader';
+// import Select from 'react-dropdown-select';
 
 const MobileForm = () => {
     const navigate = useNavigate();
     const mobileFormDetails = useContext(MobileFormDetails);
     const backToPreviousList = useContext(BackToPreviousList);
-    const [imageUrl, setImageUrl] = useState('');
 
     const [deviceDetails, setDeviceDetails] = useState({
         base_price: mobileFormDetails.mobileForm.base_price ? mobileFormDetails.mobileForm.base_price : '',
         device_id: mobileFormDetails.mobileForm.device_id ? mobileFormDetails.mobileForm.device_id : '',
         device_name: mobileFormDetails.mobileForm.device_name ? mobileFormDetails.mobileForm.device_name : '',
-        device_type: mobileFormDetails.mobileForm.device_type ? mobileFormDetails.mobileForm.device_type : '',
+        device_type: mobileFormDetails.mobileForm.device_type ? mobileFormDetails.mobileForm.device_type : 'mobile',
         carrierData: {},
         conditionData: {},
         storageData: {},
-        image_url:""
-
+        image_url: mobileFormDetails.mobileForm.image_url ? mobileFormDetails.mobileForm.image_url : ""
     });
-
-        // Add a state to store the uploaded image URL
 
     const [validationFlag, setValidationFlag] = useState();
     const [loader, setLoader] = useState(false);
@@ -36,7 +32,6 @@ const MobileForm = () => {
     const [modal, setModal] = useState(false);
 
     const [carriersArr, setCarriersArr] = useState([]);
-
     const [storagesArrData, setStoragesArrData] = useState([]);
     const [conditionsArrData, setConditionsArrData] = useState([]);
 
@@ -184,76 +179,6 @@ const MobileForm = () => {
         value: condition.condition_id
     }));
 
-    const devicesList = [
-        {
-            device_type: 'mobile',
-            deviceName: "mobile"
-        },
-        {
-            device_type: 'laptop',
-            deviceName: "laptop"
-        },
-        {
-            device_type: 'watch',
-            deviceName: "watch"
-        }
-    ];
-
-    const setDevice = (value) => {
-        // console.log("SelectBox Value", value[0].device_type)
-        setDeviceDetails((prevSetDetails) => ({
-            ...prevSetDetails,
-            device_type: value[0].device_type
-        }));
-    };
-
-    //...............(for old references).................................................................
-
-    // function to set  carrierData details 
-    // const setCarriersDetails = (carrierId, carrierPrice, index) => {
-
-    //     // console.log(carrierId, carrierPrice, index);
-    //     const updatedCarrierData = {
-    //         ...deviceDetails.carrierData,
-    //         [carrierId]: carrierPrice
-    //     };
-
-    //     setDeviceDetails((prevDeviceDetails) => ({
-    //         ...prevDeviceDetails,
-    //         carrierData: updatedCarrierData
-    //     }));
-    // }
-
-    // // function to set conditionData details
-    // const setConditionsDetails = (conditionId, conditionPrice, index) => {
-    //     // console.log(conditionId, conditionPrice, index);
-    //     const updatedConditionData = {
-    //         ...deviceDetails.conditionData,
-    //         [conditionId]: conditionPrice
-    //     };
-
-    //     setDeviceDetails((prevDeviceDetails) => ({
-    //         ...prevDeviceDetails,
-    //         conditionData: updatedConditionData
-    //     }));
-    // }
-
-    // // function to set storageData details
-    // const setStoragesDetails = (storageId, storagePrice, index) => {
-    //     // console.log(storageId, storagePrice, index);
-    //     const updatedStorageData = {
-    //         ...deviceDetails.storageData,
-    //         [storageId]: storagePrice
-    //     };
-
-    //     setDeviceDetails((prevDeviceDetails) => ({
-    //         ...prevDeviceDetails,
-    //         storageData: updatedStorageData
-    //     }));
-    // }
-
-    //......................................................................................................
-
     // function to validate fields & Submit form details
     const submitDeviceDetails = (action) => {
 
@@ -397,51 +322,49 @@ const MobileForm = () => {
         });
     };
 
+    // Function to handle image upload
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('image', file);
 
-// Function to handle image upload
-const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+        try {
+            // Send image to the image upload API
+            // const response = await fetch('http://localhost:8001/api/admin/upload-image', {
+            //     method: 'POST',
+            //     body: formData
+            // });
 
-    // Create FormData object
-    const formData = new FormData();
-    formData.append('image', file);
+            const authToken = localStorage.getItem('authToken');
 
-    try {
-        // Send image to the image upload API
-        // const response = await fetch('http://localhost:8001/api/admin/upload-image', {
-        //     method: 'POST',
-        //     body: formData
-        // });
-
-        const authToken = localStorage.getItem('authToken'); 
-
-        const response = await axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/upload-image', formData,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `${authToken}`,
-                        }
+            const response = await axios.post('https://sell-iphone-backend-production.up.railway.app/api/admin/upload-image', formData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${authToken}`,
                     }
-                )
+                }
+            )
 
-                console.log("RESPONSE>>>>>>",response);
-        
-        // Assuming the image upload API returns a JSON object with the URL
-        // const data = await response.json();
-        let image_url = response.data.data.imageUrl
-        console.log("image Url is >>>>>>", image_url)
-        // Set the uploaded image URL in state
-        // setImageUrl(image_url);
-        setDeviceDetails((prevSetDetails) => ({
-            ...prevSetDetails,
-            image_url:image_url
-        }));
-    } catch (error) {
-        console.error('Error uploading image:', error);
-    }
-};
+            console.log("image response", response);
+            // Assuming the image upload API returns a JSON object with the URL
+            // const data = await response.json();
+            let image_url = response.data.data.imageUrl
+            console.log("image Url: ", image_url)
+            // Set the uploaded image URL in state
+            // setImageUrl(image_url);
+            setDeviceDetails((prevSetDetails) => ({
+                ...prevSetDetails,
+                image_url: image_url
+            }));
+
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+    };
 
     // useEffect to set the carrier values for edit state
     useEffect(() => {
@@ -475,7 +398,7 @@ const handleImageUpload = async (e) => {
 
             {/* Header */}
             <div className='grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
-                <div className='grid justify-items-start sm:text-xl text-slate-700'> {!deviceDetails.device_id ? "Add new device details" : "Update device details"} </div>
+                <div className='grid justify-items-start sm:text-xl text-slate-700'> {!deviceDetails.device_id ? "Add new mobile details" : "Update mobile details"} </div>
                 <div className='col-span-1 grid justify-items-end'>
                     <ButtonMain
                         name="back"
@@ -491,8 +414,8 @@ const handleImageUpload = async (e) => {
             <div className="row-span-9 grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
                 {/* Form section - Device details */}
-                <div className='row-span-1 grid sm:grid-cols-4 gap-1 sm:justify-items-start ml-4'>
-                    <div>
+                <div className='row-span-1 grid sm:grid-cols-12 gap-1 sm:justify-items-start ml-4 mr-4'>
+                    <div className='col-span-3'>
                         <InputField
                             label="Device name"
                             name="device_name"
@@ -514,7 +437,7 @@ const handleImageUpload = async (e) => {
                         }
                     </div>
 
-                    <div>
+                    <div className='col-span-3'>
                         <InputField
                             label="Base price"
                             name="base_price"
@@ -537,10 +460,11 @@ const handleImageUpload = async (e) => {
                         }
                     </div>
 
-                    <div>
+                    <div className='col-span-2'>
                         <div className='grid sm:grid-cols-2 gap-1 '>
-                            <label className='sm:text-md font-bold text-slate-600'>Select device type: </label>
-                            <Select
+                            <label className='sm:text-md font-bold text-slate-600'>Device type: </label>
+                            <span className='text-slate-600 font-bold text-md'>{deviceDetails.device_type}</span>
+                            {/* <Select
                                 className='bg-white text-slate-600 font-semibold text-sm text-left'
                                 options={devicesList}
                                 labelField="deviceName"
@@ -552,7 +476,7 @@ const handleImageUpload = async (e) => {
                                     }
                                 ]}
                                 onChange={(values) => setDevice(values)}
-                            />
+                            /> */}
                         </div>
 
                         {
@@ -561,20 +485,24 @@ const handleImageUpload = async (e) => {
                         }
                     </div>
 
-                    {/* sadil - image */}
-                    {/* sadil - image */}
-<div>
-    <div className='grid sm:grid-cols-2 gap-1'>
-        <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
-        <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className='border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'
-        />
-    </div>
-</div>
-
+                    {/* sadil - Image upload section */}
+                    <div className='col-span-4'>
+                        <div className='grid sm:grid-cols-4 gap-2'>
+                            <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className='col-span-2 py-2 pl-2 h-12 border border-slate-300 rounded-md text-black bg-neutral-50
+                                transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold focus:outline-none focus:border-slate-500'
+                            />
+                            <div className='col-span-1'>
+                                {
+                                    <img src={deviceDetails.image_url} alt="View uploaded img here" className="h-10 md:h-10 lg:h-full xl:h-full w-21 md:w-10 lg:w-full xl:w-full object-cover border border-slate-300 rounded text-xs" />
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Form section - Carriers details */}

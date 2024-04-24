@@ -162,12 +162,12 @@ const Dashboard = () => {
                 .then(res => {
 
                     if (res.data.data.length > 0) {
-                        const devicesData = res.data.data;
-                        setDevicesListArr(devicesData);
+                        const mobileData = res.data.data;
+                        setDevicesListArr(mobileData);
                         setLoader(false);
 
                     } else {
-                        console.log("devices data empty");
+                        console.log("mobile data empty");
                         setDevicesListArr([]);
                         setLoader(false);
                     }
@@ -203,12 +203,12 @@ const Dashboard = () => {
                 .then(res => {
 
                     if (res.data.data.length > 0) {
-                        const devicesData = res.data.data;
-                        setDevicesListArr(devicesData);
+                        const laptopData = res.data.data;
+                        setDevicesListArr(laptopData);
                         setLoader(false);
 
                     } else {
-                        console.log("devices data empty");
+                        console.log("laptop data empty");
                         setDevicesListArr([]);
                         setLoader(false);
                     }
@@ -244,12 +244,12 @@ const Dashboard = () => {
                 .then(res => {
 
                     if (res.data.data.length > 0) {
-                        const devicesData = res.data.data;
-                        setDevicesListArr(devicesData);
+                        const watchData = res.data.data;
+                        setDevicesListArr(watchData);
                         setLoader(false);
 
                     } else {
-                        console.log("devices data empty");
+                        console.log("watch data empty");
                         setDevicesListArr([]);
                         setLoader(false);
                     }
@@ -486,7 +486,7 @@ const Dashboard = () => {
                 <div className='grid sm:grid-rows-12 gap-1 text-left rounded-lg py-5 pl-4 pr-4 sm:h-full' style={{ backgroundColor: '#001529' }}>
                     <NavContent title="Submitted forms" onClick={() => setShowListing('submittedForms')} />
                     <NavContent title="Apointments" onClick={() => setShowListing('appointments')} />
-                    <NavContent title="Devices" onClick={() => setShowListing('devices')} />
+                    <NavContent title="Devices" onClick={() => { setShowListing('devices'); setShowDeviceType('mobile') }} />
                     <NavContent title="Storages" onClick={() => setShowListing('storages')} />
                     <NavContent title="Conditions" onClick={() => setShowListing('conditions')} />
                     <NavContent title="Carriers" onClick={() => setShowListing('carriers')} />
@@ -593,24 +593,21 @@ const Dashboard = () => {
                                         <div className='sm:grid grid-cols-6'>
 
                                             <div className='grid'>
-                                                <ListingTitle titlename="Devices Details List" icon={<MdDevicesOther />} />
+                                                <ListingTitle titlename='Devices Details List' icon={<MdDevicesOther />} />
                                             </div>
 
                                             <div className='col-span-1 ml-2 grid justify-self-start'>
                                                 <ButtonMain
                                                     name='addDevice'
-                                                    buttonLable='Add New Device'
+                                                    buttonLable={'Add new ' + showDeviceType}
                                                     onClick={() => {
 
-                                                        if (showDeviceType === 'mobile') {
-                                                            navigate('/mobileForm');
-
-                                                        } else if (showDeviceType === 'laptop') {
-                                                            navigate('/laptopForm');
-
-                                                        } else if (showDeviceType === 'watch') {
-                                                            navigate('/watchForm');
-                                                        }
+                                                        showDeviceType === 'mobile' ?
+                                                            navigate('/mobileForm')
+                                                            : showDeviceType === 'laptop' ?
+                                                                navigate('/laptopForm')
+                                                                : showDeviceType === 'watch' &&
+                                                                navigate('/watchForm')
 
                                                         mobileFormDetails.dispatch({ type: "add" })
                                                     }}
@@ -645,6 +642,7 @@ const Dashboard = () => {
                                                     // mobile device lisiting section
                                                     !loader ?
                                                         devicesListArr.length > 0 ?
+
                                                             <div className='h-[34rem] overflow-auto'>
                                                                 {
                                                                     devicesListArr.map((deviceData, index) => (
@@ -684,6 +682,7 @@ const Dashboard = () => {
                                                         // laptop device lisiting section
                                                         !loader ?
                                                             devicesListArr.length > 0 ?
+
                                                                 <div className='h-[34rem] overflow-auto'>
                                                                     {
                                                                         devicesListArr.map((deviceData, index) => (
@@ -715,7 +714,7 @@ const Dashboard = () => {
                                                                     }
                                                                 </div>
                                                                 :
-                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Mobile devices available !! </div>
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Laptop devices available !! </div>
                                                             :
                                                             <LoadingPlate />
 
@@ -725,6 +724,7 @@ const Dashboard = () => {
                                                             // watch device lisiting section
                                                             !loader ?
                                                             devicesListArr.length > 0 ?
+
                                                                 <div className='h-[34rem] overflow-auto'>
                                                                     {
                                                                         devicesListArr.map((deviceData, index) => (
@@ -756,7 +756,7 @@ const Dashboard = () => {
                                                                     }
                                                                 </div>
                                                                 :
-                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Mobile devices available !! </div>
+                                                                <div className='h-[34rem] text-xl font-bold text-cyan-900 animate-pulse pt-4'> No Watch devices available !! </div>
                                                             :
                                                             <LoadingPlate />
                                             }

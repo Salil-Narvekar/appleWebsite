@@ -299,27 +299,25 @@ const MobileForm = () => {
     };
 
     // function to set conditionData details
-    const setConditionsDetails = (conditionId, conditionPrice, index) => {
-        setDeviceDetails(prevDeviceDetails => {
-            const updatedConditionData = { ...prevDeviceDetails.conditionData };
-            updatedConditionData[conditionId] = conditionPrice;
-            return {
-                ...prevDeviceDetails,
-                conditionData: updatedConditionData
-            };
-        });
+    const setConditionsDetails = (conditionId, conditionPrice) => {
+        setDeviceDetails(prevDeviceDetails => ({
+            ...prevDeviceDetails,
+            conditionData: {
+                ...prevDeviceDetails.conditionData,
+                [conditionId]: conditionPrice
+            }
+        }));
     };
 
     // function to set storageData details
-    const setStoragesDetails = (storageId, storagePrice, index) => {
-        setDeviceDetails(prevDeviceDetails => {
-            const updatedStorageData = { ...prevDeviceDetails.storageData };
-            updatedStorageData[storageId] = storagePrice;
-            return {
-                ...prevDeviceDetails,
-                storageData: updatedStorageData
-            };
-        });
+    const setStoragesDetails = (storageId, storagePrice) => {
+        setDeviceDetails(prevDeviceDetails => ({
+            ...prevDeviceDetails,
+            storageData: {
+                ...prevDeviceDetails.storageData,
+                [storageId]: storagePrice
+            }
+        }));
     };
 
     // Function to handle image upload
@@ -377,19 +375,30 @@ const MobileForm = () => {
 
     // useEffect to set the condition values for edit state
     useEffect(() => {
+        if (selectedConditions.length > 0) {
+            const updatedConditionData = {};
+            selectedConditions.forEach(condition => {
+                updatedConditionData[condition.value] = deviceDetails.conditionData[condition.value] ? deviceDetails.conditionData[condition.value] : condition.price || '';
+            });
 
-        selectedConditions.forEach((condition, index) => {
-            setConditionsDetails(condition.value, condition.price, index);
-        });
-
+            setDeviceDetails(prevDeviceDetails => ({
+                ...prevDeviceDetails,
+                conditionData: updatedConditionData
+            }));
+        }
     }, [selectedConditions]);
 
     // useEffect to set the storage values for edit state
     useEffect(() => {
-
-        selectedStorages.forEach((storage, index) => {
-            setStoragesDetails(storage.value, storage.price, index);
+        const updatedStorageData = {};
+        selectedStorages.forEach(storage => {
+            updatedStorageData[storage.value] = deviceDetails.storageData[storage.value] ? deviceDetails.storageData[storage.value] : storage.price || '';
         });
+
+        setDeviceDetails(prevDeviceDetails => ({
+            ...prevDeviceDetails,
+            storageData: updatedStorageData
+        }));
 
     }, [selectedStorages]);
 
@@ -604,18 +613,18 @@ const MobileForm = () => {
                         {/* Dynamic fields */}
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
-                                selectedConditions.map((condition, index) => (
+                                selectedConditions.map(condition => (
 
                                     <InputField
                                         key={condition.value}
                                         label={condition.label}
-                                        name="conditionPrice"
-                                        id="conditionPrice"
+                                        name={`conditionPrice: ${condition.value}`}
+                                        id={`conditionPrice: ${condition.value}`}
                                         type="number"
                                         min={1}
                                         value={deviceDetails.conditionData[condition.value]}
                                         placeholder={"Enter " + condition.label + " price"}
-                                        onChange={(e) => setConditionsDetails(condition.value, e.target.value, index)}
+                                        onChange={(e) => setConditionsDetails(condition.value, e.target.value)}
                                     />
                                 ))
                             }
@@ -660,18 +669,18 @@ const MobileForm = () => {
                         {/* Dynamic fields */}
                         <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
                             {
-                                selectedStorages.map((storages, index) => (
+                                selectedStorages.map(storages => (
 
                                     <InputField
                                         key={storages.value}
                                         label={storages.label}
-                                        name="storagePrice"
-                                        id="storagePrice"
+                                        name={`storagePrice: ${storages.value}`}
+                                        id={`storagePrice: ${storages.value}`}
                                         type="number"
                                         min={1}
                                         value={deviceDetails.storageData[storages.value]}
                                         placeholder={"Enter " + storages.label + " price"}
-                                        onChange={(e) => setStoragesDetails(storages.value, e.target.value, index)}
+                                        onChange={(e) => setStoragesDetails(storages.value, e.target.value)}
                                     />
                                 ))
                             }
@@ -704,7 +713,10 @@ const MobileForm = () => {
                                 !submitLoader ?
                                     <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails('update')} />
                                     :
-                                    <ButtonMain buttonLable='Updating device... ' color='green' />
+                                    <div className='grid grid-rows-2 gap-1'>
+                                        <Loader />
+                                        <ButtonMain buttonLable='Updating device... ' color='green' />
+                                    </div>
 
                             :
                             <ButtonMain color='green' buttonLable='Wait unitl loading carriers...' />

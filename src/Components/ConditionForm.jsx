@@ -172,8 +172,8 @@ const ConditionForm = () => {
                         </div>
                     </div>
 
-                    <div className='row-span-3 grid sm:grid-cols-3 justify-items-start font-sans text-slate-600'>
-                        <span className="sm:text-md text-right mr-2"><b>Condition description: </b></span>
+                    <div className='row-span-3 grid sm:grid-cols-3 justify-items-start font-sans text-slate-600 text-xs md:text-sm lg:text-md'>
+                        <span className="text-right mr-2"><b>Condition description: </b></span>
                         <textarea
                             className='col-span-2 w-full h-full border border-slate-300 rounded text-black
                             transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold py-1 pl-2 '

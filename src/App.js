@@ -190,7 +190,7 @@ function App() {
             <CarrierFormDetails.Provider value={{ carrierForm: carrierForm, dispatch: dispatchCarrierForm }}>
               <BackToPreviousList.Provider value={{ previousList: previousList, dispatch: dispatchPreviousList }}>
 
-                <div className="text-center font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
+                <div className="text-center h-screen font-sans sm:overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
                   <HashRouter>
                     <Routes>
                       <Route path='/' element={<Navigate to='/dashboard' />} />

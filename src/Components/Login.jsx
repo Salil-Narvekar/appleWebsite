@@ -74,84 +74,88 @@ const Login = () => {
 
   return (
 
-    <div className="grid sm:grid-rows-4 gap-20 justify-center">
+    <div className="grid sm:grid-rows-8 gap-20 justify-center h-dvh">
 
-      <LoginHeader />
+      <div className='row-span-2'>
+        <LoginHeader />
+      </div>
 
-      <div className='row-span-2 border rounded-2xl grid gap-5 justify-center content-center py-12 pl-20 pr-20 drop-shadow-lg' style={{ backgroundColor: '#F0F2F5' }}>
+      <div className='row-span-5'>
+        <div className='border rounded-2xl grid gap-5 justify-center content-center drop-shadow-lg py-10 pl-16 pr-16' style={{ backgroundColor: '#F0F2F5' }}>
 
-        {/* email */}
-        <div className='h-16'>
-          <InputField
-            label="email"
-            name="email"
-            id="email"
-            type="email"
-            placeholder="Enter email"
-            labelTop={true}
-            onChange={(e) => {
-              setInvalidCredentials(false);
-              setCredentials((prevSetDetails) => ({
-                ...prevSetDetails,
-                email: e.target.value
-              }));
-            }}
-          />
+          {/* email */}
+          <div className='h-16'>
+            <InputField
+              label="email"
+              name="email"
+              id="email"
+              type="email"
+              placeholder="Enter email"
+              labelTop={true}
+              onChange={(e) => {
+                setInvalidCredentials(false);
+                setCredentials((prevSetDetails) => ({
+                  ...prevSetDetails,
+                  email: e.target.value
+                }));
+              }}
+            />
 
-          {
-            validationFlag === false && !credentials.email && !loader &&
-            <ValidationMsg errorMsg="Email required" />
-          }
-        </div>
-
-        {/* password */}
-        <div className='h-16 mb-4'>
-          <InputField
-            label="password"
-            name="password"
-            id="password"
-            type="password"
-            placeholder="xxxxxx"
-            labelTop={true}
-            onChange={(e) => {
-              setInvalidCredentials(false);
-              setCredentials((prevSetDetails) => ({
-                ...prevSetDetails,
-                password: e.target.value
-              }));
-            }}
-          />
-
-          {
-            validationFlag === false && !credentials.password && !loader &&
-            <ValidationMsg errorMsg="Password required" />
-          }
-        </div>
-
-        {/* login button & invalid credentials msg*/}
-        <div className='h-12'>
-
-          <div className='mb-3'>
             {
-              !loader ?
-                <ButtonMain
-                  buttonLable="Login"
-                  name="loginButton"
-                  onClick={() => loginUser()}
-                />
-                :
-                <Loader />
+              validationFlag === false && !credentials.email && !loader &&
+              <ValidationMsg errorMsg="Email required" />
             }
           </div>
 
-          <div>
+          {/* password */}
+          <div className='h-16 mb-4'>
+            <InputField
+              label="password"
+              name="password"
+              id="password"
+              type="password"
+              placeholder="xxxxxx"
+              labelTop={true}
+              onChange={(e) => {
+                setInvalidCredentials(false);
+                setCredentials((prevSetDetails) => ({
+                  ...prevSetDetails,
+                  password: e.target.value
+                }));
+              }}
+            />
+
             {
-              invalidCredentials && !loader &&
-              <span className='text-red-700 text-md font-semibold animate-pulse'> Invalid credentials, Try again !! </span>
+              validationFlag === false && !credentials.password && !loader &&
+              <ValidationMsg errorMsg="Password required" />
             }
           </div>
-        </div>
 
+          {/* login button & invalid credentials msg*/}
+          <div className='h-12'>
+
+            <div className='mb-3'>
+              {
+                !loader ?
+                  <ButtonMain
+                    buttonLable="Login"
+                    name="loginButton"
+                    onClick={() => loginUser()}
+                  />
+                  :
+                  <Loader />
+              }
+            </div>
+
+            <div>
+              {
+                invalidCredentials && !loader &&
+                <span className='text-red-700 text-sm md:text-base lg:text-md font-semibold animate-pulse'> Invalid credentials, Try again !! </span>
+              }
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 

@@ -403,10 +403,10 @@ const MobileForm = () => {
     }, [selectedStorages]);
 
     return (
-        <div className='grid sm:grid-rows-10 gap-1'>
+        <div className='grid grid-rows-10 gap-1 lg:h-dvh'>
 
             {/* Header */}
-            <div className='grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
+            <div className='row-span-1 grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
                 <div className='grid justify-items-start sm:text-xl text-slate-700'> {!deviceDetails.device_id ? "Add new mobile details" : "Update mobile details"} </div>
                 <div className='col-span-1 grid justify-items-end'>
                     <ButtonMain
@@ -420,60 +420,61 @@ const MobileForm = () => {
                 </div>
             </div>
 
-            <div className="row-span-9 grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
+            <div className='row-span-9 mb-2'>
+                <div className="h-full grid sm:grid-rows-8 shadow border border-slate-300 rounded-lg sm:ml-4 sm:mr-4 pt-5 pb-2" style={{ backgroundColor: '#F0F2F5' }}>
 
-                {/* Form section - Device details */}
-                <div className='row-span-1 grid sm:grid-cols-12 gap-1 sm:justify-items-start ml-4 mr-4'>
-                    <div className='col-span-3'>
-                        <InputField
-                            label="Device name"
-                            name="device_name"
-                            id="device_name"
-                            type="text"
-                            placeholder="Enter device name"
-                            value={deviceDetails.device_name}
-                            onChange={(e) => {
-                                setDeviceDetails((prevSetDetails) => ({
-                                    ...prevSetDetails,
-                                    device_name: e.target.value
-                                }));
-                            }}
-                        />
+                    {/* Form section - Device details */}
+                    <div className='row-span-1 grid sm:grid-cols-12 gap-1 justify-items-start ml-4 mr-4 text-left'>
+                        <div className='col-span-3'>
+                            <InputField
+                                label="Device name"
+                                name="device_name"
+                                id="device_name"
+                                type="text"
+                                placeholder="Enter device name"
+                                value={deviceDetails.device_name}
+                                onChange={(e) => {
+                                    setDeviceDetails((prevSetDetails) => ({
+                                        ...prevSetDetails,
+                                        device_name: e.target.value
+                                    }));
+                                }}
+                            />
 
-                        {
-                            validationFlag === false && !deviceDetails.device_name &&
-                            <ValidationMsg errorMsg="Device name required" />
-                        }
-                    </div>
+                            {
+                                validationFlag === false && !deviceDetails.device_name &&
+                                <ValidationMsg errorMsg="Device name required" />
+                            }
+                        </div>
 
-                    <div className='col-span-3'>
-                        <InputField
-                            label="Base price"
-                            name="base_price"
-                            id="base_price"
-                            type="number"
-                            min={1}
-                            placeholder="Enter base price"
-                            value={deviceDetails.base_price}
-                            onChange={(e) => {
-                                setDeviceDetails((prevSetDetails) => ({
-                                    ...prevSetDetails,
-                                    base_price: e.target.value
-                                }));
-                            }}
-                        />
+                        <div className='col-span-3'>
+                            <InputField
+                                label="Base price"
+                                name="base_price"
+                                id="base_price"
+                                type="number"
+                                min={1}
+                                placeholder="Enter base price"
+                                value={deviceDetails.base_price}
+                                onChange={(e) => {
+                                    setDeviceDetails((prevSetDetails) => ({
+                                        ...prevSetDetails,
+                                        base_price: e.target.value
+                                    }));
+                                }}
+                            />
 
-                        {
-                            validationFlag === false && !deviceDetails.base_price &&
-                            <ValidationMsg errorMsg="Base price required" />
-                        }
-                    </div>
+                            {
+                                validationFlag === false && !deviceDetails.base_price &&
+                                <ValidationMsg errorMsg="Base price required" />
+                            }
+                        </div>
 
-                    <div className='col-span-2'>
-                        <div className='grid sm:grid-cols-2 gap-1 '>
-                            <label className='sm:text-md font-bold text-slate-600'>Device type: </label>
-                            <span className='text-slate-600 font-bold text-md'>{deviceDetails.device_type}</span>
-                            {/* <Select
+                        <div className='col-span-2'>
+                            <div className='grid grid-cols-2 gap-1 text-xs md:text-sm lg:text-base'>
+                                <label className='font-bold text-slate-600'>Device type: </label>
+                                <span className='text-slate-600 font-bold text-left pl-2'>{deviceDetails.device_type}</span>
+                                {/* <Select
                                 className='bg-white text-slate-600 font-semibold text-sm text-left'
                                 options={devicesList}
                                 labelField="deviceName"
@@ -486,242 +487,243 @@ const MobileForm = () => {
                                 ]}
                                 onChange={(values) => setDevice(values)}
                             /> */}
+                            </div>
+
+                            {
+                                validationFlag === false && !deviceDetails.device_type &&
+                                <ValidationMsg errorMsg="Select device type" />
+                            }
+                        </div>
+
+                        {/* sadil - Image upload section */}
+                        <div className='col-span-4'>
+                            <div className='grid sm:grid-cols-4 gap-2 text-xs lg:text-sm lg:text-base'>
+                                <label className='font-bold text-slate-600 text-left lg:text-right'>Device image: </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className='col-span-2 py-2 pl-2 h-10 md:h-10 lg:h-12 border border-slate-300 rounded-md text-black bg-neutral-50
+                                transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold focus:outline-none focus:border-slate-500'
+                                />
+                                <div className='col-span-1'>
+                                    {
+                                        <img src={deviceDetails.image_url} alt="View uploaded img here" className="h-10 md:h-10 lg:h-full xl:h-full w-21 md:w-10 lg:w-full xl:w-full object-cover border border-slate-300 rounded text-xs" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Form section - Carriers details */}
+                    <div className='row-span-2 border border-slate-300 border-dashed rounded-lg pt-2 ml-1 mr-1'>
+                        <div className='grid grid-flow-rows lg:grid-cols-9'>
+                            <div className='grid sm:justify-items-start font-bold text-base md:text-base lg:text-lg underline ml-4 mb-2 '>Carriers Details:</div>
+                            <div className='grid sm:justify-items-center'>
+                                {
+                                    validationFlag === false && Object.values(deviceDetails.carrierData).filter(Boolean).length !== carriersArr.length &&
+                                    <ValidationMsg errorMsg="All carriers prices required" />
+                                }
+                            </div>
                         </div>
 
                         {
-                            validationFlag === false && !deviceDetails.device_type &&
-                            <ValidationMsg errorMsg="Select device type" />
+                            !loader ?
+
+                                <div className='grid grid-flow-rows grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1 justify-items-start ml-4 text-left'>
+                                    {
+                                        mobileFormDetails.mobileForm.carrierData.length > 0 ?
+
+                                            mobileFormDetails.mobileForm.carrierData.map((carrierData, index) => (
+
+                                                // console.log('salil',deviceDetails.carrierData[carrierData.value])
+                                                <div key={index}>
+                                                    <InputField
+                                                        key={carrierData.value}
+                                                        label={carrierData.label}
+                                                        name="carrierPrice"
+                                                        id="carrierPrice"
+                                                        type="number"
+                                                        min={1}
+                                                        value={deviceDetails.carrierData[carrierData.value]}
+                                                        placeholder={"Enter " + carrierData.label + " price"}
+                                                        onChange={(e) => setCarriersDetails(carrierData.value, e.target.value, index)}
+                                                    />
+                                                </div>
+                                            ))
+
+                                            :
+
+                                            carriersArr.map((carriersData, index) => (
+
+                                                <div key={index}>
+                                                    <InputField
+                                                        key={carriersData.carrier_id}
+                                                        label={carriersData.carrier_name}
+                                                        name="carrierPrice"
+                                                        id="carrierPrice"
+                                                        type="number"
+                                                        min={1}
+                                                        placeholder={"Enter " + carriersData.carrier_name + " price"}
+                                                        onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
+                                                    />
+                                                </div>
+                                            ))
+
+                                    }
+                                </div>
+                                :
+                                <div className='grid ml-4 gap-2'>
+                                    <span className='text-lg font-semibold text-cyan-800'>Loading available carriers... </span>
+                                    <Loader />
+                                </div>
                         }
+
                     </div>
 
-                    {/* sadil - Image upload section */}
-                    <div className='col-span-4'>
-                        <div className='grid sm:grid-cols-4 gap-2'>
-                            <label className='sm:text-md font-bold text-slate-600'>Device image: </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className='col-span-2 py-2 pl-2 h-12 border border-slate-300 rounded-md text-black bg-neutral-50
-                                transition duration-500 ease-in-out hover:scale-95 text-slate-600 font-semibold focus:outline-none focus:border-slate-500'
-                            />
-                            <div className='col-span-1'>
+                    {/* Form section - Storage & condition details */}
+                    <div className='row-span-5 grid sm:grid-cols-2 gap-1 justify-items-start ml-1 mr-1'>
+
+                        {/* Condition details */}
+                        <div className='grid sm:justify-items-start border-r border-dashed w-full pl-4 py-2 pt-4'>
+
+                            {/* Multiselect box */}
+                            <div className='pb-2'>
+                                <div className='grid sm:grid-cols-4 gap-1'>
+                                    <label className='text-sm md:text-sm lg:text-base font-bold text-slate-600'>Conditions accepted: </label>
+                                    <MultiSelect
+                                        className='sm:col-span-3 text-xs'
+                                        options={conditionsArr}
+                                        value={selectedConditions}
+                                        onChange={setSelectedConditions}
+                                        labelledBy="Select Conditions"
+                                        overrideStrings={{
+                                            selectSomeItems: 'Select accepted conditions...',
+                                            allItemsAreSelected: 'All conditions selected.',
+                                            selectAll: 'Select All',
+                                            search: 'Search available conditions',
+                                        }}
+                                    />
+                                </div>
                                 {
-                                    <img src={deviceDetails.image_url} alt="View uploaded img here" className="h-10 md:h-10 lg:h-full xl:h-full w-21 md:w-10 lg:w-full xl:w-full object-cover border border-slate-300 rounded text-xs" />
+                                    validationFlag === false && selectedConditions.length === 0 &&
+                                    <ValidationMsg errorMsg="Select conditions" />
+                                }
+                            </div>
+
+                            {/* Dynamic fields */}
+                            <div className='grid grid-flow-rows grid-cols-2 md:grid-flow-rows md:grid-cols-2 lg:grid-rows-4 lg:grid-cols-3 justify-items-start text-left'>
+                                {
+                                    selectedConditions.map(condition => (
+
+                                        <InputField
+                                            key={condition.value}
+                                            label={condition.label}
+                                            name={`conditionPrice: ${condition.value}`}
+                                            id={`conditionPrice: ${condition.value}`}
+                                            type="number"
+                                            min={1}
+                                            value={deviceDetails.conditionData[condition.value]}
+                                            placeholder={"Enter " + condition.label + " price"}
+                                            onChange={(e) => setConditionsDetails(condition.value, e.target.value)}
+                                        />
+                                    ))
+                                }
+                            </div>
+
+                            {/* Validations */}
+                            <div>
+                                {
+                                    validationFlag === false && Object.values(deviceDetails.conditionData).filter(Boolean).length !== selectedConditions.length &&
+                                    <ValidationMsg errorMsg="All selected conditions prices required" />
+                                }
+                            </div>
+                        </div>
+
+                        {/* Storage details */}
+                        <div className='grid sm:justify-items-start w-full pl-4 py-2 pt-4'>
+
+                            {/* Multiselect box */}
+                            <div className='pb-2'>
+                                <div className='grid sm:grid-cols-4 gap-1'>
+                                    <label className='text-sm md:text-sm lg:text-base font-bold text-slate-600'>Storage accepted: </label>
+                                    <MultiSelect
+                                        className='sm:col-span-3 text-xs'
+                                        options={storagesArr}
+                                        value={selectedStorages}
+                                        onChange={setSelectedStorages}
+                                        labelledBy="Select Storages"
+                                        overrideStrings={{
+                                            selectSomeItems: 'Select accepted storages...',
+                                            allItemsAreSelected: 'All storages selected.',
+                                            selectAll: 'Select All',
+                                            search: 'Search available storages',
+                                        }}
+                                    />
+                                </div>
+                                {
+                                    validationFlag === false && selectedStorages.length === 0 &&
+                                    <ValidationMsg errorMsg="Select storages" />
+                                }
+                            </div>
+
+                            {/* Dynamic fields */}
+                            <div className='grid grid-flow-rows grid-cols-2 md:grid-flow-rows md:grid-cols-2 lg:grid-rows-4 lg:grid-cols-3 justify-items-start text-left'>
+                                {
+                                    selectedStorages.map(storages => (
+
+                                        <InputField
+                                            key={storages.value}
+                                            label={storages.label}
+                                            name={`storagePrice: ${storages.value}`}
+                                            id={`storagePrice: ${storages.value}`}
+                                            type="number"
+                                            min={1}
+                                            value={deviceDetails.storageData[storages.value]}
+                                            placeholder={"Enter " + storages.label + " price"}
+                                            onChange={(e) => setStoragesDetails(storages.value, e.target.value)}
+                                        />
+                                    ))
+                                }
+                            </div>
+
+                            {/* Validations */}
+                            <div>
+                                {
+                                    validationFlag === false && Object.values(deviceDetails.storageData).filter(Boolean).length !== selectedStorages.length &&
+                                    <ValidationMsg errorMsg="All selected storages prices required" />
                                 }
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Form section - Carriers details */}
-                <div className='row-span-2 border border-slate-300 border-dashed rounded-lg pt-2 ml-1 mr-1'>
-                    <div className='grid sm:grid-cols-9'>
-                        <span className='grid sm:justify-items-start font-bold text-lg underline ml-4 mb-2'>Carriers Details:</span>
-                        <div className='grid sm:justify-items-start'>
-                            {
-                                validationFlag === false && Object.values(deviceDetails.carrierData).filter(Boolean).length !== carriersArr.length &&
-                                <ValidationMsg errorMsg="All carriers prices required" />
-                            }
-                        </div>
-                    </div>
-
-                    {
-                        !loader ?
-
-                            <div className='grid sm:grid-cols-4 gap-1 sm:justify-items-start sm:ml-4'>
-                                {
-                                    mobileFormDetails.mobileForm.carrierData.length > 0 ?
-
-                                        mobileFormDetails.mobileForm.carrierData.map((carrierData, index) => (
-
-                                            // console.log('salil',deviceDetails.carrierData[carrierData.value])
-                                            <div key={index}>
-                                                <InputField
-                                                    key={carrierData.value}
-                                                    label={carrierData.label}
-                                                    name="carrierPrice"
-                                                    id="carrierPrice"
-                                                    type="number"
-                                                    min={1}
-                                                    value={deviceDetails.carrierData[carrierData.value]}
-                                                    placeholder={"Enter " + carrierData.label + " price"}
-                                                    onChange={(e) => setCarriersDetails(carrierData.value, e.target.value, index)}
-                                                />
-                                            </div>
-                                        ))
-
+                    {/* Form section - Submit button */}
+                    <div className='grid justify-items-center mt-1'>
+                        {
+                            !loader ?
+                                !deviceDetails.device_id ?
+                                    !submitLoader ?
+                                        <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails('add')} />
                                         :
+                                        <div className='grid grid-rows-2 gap-1'>
+                                            <Loader />
+                                            <ButtonMain buttonLable='Adding device... ' color='green' />
+                                        </div>
 
-                                        carriersArr.map((carriersData, index) => (
-
-                                            <div key={index}>
-                                                <InputField
-                                                    key={carriersData.carrier_id}
-                                                    label={carriersData.carrier_name}
-                                                    name="carrierPrice"
-                                                    id="carrierPrice"
-                                                    type="number"
-                                                    min={1}
-                                                    placeholder={"Enter " + carriersData.carrier_name + " price"}
-                                                    onChange={(e) => setCarriersDetails(carriersData.carrier_id, e.target.value, index)}
-                                                />
-                                            </div>
-                                        ))
-
-                                }
-                            </div>
-                            :
-                            <div className='grid ml-4 gap-2'>
-                                <span className='text-lg font-semibold text-cyan-800'>Loading available carriers... </span>
-                                <Loader />
-                            </div>
-                    }
-
-                </div>
-
-                {/* Form section - Storage & condition details */}
-                <div className='row-span-5 grid sm:grid-cols-2 gap-1 justify-items-start ml-1 mr-1'>
-
-                    {/* Condition details */}
-                    <div className='grid sm:justify-items-start border-r border-dashed w-full pl-4 py-2 pt-4'>
-
-                        {/* Multiselect box */}
-                        <div>
-                            <div className='grid sm:grid-cols-4 gap-1'>
-                                <label className='sm:text-md font-bold text-slate-600'>Conditions accepted: </label>
-                                <MultiSelect
-                                    className='sm:col-span-3 text-xs'
-                                    options={conditionsArr}
-                                    value={selectedConditions}
-                                    onChange={setSelectedConditions}
-                                    labelledBy="Select Conditions"
-                                    overrideStrings={{
-                                        selectSomeItems: 'Select accepted conditions...',
-                                        allItemsAreSelected: 'All conditions selected.',
-                                        selectAll: 'Select All',
-                                        search: 'Search available conditions',
-                                    }}
-                                />
-                            </div>
-                            {
-                                validationFlag === false && selectedConditions.length === 0 &&
-                                <ValidationMsg errorMsg="Select conditions" />
-                            }
-                        </div>
-
-                        {/* Dynamic fields */}
-                        <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
-                            {
-                                selectedConditions.map(condition => (
-
-                                    <InputField
-                                        key={condition.value}
-                                        label={condition.label}
-                                        name={`conditionPrice: ${condition.value}`}
-                                        id={`conditionPrice: ${condition.value}`}
-                                        type="number"
-                                        min={1}
-                                        value={deviceDetails.conditionData[condition.value]}
-                                        placeholder={"Enter " + condition.label + " price"}
-                                        onChange={(e) => setConditionsDetails(condition.value, e.target.value)}
-                                    />
-                                ))
-                            }
-                        </div>
-
-                        {/* Validations */}
-                        <div className='grid sm:justify-items-start'>
-                            {
-                                validationFlag === false && Object.values(deviceDetails.conditionData).filter(Boolean).length !== selectedConditions.length &&
-                                <ValidationMsg errorMsg="All selected conditions prices required" />
-                            }
-                        </div>
-                    </div>
-
-                    {/* Storage details */}
-                    <div className='grid sm:justify-items-start w-full pl-4 py-2 pt-4'>
-
-                        {/* Multiselect box */}
-                        <div>
-                            <div className='grid sm:grid-cols-4 gap-1'>
-                                <label className='sm:text-md font-bold text-slate-600'>Storage accepted: </label>
-                                <MultiSelect
-                                    className='sm:col-span-3 text-xs'
-                                    options={storagesArr}
-                                    value={selectedStorages}
-                                    onChange={setSelectedStorages}
-                                    labelledBy="Select Storages"
-                                    overrideStrings={{
-                                        selectSomeItems: 'Select accepted storages...',
-                                        allItemsAreSelected: 'All storages selected.',
-                                        selectAll: 'Select All',
-                                        search: 'Search available storages',
-                                    }}
-                                />
-                            </div>
-                            {
-                                validationFlag === false && selectedStorages.length === 0 &&
-                                <ValidationMsg errorMsg="Select storages" />
-                            }
-                        </div>
-
-                        {/* Dynamic fields */}
-                        <div className='grid sm:grid-rows-4 sm:grid-cols-3 sm:justify-items-start sm:text-left'>
-                            {
-                                selectedStorages.map(storages => (
-
-                                    <InputField
-                                        key={storages.value}
-                                        label={storages.label}
-                                        name={`storagePrice: ${storages.value}`}
-                                        id={`storagePrice: ${storages.value}`}
-                                        type="number"
-                                        min={1}
-                                        value={deviceDetails.storageData[storages.value]}
-                                        placeholder={"Enter " + storages.label + " price"}
-                                        onChange={(e) => setStoragesDetails(storages.value, e.target.value)}
-                                    />
-                                ))
-                            }
-                        </div>
-
-                        {/* Validations */}
-                        <div className='grid sm:justify-items-start'>
-                            {
-                                validationFlag === false && Object.values(deviceDetails.storageData).filter(Boolean).length !== selectedStorages.length &&
-                                <ValidationMsg errorMsg="All selected storages prices required" />
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                {/* Form section - Submit button */}
-                <div className='grid justify-items-center mt-1'>
-                    {
-                        !loader ?
-                            !deviceDetails.device_id ?
-                                !submitLoader ?
-                                    <ButtonMain name='submit' buttonLable='Add device' color='green' onClick={() => submitDeviceDetails('add')} />
                                     :
-                                    <div className='grid grid-rows-2 gap-1'>
-                                        <Loader />
-                                        <ButtonMain buttonLable='Adding device... ' color='green' />
-                                    </div>
+                                    !submitLoader ?
+                                        <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails('update')} />
+                                        :
+                                        <div className='grid grid-rows-2 gap-1'>
+                                            <Loader />
+                                            <ButtonMain buttonLable='Updating device... ' color='green' />
+                                        </div>
 
                                 :
-                                !submitLoader ?
-                                    <ButtonMain name='submit' buttonLable='Update device' color='green' onClick={() => submitDeviceDetails('update')} />
-                                    :
-                                    <div className='grid grid-rows-2 gap-1'>
-                                        <Loader />
-                                        <ButtonMain buttonLable='Updating device... ' color='green' />
-                                    </div>
+                                <ButtonMain color='green' buttonLable='Wait unitl loading carriers...' />
 
-                            :
-                            <ButtonMain color='green' buttonLable='Wait unitl loading carriers...' />
-
-                    }
+                        }
+                    </div>
                 </div>
             </div>
 
@@ -733,15 +735,15 @@ const MobileForm = () => {
                     ariaHideApp={false}
                     className="flex items-center justify-center h-screen bg-gray-950 bg-opacity-50"
                 >
-                    <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-20 pr-20'>
+                    <div className='grid sm:grid-rows-2 gap-2 rounded-2xl bg-white py-6 pl-6 pr-6 lg:py-6 lg:pl-20 lg:pr-20'>
 
                         {/* Modal description */}
                         <div className='grid justify-items-center'>
                             {
                                 !deviceDetails.device_id ?
-                                    <span className='text-normal font-bold text-green-700'>Successfully added the new device details !!</span>
+                                    <span className='text-sm md:text-base lg:text-normal font-bold text-green-700'>Successfully added the new device details !!</span>
                                     :
-                                    <span className='text-normal font-bold text-green-700'>{'Successfully updated the ' + deviceDetails.device_name + ' details !!'}</span>
+                                    <span className='text-sm md:text-base lg:text-normal font-bold text-green-700'>{'Successfully updated the ' + deviceDetails.device_name + ' details !!'}</span>
                             }
 
                             <small className='text-xs font-bold text-green-600'>View the updated devices list on dashboard</small>

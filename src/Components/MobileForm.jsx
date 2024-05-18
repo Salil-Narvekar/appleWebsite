@@ -403,7 +403,7 @@ const MobileForm = () => {
     }, [selectedStorages]);
 
     return (
-        <div className='grid grid-rows-10 gap-1 lg:h-dvh'>
+        <div className='grid grid-rows-10 gap-1 md:h-dvh lg:h-dvh overflow-x-auto'>
 
             {/* Header */}
             <div className='row-span-1 grid grid-cols-2 ml-5 mr-4 py-4 text-lg font-bold'>
@@ -508,7 +508,7 @@ const MobileForm = () => {
                                 />
                                 <div className='col-span-1'>
                                     {
-                                        <img src={deviceDetails.image_url} alt="View uploaded img here" className="h-10 md:h-10 lg:h-full xl:h-full w-21 md:w-10 lg:w-full xl:w-full object-cover border border-slate-300 rounded text-xs" />
+                                        <img src={deviceDetails.image_url} alt="View uploaded img here" className="max-h-12 md:max-h-12 lg:h-full xl:h-full w-21 md:w-10 lg:w-full xl:w-full object-cover border border-slate-300 rounded text-xs" />
                                     }
                                 </div>
                             </div>

@@ -38,10 +38,17 @@ const Dashboard = () => {
     const [conditionsListArr, setConditionsListArr] = useState([]);
     const [carriersListArr, setCarriersListArr] = useState([]);
 
+    //Pagination - (Submitted List)
+    const [lastDocId, setLastDocId] = useState('');                 // Pagination - to store lastDocId got from response
+    const [pageCount, setPageCount] = useState(5);                // Pagination - count of cells to display on show more 
+    const [showMore, setShowMore] = useState('no');
+    const [submittedFormsLen, setSubmittedFormsLen] = useState()
+
+
     // useEffect to mount submitted forms list data
     useEffect(() => {
 
-        if (showListing === 'submittedForms') {
+        if (showListing === 'submittedForms' || showMore === 'yes') {
 
             setLoader(true);
             const authToken = localStorage.getItem('authToken'); // get auth token from localstorage
@@ -54,7 +61,7 @@ const Dashboard = () => {
             //     return;
             // }
 
-            axios.get('https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms',
+            axios.get(`https://sell-iphone-backend-production.up.railway.app/api/admin/get-all-forms?pageSize=${pageCount}&lastDocId=${lastDocId}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,8 +71,12 @@ const Dashboard = () => {
             )
                 .then(res => {
 
-                    if (res.data.data.length > 0) {
-                        const submittedFormData = res.data.data;
+                    // setLastDocId(res.data.data.lastDocId)
+                    setSubmittedFormsLen(res.data.data.data.length)
+                    setShowMore('no')
+
+                    if (res.data.data.data.length > 0) {
+                        const submittedFormData = res.data.data.data;
                         setSubmittedFormListArr(submittedFormData);
                         setLoader(false);
 
@@ -92,7 +103,7 @@ const Dashboard = () => {
                 });
         }
 
-    }, [showListing, navigate])
+    }, [showListing, navigate, showMore])
 
     // useEffect to mount appointment list data
     useEffect(() => {
@@ -538,6 +549,24 @@ const Dashboard = () => {
                                             <LoadingPlate />
                                     }
                                 </div>
+
+                                {/* Pagination - show more */}
+                                {
+                                    submittedFormsLen >= pageCount ?
+
+                                        <div 
+                                            className='justify-self-end text-blue-950 text-sm font-bold cursor-pointer transition duration-500 ease-in-out hover:scale-95 hover:text-blue-800 pt-2 -mb-2' 
+                                            onClick={() => { setShowMore('yes'); setPageCount(pageCount + 5) }}
+                                        >
+                                            Show more...
+                                        </div>
+
+                                        : !loader &&
+
+                                        <div className='justify-self-end animate-pulse text-red-800 text-sm font-bold pt-2 -mb-2'>
+                                            All data shown, end of the page !!
+                                        </div>
+                                }
                             </div>
 
                             : showListing === "appointments" ?
